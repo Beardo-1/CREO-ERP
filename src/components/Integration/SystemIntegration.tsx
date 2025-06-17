@@ -20,8 +20,12 @@ import {
   BarChart3,
   Users,
   Home,
-  DollarSign
+  DollarSign,
+  Plus,
+  Link
 } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 interface IntegrationStatus {
   id: string;
@@ -56,6 +60,7 @@ interface SystemHealth {
 }
 
 export function SystemIntegration() {
+  const { t } = useTranslation();
   const [integrations, setIntegrations] = useState<IntegrationStatus[]>([]);
   const [systemHealth, setSystemHealth] = useState<SystemHealth | null>(null);
   const [selectedIntegration, setSelectedIntegration] = useState<IntegrationStatus | null>(null);
@@ -286,369 +291,381 @@ export function SystemIntegration() {
   const syncingIntegrations = integrations.filter(i => i.status === 'syncing').length;
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">System Integration</h1>
-            <p className="text-gray-600">Monitor and manage all system integrations and health</p>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t(appContent.systemIntegration.title)}</h1>
+          <p className="text-gray-600">{t(appContent.systemIntegration.subtitle)}</p>
+        </div>
+
+        {/* Integration Status Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">{t(appContent.systemIntegration.activeIntegrations)}</p>
+                <p className="text-2xl font-bold text-green-600">{connectedIntegrations}</p>
+              </div>
+              <div className="bg-gradient-to-r from-green-100 to-emerald-100 p-3 rounded-xl">
+                <CheckCircle className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors">
-              <RefreshCw className="w-4 h-4" />
-              <span>Refresh All</span>
-            </button>
-            <button className="flex items-center space-x-2 px-4 py-2 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors">
-              <Settings className="w-4 h-4" />
-              <span>Configure</span>
-            </button>
+
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">{t(appContent.systemIntegration.pendingSetup)}</p>
+                <p className="text-2xl font-bold text-amber-600">{errorIntegrations}</p>
+              </div>
+              <div className="bg-gradient-to-r from-amber-100 to-orange-100 p-3 rounded-xl">
+                <AlertTriangle className="w-6 h-6 text-amber-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">{t(appContent.systemIntegration.dataSync)}</p>
+                <p className="text-2xl font-bold text-blue-600">{syncingIntegrations}</p>
+              </div>
+              <div className="bg-gradient-to-r from-blue-100 to-sky-100 p-3 rounded-xl">
+                <RefreshCw className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">{t(appContent.systemIntegration.apiCalls)}</p>
+                <p className="text-2xl font-bold text-purple-600">24.7K</p>
+                <p className="text-sm text-gray-500">{t(appContent.systemIntegration.thisMonth)}</p>
+              </div>
+              <div className="bg-gradient-to-r from-purple-100 to-indigo-100 p-3 rounded-xl">
+                <Database className="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* System Health Overview */}
-        {systemHealth && (
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className={`text-2xl font-bold ${getHealthColor(systemHealth.overall)}`}>
-                    {systemHealth.overall.toUpperCase()}
+        {/* Integration Categories */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          {/* CRM Integrations */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900">{t(appContent.systemIntegration.crmIntegrations)}</h3>
+              <button className="bg-blue-100 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium flex items-center space-x-2">
+                <Plus className="w-4 h-4" />
+                <span>{t(appContent.systemIntegration.addNew)}</span>
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
                   </div>
-                  <div className="text-sm text-gray-600">Overall Health</div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Salesforce</p>
+                    <p className="text-sm text-gray-600">{t(appContent.systemIntegration.connected)}</p>
+                  </div>
                 </div>
-                <Monitor className={`w-8 h-8 ${getHealthColor(systemHealth.overall)}`} />
+                <div className="flex items-center space-x-2">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                    {t(appContent.systemIntegration.active)}
+                  </span>
+                  <button className="text-gray-400 hover:text-gray-600">
+                    <Settings className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-            </div>
-            
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-green-600">{connectedIntegrations}</div>
-                  <div className="text-sm text-gray-600">Connected</div>
+
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">HubSpot</p>
+                    <p className="text-sm text-gray-600">{t(appContent.systemIntegration.connected)}</p>
+                  </div>
                 </div>
-                <CheckCircle className="w-8 h-8 text-green-500" />
+                <div className="flex items-center space-x-2">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                    {t(appContent.systemIntegration.active)}
+                  </span>
+                  <button className="text-gray-400 hover:text-gray-600">
+                    <Settings className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-            </div>
-            
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-blue-600">{syncingIntegrations}</div>
-                  <div className="text-sm text-gray-600">Syncing</div>
+
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                    <AlertTriangle className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Pipedrive</p>
+                    <p className="text-sm text-gray-600">{t(appContent.systemIntegration.setupRequired)}</p>
+                  </div>
                 </div>
-                <RefreshCw className="w-8 h-8 text-blue-500" />
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-red-600">{errorIntegrations}</div>
-                  <div className="text-sm text-gray-600">Errors</div>
+                <div className="flex items-center space-x-2">
+                  <span className="bg-amber-100 text-amber-800 px-2 py-1 rounded-full text-xs font-medium">
+                    {t(appContent.systemIntegration.pending)}
+                  </span>
+                  <button className="text-gray-400 hover:text-gray-600">
+                    <Settings className="w-4 h-4" />
+                  </button>
                 </div>
-                <AlertTriangle className="w-8 h-8 text-red-500" />
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{integrations.length}</div>
-                  <div className="text-sm text-gray-600">Total</div>
-                </div>
-                <Database className="w-8 h-8 text-gray-500" />
               </div>
             </div>
           </div>
-        )}
 
-        {/* View Mode Tabs */}
-        <div className="flex items-center space-x-2 mb-6">
-          <button
-            onClick={() => setViewMode('overview')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              viewMode === 'overview' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            Overview
-          </button>
-          <button
-            onClick={() => setViewMode('detailed')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              viewMode === 'detailed' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            Detailed View
-          </button>
-          <button
-            onClick={() => setViewMode('monitoring')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              viewMode === 'monitoring' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            Performance
-          </button>
+          {/* Marketing Tools */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900">{t(appContent.systemIntegration.marketingTools)}</h3>
+              <button className="bg-blue-100 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium flex items-center space-x-2">
+                <Plus className="w-4 h-4" />
+                <span>{t(appContent.systemIntegration.addNew)}</span>
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Mailchimp</p>
+                    <p className="text-sm text-gray-600">{t(appContent.systemIntegration.connected)}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                    {t(appContent.systemIntegration.active)}
+                  </span>
+                  <button className="text-gray-400 hover:text-gray-600">
+                    <Settings className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Google Ads</p>
+                    <p className="text-sm text-gray-600">{t(appContent.systemIntegration.connected)}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                    {t(appContent.systemIntegration.active)}
+                  </span>
+                  <button className="text-gray-400 hover:text-gray-600">
+                    <Settings className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Facebook Ads</p>
+                    <p className="text-sm text-gray-600">{t(appContent.systemIntegration.connected)}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                    {t(appContent.systemIntegration.active)}
+                  </span>
+                  <button className="text-gray-400 hover:text-gray-600">
+                    <Settings className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Financial Systems */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900">{t(appContent.systemIntegration.financialSystems)}</h3>
+              <button className="bg-blue-100 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium flex items-center space-x-2">
+                <Plus className="w-4 h-4" />
+                <span>{t(appContent.systemIntegration.addNew)}</span>
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">QuickBooks</p>
+                    <p className="text-sm text-gray-600">{t(appContent.systemIntegration.connected)}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                    {t(appContent.systemIntegration.active)}
+                  </span>
+                  <button className="text-gray-400 hover:text-gray-600">
+                    <Settings className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Stripe</p>
+                    <p className="text-sm text-gray-600">{t(appContent.systemIntegration.connected)}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                    {t(appContent.systemIntegration.active)}
+                  </span>
+                  <button className="text-gray-400 hover:text-gray-600">
+                    <Settings className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                    <AlertTriangle className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Xero</p>
+                    <p className="text-sm text-gray-600">{t(appContent.systemIntegration.setupRequired)}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="bg-amber-100 text-amber-800 px-2 py-1 rounded-full text-xs font-medium">
+                    {t(appContent.systemIntegration.pending)}
+                  </span>
+                  <button className="text-gray-400 hover:text-gray-600">
+                    <Settings className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* API Management */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-gray-900">{t(appContent.systemIntegration.apiManagement)}</h3>
+            <div className="flex items-center space-x-3">
+              <button className="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium flex items-center space-x-2">
+                <RefreshCw className="w-4 h-4" />
+                <span>{t(appContent.systemIntegration.syncNow)}</span>
+              </button>
+              <button className="bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium flex items-center space-x-2">
+                <Plus className="w-4 h-4" />
+                <span>{t(appContent.systemIntegration.newApi)}</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-sky-50 rounded-xl">
+              <div className="flex items-center justify-center mb-3">
+                <Cloud className="w-8 h-8 text-blue-600" />
+              </div>
+              <p className="text-2xl font-bold text-blue-600">15</p>
+              <p className="text-sm text-gray-600">{t(appContent.systemIntegration.activeApis)}</p>
+            </div>
+            <div className="text-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl">
+              <div className="flex items-center justify-center mb-3">
+                <Shield className="w-8 h-8 text-green-600" />
+              </div>
+              <p className="text-2xl font-bold text-green-600">99.9%</p>
+              <p className="text-sm text-gray-600">{t(appContent.systemIntegration.uptime)}</p>
+            </div>
+            <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl">
+              <div className="flex items-center justify-center mb-3">
+                <Database className="w-8 h-8 text-purple-600" />
+              </div>
+              <p className="text-2xl font-bold text-purple-600">2.4M</p>
+              <p className="text-sm text-gray-600">{t(appContent.systemIntegration.recordsSynced)}</p>
+            </div>
+            <div className="text-center p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl">
+              <div className="flex items-center justify-center mb-3">
+                <Link className="w-8 h-8 text-amber-600" />
+              </div>
+              <p className="text-2xl font-bold text-amber-600">45ms</p>
+              <p className="text-sm text-gray-600">{t(appContent.systemIntegration.avgResponseTime)}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-gray-900">{t(appContent.systemIntegration.recentActivity)}</h3>
+            <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+              {t(appContent.systemIntegration.viewAll)}
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl">
+              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-gray-900">{t(appContent.systemIntegration.salesforceSync)}</p>
+                <p className="text-sm text-gray-600">{t(appContent.systemIntegration.syncedContacts)}</p>
+              </div>
+              <div className="text-sm text-gray-500">2 {t(appContent.systemIntegration.minutesAgo)}</div>
+            </div>
+
+            <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-blue-50 to-sky-50 rounded-xl">
+              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <Database className="w-5 h-5 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-gray-900">{t(appContent.systemIntegration.quickbooksUpdate)}</p>
+                <p className="text-sm text-gray-600">{t(appContent.systemIntegration.financialDataSynced)}</p>
+              </div>
+              <div className="text-sm text-gray-500">15 {t(appContent.systemIntegration.minutesAgo)}</div>
+            </div>
+
+            <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl">
+              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                <Link className="w-5 h-5 text-purple-600" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-gray-900">{t(appContent.systemIntegration.mailchimpCampaign)}</p>
+                <p className="text-sm text-gray-600">{t(appContent.systemIntegration.campaignDataUpdated)}</p>
+              </div>
+              <div className="text-sm text-gray-500">1 {t(appContent.systemIntegration.hourAgo)}</div>
+            </div>
+          </div>
         </div>
       </div>
-
-      {viewMode === 'overview' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {integrations.map((integration) => {
-            const StatusIcon = getStatusIcon(integration.status);
-            const CategoryIcon = getCategoryIcon(integration.category);
-            
-            return (
-              <div
-                key={integration.id}
-                className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => setSelectedIntegration(integration)}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-gray-100 rounded-lg">
-                      <CategoryIcon className="w-5 h-5 text-gray-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{integration.name}</h3>
-                      <p className="text-sm text-gray-600 capitalize">{integration.category}</p>
-                    </div>
-                  </div>
-                  <div className={`flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(integration.status)}`}>
-                    <StatusIcon className={`w-4 h-4 ${integration.status === 'syncing' ? 'animate-spin' : ''}`} />
-                    <span className="capitalize">{integration.status}</span>
-                  </div>
-                </div>
-
-                <p className="text-gray-600 text-sm mb-4">{integration.description}</p>
-
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-600">Uptime:</span>
-                    <div className="font-medium">{integration.metrics.uptime}%</div>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Response:</span>
-                    <div className="font-medium">{integration.metrics.responseTime}ms</div>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Error Rate:</span>
-                    <div className="font-medium">{integration.metrics.errorRate}%</div>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Last Sync:</span>
-                    <div className="font-medium">
-                      {Math.floor((Date.now() - integration.lastSync.getTime()) / 60000)}m ago
-                    </div>
-                  </div>
-                </div>
-
-                {integration.dependencies.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="text-sm text-gray-600 mb-2">Dependencies:</div>
-                    <div className="flex flex-wrap gap-1">
-                      {integration.dependencies.map((dep) => (
-                        <span
-                          key={dep}
-                          className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
-                        >
-                          {dep}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {viewMode === 'monitoring' && systemHealth && (
-        <div className="space-y-8">
-          {/* Performance Metrics */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">System Performance</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-600">CPU Usage</span>
-                  <span className="text-sm font-bold text-gray-900">{systemHealth.performance.cpu}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${getPerformanceColor(systemHealth.performance.cpu)}`}
-                    style={{ width: `${systemHealth.performance.cpu}%` }}
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-600">Memory Usage</span>
-                  <span className="text-sm font-bold text-gray-900">{systemHealth.performance.memory}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${getPerformanceColor(systemHealth.performance.memory)}`}
-                    style={{ width: `${systemHealth.performance.memory}%` }}
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-600">Storage Usage</span>
-                  <span className="text-sm font-bold text-gray-900">{systemHealth.performance.storage}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${getPerformanceColor(systemHealth.performance.storage)}`}
-                    style={{ width: `${systemHealth.performance.storage}%` }}
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-600">Network Usage</span>
-                  <span className="text-sm font-bold text-gray-900">{systemHealth.performance.network}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${getPerformanceColor(systemHealth.performance.network)}`}
-                    style={{ width: `${systemHealth.performance.network}%` }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Component Health */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Component Health</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="text-center">
-                <Database className={`w-12 h-12 mx-auto mb-3 ${getHealthColor(systemHealth.components.database)}`} />
-                <h3 className="font-semibold text-gray-900">Database</h3>
-                <p className={`text-sm font-medium capitalize ${getHealthColor(systemHealth.components.database)}`}>
-                  {systemHealth.components.database}
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <Server className={`w-12 h-12 mx-auto mb-3 ${getHealthColor(systemHealth.components.api)}`} />
-                <h3 className="font-semibold text-gray-900">API Services</h3>
-                <p className={`text-sm font-medium capitalize ${getHealthColor(systemHealth.components.api)}`}>
-                  {systemHealth.components.api}
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <Monitor className={`w-12 h-12 mx-auto mb-3 ${getHealthColor(systemHealth.components.frontend)}`} />
-                <h3 className="font-semibold text-gray-900">Frontend</h3>
-                <p className={`text-sm font-medium capitalize ${getHealthColor(systemHealth.components.frontend)}`}>
-                  {systemHealth.components.frontend}
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <Globe className={`w-12 h-12 mx-auto mb-3 ${getHealthColor(systemHealth.components.integrations)}`} />
-                <h3 className="font-semibold text-gray-900">Integrations</h3>
-                <p className={`text-sm font-medium capitalize ${getHealthColor(systemHealth.components.integrations)}`}>
-                  {systemHealth.components.integrations}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Integration Detail Modal */}
-      {selectedIntegration && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{selectedIntegration.name}</h2>
-                  <p className="text-gray-600">{selectedIntegration.description}</p>
-                </div>
-                <button
-                  onClick={() => setSelectedIntegration(null)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <span className="sr-only">Close</span>
-                  ✕
-                </button>
-              </div>
-            </div>
-            
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance Metrics</h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Uptime:</span>
-                      <span className="font-medium">{selectedIntegration.metrics.uptime}%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Response Time:</span>
-                      <span className="font-medium">{selectedIntegration.metrics.responseTime}ms</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Error Rate:</span>
-                      <span className="font-medium">{selectedIntegration.metrics.errorRate}%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Throughput:</span>
-                      <span className="font-medium">{selectedIntegration.metrics.throughput} req/min</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Configuration</h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Category:</span>
-                      <span className="font-medium capitalize">{selectedIntegration.category}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Status:</span>
-                      <span className={`font-medium capitalize ${
-                        selectedIntegration.status === 'connected' ? 'text-green-600' :
-                        selectedIntegration.status === 'error' ? 'text-red-600' :
-                        selectedIntegration.status === 'syncing' ? 'text-blue-600' : 'text-gray-600'
-                      }`}>
-                        {selectedIntegration.status}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Last Sync:</span>
-                      <span className="font-medium">{selectedIntegration.lastSync.toLocaleString()}</span>
-                    </div>
-                  </div>
-
-                  {selectedIntegration.dependencies.length > 0 && (
-                    <div className="mt-6">
-                      <h4 className="font-semibold text-gray-900 mb-3">Dependencies</h4>
-                      <div className="space-y-2">
-                        {selectedIntegration.dependencies.map((dep) => (
-                          <div key={dep} className="flex items-center space-x-2">
-                            <CheckCircle className="w-4 h-4 text-green-500" />
-                            <span className="text-gray-700">{dep}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 } 

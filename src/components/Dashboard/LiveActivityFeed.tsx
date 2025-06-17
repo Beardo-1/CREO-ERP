@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, User, Building, FileText, DollarSign, Phone, Mail, Calendar, Eye, Handshake } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 interface Activity {
   id: string;
@@ -74,6 +76,7 @@ const activityTemplates = [
 const users = ['Emma Wilson', 'John Smith', 'Lisa Rodriguez', 'Michael Chen', 'Sarah Johnson'];
 
 export function LiveActivityFeed() {
+  const { t } = useTranslation();
   const [activities, setActivities] = useState<Activity[]>([]);
 
   useEffect(() => {
@@ -124,15 +127,15 @@ export function LiveActivityFeed() {
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">Live Activity Feed</h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900">{t(appContent.stats.liveActivityFeed)}</h3>
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <span className="text-sm text-gray-500">Live</span>
         </div>
       </div>
 
-      <div className="space-y-4 max-h-96 overflow-y-auto">
+      <div className="space-y-3 max-h-80 overflow-y-auto">
         {activities.map((activity, index) => {
           const Icon = activity.icon;
           const isNew = index === 0 && formatTime(activity.timestamp) === 'Just now';

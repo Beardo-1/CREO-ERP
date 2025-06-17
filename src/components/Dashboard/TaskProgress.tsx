@@ -1,13 +1,18 @@
 import React from 'react';
 import { CheckCircle2, Circle, Clock } from 'lucide-react';
+import { componentSizes, textResponsive } from '../../utils/responsive';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 export function TaskProgress() {
+  const { t } = useTranslation();
+  
   const tasks = [
-    { id: 1, title: 'Interview', time: 'Sep 15, 08:30', completed: true },
-    { id: 2, title: 'Team Meeting', time: 'Sep 15, 10:30', completed: true },
-    { id: 3, title: 'Project Update', time: 'Sep 15, 15:00', completed: false },
-    { id: 4, title: 'Discuss Q3 Goals', time: 'Sep 16, 14:45', completed: false },
-    { id: 5, title: 'HR Policy Review', time: 'Sep 15, 16:30', completed: false },
+    { id: 1, titleKey: 'interview' as const, time: 'Sep 15, 08:30', completed: true },
+    { id: 2, titleKey: 'teamMeeting' as const, time: 'Sep 15, 10:30', completed: true },
+    { id: 3, titleKey: 'projectUpdate' as const, time: 'Sep 15, 15:00', completed: false },
+    { id: 4, titleKey: 'discussQ3Goals' as const, time: 'Sep 16, 14:45', completed: false },
+    { id: 5, titleKey: 'hrPolicyReview' as const, time: 'Sep 15, 16:30', completed: false },
   ];
 
   const completedTasks = tasks.filter(task => task.completed).length;
@@ -15,13 +20,13 @@ export function TaskProgress() {
   const progressPercentage = (completedTasks / totalTasks) * 100;
 
   return (
-    <div className="bg-gray-900 rounded-3xl p-8 text-white">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold">Task Progress</h3>
-        <div className="text-3xl font-bold">{Math.round(progressPercentage)}%</div>
+    <div className={`bg-gray-900 rounded-3xl ${componentSizes.card.medium} text-white`}>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className={`${textResponsive.heading.h4} font-bold`}>{t(appContent.stats.taskProgress)}</h3>
+        <div className={`${textResponsive.heading.h3} font-bold`}>{Math.round(progressPercentage)}%</div>
       </div>
       
-      <div className="flex items-center space-x-4 mb-6">
+      <div className="flex items-center space-x-4 mb-4">
         <div className="flex-1">
           <div className="flex justify-between text-sm mb-2">
             <span>30%</span>
@@ -42,7 +47,7 @@ export function TaskProgress() {
         <div className="text-2xl font-bold">{completedTasks}/{totalTasks}</div>
       </div>
       
-      <div className="space-y-3">
+      <div className="space-y-2">
         {tasks.map((task) => (
           <div key={task.id} className="flex items-center space-x-3">
             <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
@@ -56,7 +61,7 @@ export function TaskProgress() {
             </div>
             <div className="flex-1">
               <div className={`font-medium ${task.completed ? 'text-gray-400 line-through' : 'text-white'}`}>
-                {task.title}
+                {t(appContent.stats[task.titleKey])}
               </div>
               <div className="text-sm text-gray-400">{task.time}</div>
             </div>

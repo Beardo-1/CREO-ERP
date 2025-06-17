@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Zap, Home, Users, Handshake, DollarSign } from 'lucide-react';
 import { CreoLogo } from './Logo/CreoLogo';
+import { useTranslation } from '../contexts/TranslationContext';
+import { appContent } from '../content/app.content';
 
 interface LoadingScreenProps {
   onLoadingComplete: () => void;
 }
 
 export function LoadingScreen({ onLoadingComplete }: LoadingScreenProps) {
+  const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
 
   const loadingSteps = [
-    { icon: Zap, text: "Initializing Creo ERP", color: "text-orange-500" },
-    { icon: Home, text: "Loading Properties", color: "text-blue-500" },
-    { icon: Users, text: "Connecting Contacts", color: "text-green-500" },
-    { icon: Handshake, text: "Syncing Deals", color: "text-purple-500" },
-    { icon: DollarSign, text: "Preparing Dashboard", color: "text-amber-500" }
+    { icon: Zap, text: t(appContent.loading.initializingCreo), color: "text-orange-500" },
+    { icon: Home, text: t(appContent.loading.loadingProperties), color: "text-blue-500" },
+    { icon: Users, text: t(appContent.loading.connectingContacts), color: "text-green-500" },
+    { icon: Handshake, text: t(appContent.loading.syncingDeals), color: "text-purple-500" },
+    { icon: DollarSign, text: t(appContent.loading.preparingDashboard), color: "text-amber-500" }
   ];
 
   useEffect(() => {
@@ -59,18 +62,18 @@ export function LoadingScreen({ onLoadingComplete }: LoadingScreenProps) {
       <div className="text-center z-10 max-w-md mx-auto px-8">
         {/* Logo */}
         <div className="mb-8 animate-fade-in">
-                      <div className="w-28 h-28 bg-gradient-to-br from-orange-400 to-orange-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl animate-bounce-gentle">
-              <CreoLogo size={64} color="white" />
-            </div>
+          <div className="w-28 h-28 bg-gradient-to-br from-orange-400 to-orange-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl animate-bounce-gentle">
+            <CreoLogo size={64} color="white" />
+          </div>
         </div>
 
         {/* Welcome Text */}
         <div className="mb-12 animate-fade-in-delay">
           <h1 className="text-5xl font-bold text-gray-800 mb-4 drop-shadow-sm animate-slide-up">
-            Welcome to Creo ERP
+            {t(appContent.loading.welcomeTitle)}
           </h1>
           <p className="text-xl text-gray-700 drop-shadow-sm animate-slide-up delay-300">
-            Your comprehensive real estate management solution
+            {t(appContent.loading.welcomeSubtitle)}
           </p>
         </div>
 
@@ -95,7 +98,7 @@ export function LoadingScreen({ onLoadingComplete }: LoadingScreenProps) {
             {/* Progress Text */}
             <div className="flex justify-between items-center text-sm text-gray-600 mb-6">
               <span className="animate-fade-in">
-                {loadingSteps[currentStep]?.text || "Loading..."}
+                {loadingSteps[currentStep]?.text || t(appContent.loading.loading)}
               </span>
               <span className="font-semibold animate-fade-in">
                 {Math.round(progress)}%
@@ -145,7 +148,7 @@ export function LoadingScreen({ onLoadingComplete }: LoadingScreenProps) {
               </svg>
             </div>
             <p className="text-lg font-semibold text-gray-700 animate-fade-in">
-              Ready to go!
+              {t(appContent.loading.readyToGo)}
             </p>
           </div>
         )}

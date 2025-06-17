@@ -23,6 +23,8 @@ import {
   Zap,
   BarChart3
 } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 interface Task {
   id: string;
@@ -89,6 +91,7 @@ interface TaskColumn {
 }
 
 export function TaskManagement() {
+  const { t } = useTranslation();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [boards, setBoards] = useState<TaskBoard[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -317,8 +320,8 @@ export function TaskManagement() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Task Management</h1>
-            <p className="text-gray-600">Organize and track your team's tasks and projects</p>
+            <h1 className="text-3xl font-bold text-gray-900">{t(appContent.taskManagement.title)}</h1>
+            <p className="text-gray-600">{t(appContent.taskManagement.subtitle)}</p>
           </div>
           <div className="flex items-center space-x-4">
             <button
@@ -326,7 +329,7 @@ export function TaskManagement() {
               className="flex items-center space-x-2 px-4 py-2 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors"
             >
               <Plus className="w-4 h-4" />
-              <span>Add Task</span>
+              <span>{t(appContent.taskManagement.addTask)}</span>
             </button>
           </div>
         </div>
@@ -335,27 +338,27 @@ export function TaskManagement() {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
           <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div className="text-2xl font-bold text-gray-900">{taskStats.total}</div>
-            <div className="text-sm text-gray-600">Total Tasks</div>
+            <div className="text-sm text-gray-600">{t(appContent.taskManagement.totalTasks)}</div>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div className="text-2xl font-bold text-gray-600">{taskStats.todo}</div>
-            <div className="text-sm text-gray-600">To Do</div>
+            <div className="text-sm text-gray-600">{t(appContent.taskManagement.pending)}</div>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div className="text-2xl font-bold text-blue-600">{taskStats.inProgress}</div>
-            <div className="text-sm text-gray-600">In Progress</div>
+            <div className="text-sm text-gray-600">{t(appContent.taskManagement.inProgress)}</div>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div className="text-2xl font-bold text-yellow-600">{taskStats.review}</div>
-            <div className="text-sm text-gray-600">Review</div>
+            <div className="text-sm text-gray-600">{t(appContent.taskManagement.review)}</div>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div className="text-2xl font-bold text-green-600">{taskStats.completed}</div>
-            <div className="text-sm text-gray-600">Completed</div>
+            <div className="text-sm text-gray-600">{t(appContent.taskManagement.completed)}</div>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
             <div className="text-2xl font-bold text-red-600">{taskStats.overdue}</div>
-            <div className="text-sm text-gray-600">Overdue</div>
+            <div className="text-sm text-gray-600">{t(appContent.taskManagement.overdue)}</div>
           </div>
         </div>
 
@@ -393,7 +396,7 @@ export function TaskManagement() {
               <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search tasks..."
+                placeholder={t(appContent.taskManagement.searchTasks)}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
@@ -404,22 +407,22 @@ export function TaskManagement() {
               onChange={(e) => setFilterStatus(e.target.value)}
               className="px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500"
             >
-              <option value="all">All Status</option>
-              <option value="todo">To Do</option>
-              <option value="in-progress">In Progress</option>
-              <option value="review">Review</option>
-              <option value="completed">Completed</option>
+              <option value="all">{t(appContent.taskManagement.allStatus)}</option>
+              <option value="todo">{t(appContent.taskManagement.pending)}</option>
+              <option value="in-progress">{t(appContent.taskManagement.inProgress)}</option>
+              <option value="review">{t(appContent.taskManagement.review)}</option>
+              <option value="completed">{t(appContent.taskManagement.completed)}</option>
             </select>
             <select
               value={filterPriority}
               onChange={(e) => setFilterPriority(e.target.value)}
               className="px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500"
             >
-              <option value="all">All Priority</option>
-              <option value="urgent">Urgent</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
+              <option value="all">{t(appContent.sidebar.allPriority)}</option>
+              <option value="urgent">{t(appContent.sidebar.high)}</option>
+              <option value="high">{t(appContent.sidebar.medium)}</option>
+              <option value="medium">{t(appContent.sidebar.low)}</option>
+              <option value="low">{t(appContent.sidebar.low)}</option>
             </select>
           </div>
         </div>

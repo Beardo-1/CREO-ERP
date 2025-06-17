@@ -20,15 +20,26 @@ import {
   ExternalLink,
   BookOpen,
   Award,
-  AlertCircle
+  AlertCircle,
+  TrendingUp,
+  TrendingDown,
+  Zap,
+  Lock,
+  Unlock,
+  Star,
+  Flag,
+  Target,
+  Database,
+  Mail,
+  Phone
 } from 'lucide-react';
 
 interface ComplianceItem {
   id: string;
   title: string;
-  category: 'license' | 'disclosure' | 'contract' | 'regulation' | 'certification';
-  status: 'compliant' | 'warning' | 'violation' | 'pending';
-  priority: 'high' | 'medium' | 'low';
+  category: 'license' | 'disclosure' | 'contract' | 'regulation' | 'certification' | 'legal' | 'financial' | 'operational' | 'safety' | 'environmental' | 'data';
+  status: 'compliant' | 'warning' | 'violation' | 'pending' | 'non-compliant' | 'expired';
+  priority: 'high' | 'medium' | 'low' | 'critical';
   dueDate: Date;
   lastReviewed: Date;
   assignedTo: string;
@@ -36,6 +47,11 @@ interface ComplianceItem {
   requirements: string[];
   documents: ComplianceDocument[];
   actions: ComplianceAction[];
+  riskLevel: number;
+  completionPercentage: number;
+  nextReviewDate: string;
+  regulatoryBody: string;
+  penalties?: string;
 }
 
 interface ComplianceDocument {
@@ -66,6 +82,27 @@ interface LegalUpdate {
   actionRequired: boolean;
 }
 
+interface ComplianceAudit {
+  id: string;
+  date: string;
+  auditor: string;
+  type: 'internal' | 'external' | 'regulatory';
+  status: 'scheduled' | 'in-progress' | 'completed' | 'failed';
+  score: number;
+  findings: AuditFinding[];
+  recommendations: string[];
+}
+
+interface AuditFinding {
+  id: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  category: string;
+  description: string;
+  remediation: string;
+  status: 'open' | 'in-progress' | 'resolved';
+  dueDate: string;
+}
+
 export function ComplianceDashboard() {
   const [complianceItems, setComplianceItems] = useState<ComplianceItem[]>([]);
   const [legalUpdates, setLegalUpdates] = useState<LegalUpdate[]>([]);
@@ -74,6 +111,8 @@ export function ComplianceDashboard() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'overview' | 'detailed' | 'calendar'>('overview');
+  const [audits, setAudits] = useState<ComplianceAudit[]>([]);
+  const [activeTab, setActiveTab] = useState<'overview' | 'items' | 'audits' | 'training' | 'reports'>('overview');
 
   useEffect(() => {
     // Mock data - in real app, this would come from compliance management APIs
@@ -126,7 +165,12 @@ export function ComplianceDashboard() {
             status: 'pending',
             assignedTo: 'John Smith'
           }
-        ]
+        ],
+        riskLevel: 8,
+        completionPercentage: 60,
+        nextReviewDate: '2024-02-15',
+        regulatoryBody: 'State Real Estate Commission',
+        penalties: 'License suspension, $5,000 fine'
       },
       {
         id: '2',
@@ -168,7 +212,12 @@ export function ComplianceDashboard() {
             status: 'pending',
             assignedTo: 'Sarah Wilson'
           }
-        ]
+        ],
+        riskLevel: 6,
+        completionPercentage: 100,
+        nextReviewDate: '2024-06-01',
+        regulatoryBody: 'HUD',
+        penalties: 'Fines up to $100,000, legal action'
       },
       {
         id: '3',
@@ -211,7 +260,12 @@ export function ComplianceDashboard() {
             status: 'overdue',
             assignedTo: 'Compliance Officer'
           }
-        ]
+        ],
+        riskLevel: 9,
+        completionPercentage: 40,
+        nextReviewDate: '2024-02-01',
+        regulatoryBody: 'Data Protection Authority',
+        penalties: 'Fines up to 4% of annual revenue'
       }
     ];
 
@@ -248,8 +302,42 @@ export function ComplianceDashboard() {
       }
     ];
 
+    const mockAudits: ComplianceAudit[] = [
+      {
+        id: '1',
+        date: '2024-01-15',
+        auditor: 'External Compliance Firm',
+        type: 'external',
+        status: 'completed',
+        score: 85,
+        findings: [
+          {
+            id: 'f1',
+            severity: 'medium',
+            category: 'Documentation',
+            description: 'Missing signatures on 3 client agreements',
+            remediation: 'Obtain missing signatures within 30 days',
+            status: 'in-progress',
+            dueDate: '2024-02-15'
+          }
+        ],
+        recommendations: ['Implement digital signature workflow', 'Regular document audits']
+      },
+      {
+        id: '2',
+        date: '2024-02-01',
+        auditor: 'Internal Audit Team',
+        type: 'internal',
+        status: 'scheduled',
+        score: 0,
+        findings: [],
+        recommendations: []
+      }
+    ];
+
     setComplianceItems(mockComplianceItems);
     setLegalUpdates(mockLegalUpdates);
+    setAudits(mockAudits);
   }, []);
 
   const getStatusColor = (status: string) => {
@@ -258,6 +346,8 @@ export function ComplianceDashboard() {
       case 'warning': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'violation': return 'bg-red-100 text-red-800 border-red-200';
       case 'pending': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'non-compliant': return 'bg-red-100 text-red-800 border-red-200';
+      case 'expired': return 'bg-gray-100 text-gray-800 border-gray-200';
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
@@ -268,7 +358,9 @@ export function ComplianceDashboard() {
       case 'warning': return AlertTriangle;
       case 'violation': return AlertCircle;
       case 'pending': return Clock;
-      default: return Clock;
+      case 'non-compliant': return AlertTriangle;
+      case 'expired': return Clock;
+      default: return Shield;
     }
   };
 
@@ -281,6 +373,23 @@ export function ComplianceDashboard() {
       case 'certification': return BookOpen;
       default: return FileText;
     }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'critical': return 'bg-red-500';
+      case 'high': return 'bg-orange-500';
+      case 'medium': return 'bg-yellow-500';
+      case 'low': return 'bg-green-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  const getRiskColor = (riskLevel: number) => {
+    if (riskLevel >= 8) return 'text-red-600 bg-red-100';
+    if (riskLevel >= 6) return 'text-orange-600 bg-orange-100';
+    if (riskLevel >= 4) return 'text-yellow-600 bg-yellow-100';
+    return 'text-green-600 bg-green-100';
   };
 
   const filteredItems = complianceItems.filter(item => {
@@ -296,8 +405,13 @@ export function ComplianceDashboard() {
     compliant: complianceItems.filter(item => item.status === 'compliant').length,
     warning: complianceItems.filter(item => item.status === 'warning').length,
     violation: complianceItems.filter(item => item.status === 'violation').length,
-    pending: complianceItems.filter(item => item.status === 'pending').length
+    pending: complianceItems.filter(item => item.status === 'pending').length,
+    nonCompliant: complianceItems.filter(item => item.status === 'non-compliant').length,
+    overdue: complianceItems.filter(item => new Date(item.dueDate) < new Date()).length,
+    highRisk: complianceItems.filter(item => item.riskLevel >= 7).length
   };
+
+  const complianceScore = Math.round((complianceStats.compliant / complianceStats.total) * 100);
 
   return (
     <div className="min-h-screen p-8">
@@ -394,6 +508,8 @@ export function ComplianceDashboard() {
             <option value="warning">Warning</option>
             <option value="violation">Violation</option>
             <option value="pending">Pending</option>
+            <option value="non-compliant">Non-Compliant</option>
+            <option value="expired">Expired</option>
           </select>
           <select
             value={filterCategory}
@@ -406,6 +522,12 @@ export function ComplianceDashboard() {
             <option value="contract">Contract</option>
             <option value="regulation">Regulation</option>
             <option value="certification">Certification</option>
+            <option value="legal">Legal</option>
+            <option value="financial">Financial</option>
+            <option value="operational">Operational</option>
+            <option value="safety">Safety</option>
+            <option value="environmental">Environmental</option>
+            <option value="data">Data Privacy</option>
           </select>
         </div>
       </div>
@@ -452,10 +574,7 @@ export function ComplianceDashboard() {
                     </div>
                     <div>
                       <span className="text-gray-600">Priority:</span>
-                      <div className={`font-medium capitalize ${
-                        item.priority === 'high' ? 'text-red-600' :
-                        item.priority === 'medium' ? 'text-yellow-600' : 'text-green-600'
-                      }`}>
+                      <div className={`font-medium capitalize ${getPriorityColor(item.priority)}`}>
                         {item.priority}
                       </div>
                     </div>
@@ -652,10 +771,7 @@ export function ComplianceDashboard() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Priority:</span>
-                        <span className={`font-medium capitalize ${
-                          selectedItem.priority === 'high' ? 'text-red-600' :
-                          selectedItem.priority === 'medium' ? 'text-yellow-600' : 'text-green-600'
-                        }`}>
+                        <span className={`font-medium capitalize ${getPriorityColor(selectedItem.priority)}`}>
                           {selectedItem.priority}
                         </span>
                       </div>

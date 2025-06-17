@@ -1,0 +1,13 @@
+{
+  "apiUrl": "https://app.tolgee.io/",
+  "apiKey": "${TOLGEE_API_KEY}",
+  "projectId": -1,
+  "format": "JSON_I18NEXT",
+  "patterns": [
+    "src/**/*.{ts,tsx}",
+    "!src/**/*.test.{ts,tsx}",
+    "!src/**/*.spec.{ts,tsx}"
+  ],
+  "parser": "react",
+  "defaultNamespace": "translation"
+} 

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CreoLogo } from '../Logo/CreoLogo';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 import {
   Home,
   Building, 
@@ -34,12 +36,19 @@ import {
   Filter,
   Star,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Package,
+  ShoppingCart,
+  Wrench,
+  Upload,
+  Download
 } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  isMobileOpen?: boolean;
+  onMobileToggle?: (open: boolean) => void;
 }
 
 interface MenuItem {
@@ -204,6 +213,19 @@ const menuCategories = [
         ]
       },
       { 
+        id: 'inventory', 
+        label: 'Inventory', 
+        icon: Package, 
+        badge: 3, 
+        category: 'operations',
+        priority: 'high' as const,
+        subItems: [
+          { id: 'inventory-property', label: 'Property Inventory', icon: Building, badge: 2 },
+          { id: 'inventory-equipment', label: 'Equipment', icon: Wrench, badge: 1 },
+          { id: 'inventory-supplies', label: 'Supplies', icon: ShoppingCart, badge: 0 }
+        ]
+      },
+      { 
         id: 'locations', 
         label: 'Locations', 
         icon: MapPin, 
@@ -292,13 +314,31 @@ const menuCategories = [
           { id: 'kpi-templates', label: 'Templates', icon: FileText, badge: 0 }
         ]
       },
+      { 
+        id: 'data-manager', 
+        label: 'Data Manager', 
+        icon: Database, 
+        badge: 0, 
+        category: 'management',
+        priority: 'high' as const,
+        subItems: [
+          { id: 'data-import', label: 'Import Data', icon: Upload, badge: 0 },
+          { id: 'data-export', label: 'Export Data', icon: Download, badge: 0 },
+          { id: 'data-templates', label: 'Templates', icon: FileText, badge: 0 }
+        ]
+      },
     ]
   }
 ];
 
-export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOpen, onMobileToggle }: SidebarProps) {
+  const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [internalMobileOpen, setInternalMobileOpen] = useState(false);
+  
+  // Use external mobile state if provided, otherwise use internal state
+  const isMobileOpen = externalMobileOpen !== undefined ? externalMobileOpen : internalMobileOpen;
+  const setIsMobileOpen = onMobileToggle || setInternalMobileOpen;
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['core']);
   const [expandedSubMenus, setExpandedSubMenus] = useState<string[]>([]);
@@ -307,8 +347,271 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   const [filterPriority, setFilterPriority] = useState<'all' | 'high' | 'medium' | 'low'>('all');
   const sidebarRef = useRef<HTMLDivElement>(null);
 
+  // Translated menu categories
+  const translatedMenuCategories = [
+    {
+      id: 'core',
+      label: t(appContent.sidebar.coreBusiness),
+      icon: Briefcase,
+      color: 'blue',
+      items: [
+        { 
+          id: 'dashboard', 
+          label: t(appContent.sidebar.dashboard), 
+          icon: Home, 
+          badge: 0, 
+          category: 'core',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'dashboard-overview', label: t(appContent.sidebar.overview), icon: BarChart3, badge: 0 },
+            { id: 'dashboard-analytics', label: t(appContent.sidebar.analytics), icon: TrendingUp, badge: 2 },
+            { id: 'dashboard-reports', label: t(appContent.sidebar.quickReports), icon: FileText, badge: 0 }
+          ]
+        },
+        { 
+          id: 'properties', 
+          label: t(appContent.sidebar.properties), 
+          icon: Building, 
+          badge: 12, 
+          category: 'core',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'properties-listings', label: t(appContent.sidebar.activeListings), icon: Building, badge: 8 },
+            { id: 'properties-sold', label: t(appContent.sidebar.soldProperties), icon: CheckSquare, badge: 0 },
+            { id: 'properties-pending', label: t(appContent.sidebar.pendingSales), icon: Clock, badge: 4 }
+          ]
+        },
+        { 
+          id: 'contacts', 
+          label: t(appContent.sidebar.contacts), 
+          icon: Users, 
+          badge: 5, 
+          category: 'core',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'contacts-clients', label: t(appContent.sidebar.clients), icon: Users, badge: 3 },
+            { id: 'contacts-prospects', label: t(appContent.sidebar.prospects), icon: Star, badge: 2 },
+            { id: 'contacts-vendors', label: t(appContent.sidebar.vendors), icon: Briefcase, badge: 0 }
+          ]
+        },
+        { 
+          id: 'deals', 
+          label: t(appContent.sidebar.deals), 
+          icon: Handshake, 
+          badge: 3, 
+          category: 'core',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'deals-active', label: t(appContent.sidebar.activeDeals), icon: Handshake, badge: 3 },
+            { id: 'deals-pipeline', label: t(appContent.sidebar.pipeline), icon: TrendingUp, badge: 0 },
+            { id: 'deals-closed', label: t(appContent.sidebar.closedDeals), icon: CheckSquare, badge: 0 }
+          ]
+        },
+      ]
+    },
+    {
+      id: 'sales',
+      label: t(appContent.sidebar.salesMarketing),
+      icon: TrendingUp,
+      color: 'green',
+      items: [
+        { 
+          id: 'leads', 
+          label: t(appContent.sidebar.leadManagement), 
+          icon: Phone, 
+          badge: 8, 
+          category: 'sales',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'leads-new', label: t(appContent.sidebar.newLeads), icon: Plus, badge: 5 },
+            { id: 'leads-qualified', label: t(appContent.sidebar.qualified), icon: CheckSquare, badge: 3 },
+            { id: 'leads-follow-up', label: t(appContent.sidebar.followUp), icon: Clock, badge: 0 }
+          ]
+        },
+        { 
+          id: 'marketing', 
+          label: t(appContent.sidebar.marketing), 
+          icon: Mail, 
+          badge: 2, 
+          category: 'sales',
+          priority: 'medium' as const,
+          subItems: [
+            { id: 'marketing-campaigns', label: t(appContent.sidebar.campaigns), icon: Mail, badge: 1 },
+            { id: 'marketing-social', label: t(appContent.sidebar.socialMedia), icon: Star, badge: 1 },
+            { id: 'marketing-analytics', label: t(appContent.sidebar.analytics), icon: BarChart3, badge: 0 }
+          ]
+        },
+        { 
+          id: 'valuations', 
+          label: t(appContent.sidebar.valuations), 
+          icon: Calculator, 
+          badge: 0, 
+          category: 'sales',
+          priority: 'medium' as const
+        },
+        { 
+          id: 'media', 
+          label: t(appContent.sidebar.mediaGallery), 
+          icon: Camera, 
+          badge: 0, 
+          category: 'sales',
+          priority: 'low' as const
+        },
+      ]
+    },
+    {
+      id: 'operations',
+      label: t(appContent.sidebar.operations),
+      icon: CheckSquare,
+      color: 'purple',
+      items: [
+        { 
+          id: 'tasks', 
+          label: t(appContent.sidebar.tasks), 
+          icon: CheckSquare, 
+          badge: 7, 
+          category: 'operations',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'tasks-today', label: t(appContent.sidebar.dueToday), icon: AlertCircle, badge: 3 },
+            { id: 'tasks-upcoming', label: t(appContent.sidebar.upcoming), icon: Clock, badge: 4 },
+            { id: 'tasks-completed', label: t(appContent.sidebar.completed), icon: CheckSquare, badge: 0 }
+          ]
+        },
+        { 
+          id: 'calendar', 
+          label: t(appContent.sidebar.calendar), 
+          icon: Calendar, 
+          badge: 4, 
+          category: 'operations',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'calendar-today', label: t(appContent.sidebar.today), icon: Calendar, badge: 2 },
+            { id: 'calendar-week', label: t(appContent.sidebar.thisWeek), icon: Calendar, badge: 2 },
+            { id: 'calendar-showings', label: t(appContent.sidebar.showings), icon: Building, badge: 0 }
+          ]
+        },
+        { 
+          id: 'inventory', 
+          label: t(appContent.sidebar.inventory), 
+          icon: Package, 
+          badge: 3, 
+          category: 'operations',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'inventory-property', label: t(appContent.sidebar.propertyInventory), icon: Building, badge: 2 },
+            { id: 'inventory-equipment', label: t(appContent.sidebar.equipment), icon: Wrench, badge: 1 },
+            { id: 'inventory-supplies', label: t(appContent.sidebar.supplies), icon: ShoppingCart, badge: 0 }
+          ]
+        },
+        { 
+          id: 'locations', 
+          label: t(appContent.sidebar.locations), 
+          icon: MapPin, 
+          badge: 0, 
+          category: 'operations',
+          priority: 'medium' as const
+        },
+        { 
+          id: 'agents', 
+          label: t(appContent.sidebar.team), 
+          icon: UserCheck, 
+          badge: 1, 
+          category: 'operations',
+          priority: 'medium' as const,
+          subItems: [
+            { id: 'agents-active', label: t(appContent.sidebar.activeAgents), icon: UserCheck, badge: 0 },
+            { id: 'agents-performance', label: t(appContent.sidebar.performance), icon: TrendingUp, badge: 1 },
+            { id: 'agents-schedule', label: t(appContent.sidebar.schedules), icon: Calendar, badge: 0 }
+          ]
+        },
+      ]
+    },
+    {
+      id: 'management',
+      label: t(appContent.sidebar.management),
+      icon: Database,
+      color: 'amber',
+      items: [
+        { 
+          id: 'financial', 
+          label: t(appContent.sidebar.financial), 
+          icon: DollarSign, 
+          badge: 0, 
+          category: 'management',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'financial-commissions', label: t(appContent.sidebar.commissions), icon: DollarSign, badge: 0 },
+            { id: 'financial-expenses', label: t(appContent.sidebar.expenses), icon: FileText, badge: 0 },
+            { id: 'financial-reports', label: t(appContent.sidebar.reports), icon: BarChart3, badge: 0 }
+          ]
+        },
+        { 
+          id: 'documents', 
+          label: t(appContent.sidebar.documents), 
+          icon: FileText, 
+          badge: 0, 
+          category: 'management',
+          priority: 'medium' as const
+        },
+        { 
+          id: 'compliance', 
+          label: t(appContent.sidebar.compliance), 
+          icon: Shield, 
+          badge: 2, 
+          category: 'management',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'compliance-legal', label: t(appContent.sidebar.legalDocs), icon: Shield, badge: 1 },
+            { id: 'compliance-audit', label: t(appContent.sidebar.auditTrail), icon: FileText, badge: 1 },
+            { id: 'compliance-training', label: t(appContent.sidebar.training), icon: Users, badge: 0 }
+          ]
+        },
+        { 
+          id: 'reports', 
+          label: t(appContent.sidebar.reports), 
+          icon: BarChart3, 
+          badge: 0, 
+          category: 'management',
+          priority: 'medium' as const,
+          subItems: [
+            { id: 'reports-sales', label: t(appContent.sidebar.salesReports), icon: TrendingUp, badge: 0 },
+            { id: 'reports-performance', label: t(appContent.sidebar.performance), icon: BarChart3, badge: 0 },
+            { id: 'reports-custom', label: t(appContent.sidebar.customReports), icon: Settings, badge: 0 }
+          ]
+        },
+        { 
+          id: 'kpi-builder', 
+          label: t(appContent.sidebar.kpiBuilder), 
+          icon: TrendingUp, 
+          badge: 0, 
+          category: 'management',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'kpi-create', label: t(appContent.sidebar.createKpi), icon: Plus, badge: 0 },
+            { id: 'kpi-manage', label: t(appContent.sidebar.manageKpis), icon: Settings, badge: 0 },
+            { id: 'kpi-templates', label: t(appContent.sidebar.templates), icon: FileText, badge: 0 }
+          ]
+        },
+        { 
+          id: 'data-manager', 
+          label: t(appContent.sidebar.dataManager), 
+          icon: Database, 
+          badge: 0, 
+          category: 'management',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'data-import', label: t(appContent.sidebar.importData), icon: Upload, badge: 0 },
+            { id: 'data-export', label: t(appContent.sidebar.exportData), icon: Download, badge: 0 },
+            { id: 'data-templates', label: t(appContent.sidebar.templates), icon: FileText, badge: 0 }
+          ]
+        },
+      ]
+    }
+  ];
+
   // Get all menu items for search
-  const allMenuItems = menuCategories.flatMap(category => category.items);
+  const allMenuItems = translatedMenuCategories.flatMap(category => category.items);
 
   // Filter items based on search and priority
   const filteredItems = searchTerm 
@@ -323,7 +626,11 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        setIsMobileOpen(false);
+        if (onMobileToggle) {
+          onMobileToggle(false);
+        } else {
+          setInternalMobileOpen(false);
+        }
       } else {
         setIsCollapsed(false);
       }
@@ -332,7 +639,11 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
     const handleClickOutside = (event: MouseEvent) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
         if (window.innerWidth < 1024) {
-          setIsMobileOpen(false);
+          if (onMobileToggle) {
+            onMobileToggle(false);
+          } else {
+            setInternalMobileOpen(false);
+          }
         }
       }
     };
@@ -351,7 +662,11 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isMobileOpen) {
-        setIsMobileOpen(false);
+        if (onMobileToggle) {
+          onMobileToggle(false);
+        } else {
+          setInternalMobileOpen(false);
+        }
       }
     };
 
@@ -398,10 +713,10 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
     return colors[priority as keyof typeof colors] || 'text-gray-600 bg-gray-100';
   };
 
-  // Mobile menu button
-  const MobileMenuButton = () => (
+  // Mobile menu button (only show if no external control)
+  const MobileMenuButton = () => !onMobileToggle ? (
     <button
-      onClick={() => setIsMobileOpen(!isMobileOpen)}
+      onClick={() => setInternalMobileOpen(!isMobileOpen)}
       className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg hover:bg-white transition-all duration-200"
       aria-label="Toggle menu"
     >
@@ -411,7 +726,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         <Menu className="w-6 h-6 text-gray-700" />
       )}
     </button>
-  );
+  ) : null;
 
   return (
     <>
@@ -421,7 +736,13 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
       {isMobileOpen && (
         <div 
           className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300"
-          onClick={() => setIsMobileOpen(false)}
+          onClick={() => {
+            if (onMobileToggle) {
+              onMobileToggle(false);
+            } else {
+              setInternalMobileOpen(false);
+            }
+          }}
         />
       )}
 
@@ -432,6 +753,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           fixed lg:relative top-0 left-0 h-screen flex flex-col z-50
           transition-all duration-300 ease-in-out
+          ${!isMobileOpen ? 'lg:block' : ''}
         `}
       >
         {/* Glass morphism background */}
@@ -445,8 +767,8 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
               <div className={`flex items-center space-x-3 transition-all duration-300 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
                 <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg animate-bounce-gentle">
                   <CreoLogo size={36} color="white" />
-          </div>
-          <div>
+                </div>
+                <div>
                   <h1 className="text-2xl font-bold text-gray-800">Creo ERP</h1>
                   <p className="text-gray-600 text-sm">Real Estate Management</p>
                 </div>
@@ -473,7 +795,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
                 <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 group-focus-within:text-orange-500 transition-colors" />
                 <input
                   type="text"
-                  placeholder="Search menu..."
+                  placeholder={t(appContent.sidebar.searchMenu)}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 bg-white/20 border border-white/20 rounded-xl focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 focus:bg-white/30 transition-all duration-200 text-gray-700 placeholder-gray-500 text-sm"
@@ -487,15 +809,15 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
                   value={filterPriority}
                   onChange={(e) => setFilterPriority(e.target.value as any)}
                   className="flex-1 px-3 py-2 bg-white/20 border border-white/20 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-orange-500/50"
-                  aria-label="Filter by priority"
+                  aria-label={t(appContent.sidebar.filterByPriority)}
                 >
-                  <option value="all">All Priority</option>
-                  <option value="high">High Priority</option>
-                  <option value="medium">Medium Priority</option>
-                  <option value="low">Low Priority</option>
+                  <option value="all">{t(appContent.sidebar.all)}</option>
+                  <option value="high">{t(appContent.sidebar.high)}</option>
+                  <option value="medium">{t(appContent.sidebar.medium)}</option>
+                  <option value="low">{t(appContent.sidebar.low)}</option>
                 </select>
-        </div>
-      </div>
+              </div>
+            </div>
           )}
 
           {/* Navigation */}
@@ -550,7 +872,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
             ) : (
               // Categorized Menu
               <div className="space-y-2">
-                {menuCategories.map((category) => {
+                {translatedMenuCategories.map((category) => {
                   const CategoryIcon = category.icon;
                   const isExpanded = expandedCategories.includes(category.id);
                   const categoryBadgeCount = category.items.reduce((total, item) => total + (item.badge || 0), 0);
@@ -748,9 +1070,9 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
             >
               <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
               {!isCollapsed && <span className="font-medium">Logout</span>}
-        </button>
-      </div>
-    </div>
+            </button>
+          </div>
+        </div>
       </div>
     </>
   );

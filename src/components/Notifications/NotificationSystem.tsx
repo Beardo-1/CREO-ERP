@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Bell, X, CheckCircle, AlertCircle, Info, DollarSign, Users, Home, Handshake } from 'lucide-react';
 
 interface Notification {
@@ -54,6 +55,9 @@ export function NotificationSystem() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [toastNotifications, setToastNotifications] = useState<Notification[]>([]);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 });
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Generate random notifications
   useEffect(() => {
@@ -96,6 +100,18 @@ export function NotificationSystem() {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Handle window resize to recalculate dropdown position
+  useEffect(() => {
+    const handleResize = () => {
+      if (showDropdown) {
+        calculateDropdownPosition();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [showDropdown]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -161,15 +177,45 @@ export function NotificationSystem() {
     return 'Just now';
   };
 
+  // Calculate dropdown position based on button position
+  const calculateDropdownPosition = () => {
+    if (!buttonRef.current) return;
+    
+    const buttonRect = buttonRef.current.getBoundingClientRect();
+    const dropdownWidth = window.innerWidth < 640 ? 320 : window.innerWidth < 768 ? 352 : 384;
+    
+    // Calculate position
+    const top = buttonRect.bottom + 8; // 8px gap below button
+    
+    // For mobile, center the dropdown with some margin
+    if (window.innerWidth < 640) {
+      const left = Math.max(16, Math.min(buttonRect.left, window.innerWidth - dropdownWidth - 16));
+      setDropdownPosition({ top, right: window.innerWidth - left - dropdownWidth });
+    } else {
+      // For desktop, align with button's right edge
+      const right = window.innerWidth - buttonRect.right;
+      const adjustedRight = Math.max(16, Math.min(right, window.innerWidth - dropdownWidth - 16));
+      setDropdownPosition({ top, right: adjustedRight });
+    }
+  };
+
+
+
   return (
     <>
       {/* Notification Bell */}
-      <div className="relative">
+      <div className="relative z-50">
         <button
-          onClick={() => setShowDropdown(!showDropdown)}
-          className="relative p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-2xl transition-all"
+          ref={buttonRef}
+          onClick={() => {
+            if (!showDropdown) {
+              calculateDropdownPosition();
+            }
+            setShowDropdown(!showDropdown);
+          }}
+          className="relative w-10 h-10 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-white/50 rounded-xl transition-all duration-200 hover:scale-105 backdrop-blur-sm"
         >
-          <Bell className="w-6 h-6" />
+          <Bell className="w-5 h-5" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs text-white flex items-center justify-center animate-pulse">
               {unreadCount > 9 ? '9+' : unreadCount}
@@ -177,9 +223,16 @@ export function NotificationSystem() {
           )}
         </button>
 
-        {/* Notification Dropdown */}
-        {showDropdown && (
-          <div className="absolute right-0 top-full mt-2 w-96 bg-white rounded-2xl shadow-xl border border-gray-200 z-50 max-h-96 overflow-hidden">
+        {/* Notification Dropdown - Rendered as Portal */}
+        {showDropdown && createPortal(
+          <div 
+            ref={dropdownRef} 
+            className="notification-dropdown"
+            style={{
+              top: `${dropdownPosition.top}px`,
+              right: `${dropdownPosition.right}px`
+            }}
+          >
             <div className="p-4 border-b border-gray-100 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
               {unreadCount > 0 && (
@@ -231,50 +284,59 @@ export function NotificationSystem() {
                 ))
               )}
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
 
-      {/* Toast Notifications */}
-      <div className="fixed top-4 right-4 z-50 space-y-3">
-        {toastNotifications.map((notification) => (
-          <div
-            key={notification.id}
-            className={`max-w-sm w-full bg-white shadow-lg rounded-2xl border-l-4 ${getNotificationColor(notification.type)} transform transition-all duration-300 animate-slide-in-right`}
-          >
-            <div className="p-4">
-              <div className="flex items-start">
-                <div className="flex-shrink-0">
-                  {getNotificationIcon(notification)}
-                </div>
-                <div className="ml-3 w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-900">
-                    {notification.title}
-                  </p>
-                  <p className="mt-1 text-sm text-gray-600">
-                    {notification.message}
-                  </p>
-                </div>
-                <div className="ml-4 flex-shrink-0 flex">
-                  <button
-                    onClick={() => removeToast(notification.id)}
-                    className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-600 focus:outline-none"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+      {/* Toast Notifications - Horizontal Layout */}
+      {toastNotifications.length > 0 && createPortal(
+        <div className="fixed top-16 sm:top-20 left-2 right-2 sm:left-4 sm:right-4 z-[99999] flex flex-wrap gap-2 justify-end max-w-full">
+          {toastNotifications.map((notification) => (
+            <div
+              key={notification.id}
+              className={`flex-shrink-0 w-64 sm:w-72 bg-white/95 backdrop-blur-sm shadow-xl rounded-xl border-l-4 ${getNotificationColor(notification.type)} transform transition-all duration-300 animate-slide-in-right hover:shadow-2xl relative overflow-hidden`}
+            >
+              <div className="p-3">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    {getNotificationIcon(notification)}
+                  </div>
+                  <div className="ml-3 w-0 flex-1">
+                    <p className="text-sm font-semibold text-gray-900">
+                      {notification.title}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-600 line-clamp-2">
+                      {notification.message}
+                    </p>
+                  </div>
+                  <div className="ml-2 flex-shrink-0 flex">
+                    <button
+                      onClick={() => removeToast(notification.id)}
+                      className="p-1 rounded-md inline-flex text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
+              {/* Auto-dismiss progress bar */}
+              <div className="absolute bottom-0 left-0 h-1 bg-gray-200 w-full">
+                <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 animate-toast-progress"></div>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>,
+        document.body
+      )}
 
       {/* Click outside to close dropdown */}
-      {showDropdown && (
+      {showDropdown && createPortal(
         <div
-          className="fixed inset-0 z-40"
+          className="fixed inset-0 z-[99998]"
           onClick={() => setShowDropdown(false)}
-        ></div>
+        ></div>,
+        document.body
       )}
     </>
   );

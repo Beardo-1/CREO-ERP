@@ -1,16 +1,20 @@
 import React from 'react';
 import { Play, Pause, Settings } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 export function TimeTracker() {
+  const { t } = useTranslation();
+  
   return (
-    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold text-gray-900">Time tracker</h3>
+    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xl font-bold text-gray-900">{t(appContent.stats.timeTracker)}</h3>
         <TrendingUp className="w-5 h-5 text-gray-400" />
       </div>
       
-      <div className="relative w-32 h-32 mx-auto mb-6">
-        <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+      <div className="relative w-28 h-28 mx-auto mb-4">
+        <svg className="w-28 h-28 transform -rotate-90" viewBox="0 0 120 120">
           <circle
             cx="60"
             cy="60"
@@ -32,7 +36,7 @@ export function TimeTracker() {
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <div className="text-2xl font-bold text-gray-900">02:35</div>
-          <div className="text-sm text-gray-600">Work Time</div>
+          <div className="text-sm text-gray-600">{t(appContent.stats.workTime)}</div>
         </div>
       </div>
       

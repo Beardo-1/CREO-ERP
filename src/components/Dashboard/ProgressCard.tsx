@@ -1,7 +1,11 @@
 import React from 'react';
 import { TrendingUp } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 export function ProgressCard() {
+  const { t } = useTranslation();
+  
   const progressData = [
     { day: 'M', value: 20, isToday: false },
     { day: 'T', value: 35, isToday: false },
@@ -13,18 +17,18 @@ export function ProgressCard() {
   ];
 
   return (
-    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold text-gray-900">Progress</h3>
+    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xl font-bold text-gray-900">{t(appContent.stats.progress)}</h3>
         <TrendingUp className="w-5 h-5 text-gray-400" />
       </div>
       
-      <div className="mb-6">
-        <div className="text-4xl font-bold text-gray-900 mb-2">6.1h</div>
+      <div className="mb-4">
+        <div className="text-3xl font-bold text-gray-900 mb-2">6.1h</div>
         <div className="text-gray-600">
-          <span className="font-medium">Work Time</span>
+          <span className="font-medium">{t(appContent.stats.workTime)}</span>
           <br />
-          <span className="text-sm">this week</span>
+          <span className="text-sm">{t(appContent.stats.thisWeek)}</span>
         </div>
       </div>
       

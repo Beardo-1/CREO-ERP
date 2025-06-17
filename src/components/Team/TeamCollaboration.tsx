@@ -38,6 +38,8 @@ import {
   Mic,
   Camera
 } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 interface TeamMember {
   id: string;
@@ -100,6 +102,7 @@ interface Task {
 }
 
 export function TeamCollaboration() {
+  const { t } = useTranslation();
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [chatChannels, setChatChannels] = useState<ChatChannel[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -264,14 +267,14 @@ export function TeamCollaboration() {
       </div>
 
       {/* Team Overview */}
-      <div className="card-gradient rounded-xl p-6 mb-8 shadow-lg">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">Team Overview</h3>
-          <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2">
-            <UserPlus className="w-4 h-4" />
-            <span>Add Member</span>
-          </button>
-        </div>
+              <div className="card-gradient rounded-xl p-6 mb-8 shadow-lg">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">{t(appContent.teamCollaboration.teamOverview)}</h3>
+            <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2">
+              <UserPlus className="w-4 h-4" />
+              <span>{t(appContent.teamCollaboration.addMember)}</span>
+            </button>
+          </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {teamMembers.map(member => (
@@ -292,23 +295,23 @@ export function TeamCollaboration() {
 
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-gray-600">Deals</p>
+                  <p className="text-gray-600">{t(appContent.teamCollaboration.dealsThisMonth)}</p>
                   <p className="font-semibold text-gray-900">{member.performance.dealsThisMonth}</p>
                 </div>
                 <div>
-                  <p className="text-gray-600">Revenue</p>
+                  <p className="text-gray-600">{t(appContent.teamCollaboration.revenue)}</p>
                   <p className="font-semibold text-gray-900">${(member.performance.revenue / 1000000).toFixed(1)}M</p>
                 </div>
                 <div>
-                  <p className="text-gray-600">Rating</p>
+                  <p className="text-gray-600">{t(appContent.teamCollaboration.clientSatisfaction)}</p>
                   <div className="flex items-center space-x-1">
                     <Star className="w-3 h-3 text-yellow-500 fill-current" />
                     <span className="font-semibold text-gray-900">{member.performance.clientSatisfaction}</span>
                   </div>
                 </div>
                 <div>
-                  <p className="text-gray-600">Response</p>
-                  <p className="font-semibold text-gray-900">{member.performance.responseTime}m</p>
+                  <p className="text-gray-600">{t(appContent.teamCollaboration.responseTime)}</p>
+                  <p className="font-semibold text-gray-900">{member.performance.responseTime}{t(appContent.teamCollaboration.minutes)}</p>
                 </div>
               </div>
 

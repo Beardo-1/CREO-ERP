@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Phone, Mail, Calendar, MapPin, Star, Plus, Filter, Search, Eye, Edit, Trash2 } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 interface Lead {
   id: string;
@@ -70,6 +72,7 @@ const mockLeads: Lead[] = [
 ];
 
 export function LeadManagement() {
+  const { t } = useTranslation();
   const [leads, setLeads] = useState<Lead[]>(mockLeads);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -108,15 +111,15 @@ export function LeadManagement() {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h3 className="text-2xl font-bold text-gray-900">Lead Management</h3>
-          <p className="text-gray-600">{filteredLeads.length} leads found</p>
+          <h3 className="text-2xl font-bold text-gray-900">{t(appContent.leads.leadMgmtTitle)}</h3>
+          <p className="text-gray-600">{filteredLeads.length} {t(appContent.leads.leadMgmtFound)}</p>
         </div>
         <div className="flex space-x-4">
           <div className="relative">
             <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search leads..."
+              placeholder={t(appContent.leads.searchLeads)}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 pr-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white"
@@ -127,19 +130,19 @@ export function LeadManagement() {
             onChange={(e) => setFilterStatus(e.target.value)}
             className="px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white"
           >
-            <option value="all">All Status</option>
-            <option value="new">New</option>
-            <option value="contacted">Contacted</option>
-            <option value="qualified">Qualified</option>
-            <option value="converted">Converted</option>
-            <option value="lost">Lost</option>
+            <option value="all">{t(appContent.leads.leadMgmtAllStatus)}</option>
+            <option value="new">{t(appContent.leads.leadMgmtNew)}</option>
+            <option value="contacted">{t(appContent.leads.leadMgmtContacted)}</option>
+            <option value="qualified">{t(appContent.leads.leadMgmtQualified)}</option>
+            <option value="converted">{t(appContent.leads.leadMgmtConverted)}</option>
+            <option value="lost">{t(appContent.leads.leadMgmtLost)}</option>
           </select>
           <button 
             onClick={() => setShowAddModal(true)}
             className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-2xl font-semibold transition-all flex items-center space-x-2"
           >
             <Plus className="w-5 h-5" />
-            <span>Add Lead</span>
+            <span>{t(appContent.leads.addLead)}</span>
           </button>
         </div>
       </div>
@@ -186,8 +189,8 @@ export function LeadManagement() {
               
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Budget: <span className="font-semibold">{lead.budget}</span></p>
-                  <p className="text-sm text-gray-600">Type: <span className="font-semibold">{lead.propertyType}</span></p>
+                  <p className="text-sm text-gray-600">{t(appContent.leads.leadMgmtBudget)}: <span className="font-semibold">{lead.budget}</span></p>
+                  <p className="text-sm text-gray-600">{t(appContent.leads.leadMgmtType)}: <span className="font-semibold">{lead.propertyType}</span></p>
                 </div>
                 <div className="flex space-x-2">
                   <button className="p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors">
@@ -223,65 +226,65 @@ export function LeadManagement() {
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Status:</span>
+                  <span className="text-gray-600">{t(appContent.leads.leadMgmtStatus)}:</span>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedLead.status)}`}>
                     {selectedLead.status.charAt(0).toUpperCase() + selectedLead.status.slice(1)}
                   </span>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Priority:</span>
+                  <span className="text-gray-600">{t(appContent.leads.leadMgmtPriority)}:</span>
                   <Star className={`w-5 h-5 ${getPriorityColor(selectedLead.priority)}`} />
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Phone:</span>
+                  <span className="text-gray-600">{t(appContent.leads.leadMgmtPhone)}:</span>
                   <span className="font-semibold">{selectedLead.phone}</span>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Budget:</span>
+                  <span className="text-gray-600">{t(appContent.leads.leadMgmtBudget)}:</span>
                   <span className="font-semibold">{selectedLead.budget}</span>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Location:</span>
+                  <span className="text-gray-600">{t(appContent.leads.leadMgmtLocation)}:</span>
                   <span className="font-semibold">{selectedLead.location}</span>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Property Type:</span>
+                  <span className="text-gray-600">{t(appContent.leads.leadMgmtPropertyType)}:</span>
                   <span className="font-semibold">{selectedLead.propertyType}</span>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Source:</span>
+                  <span className="text-gray-600">{t(appContent.leads.leadMgmtSource)}:</span>
                   <span className="font-semibold">{selectedLead.source}</span>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Assigned Agent:</span>
+                  <span className="text-gray-600">{t(appContent.leads.leadMgmtAgent)}:</span>
                   <span className="font-semibold">{selectedLead.assignedAgent}</span>
                 </div>
               </div>
 
               <div className="mt-6 pt-6 border-t border-gray-200">
-                <h4 className="font-semibold text-gray-900 mb-2">Notes</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">{t(appContent.leads.leadMgmtNotes)}</h4>
                 <p className="text-gray-600 text-sm">{selectedLead.notes}</p>
               </div>
 
               <div className="mt-6 space-y-3">
                 <button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 rounded-xl font-semibold transition-all flex items-center justify-center space-x-2">
                   <Phone className="w-5 h-5" />
-                  <span>Call Lead</span>
+                  <span>{t(appContent.leads.leadMgmtCall)}</span>
                 </button>
                 <button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold transition-all flex items-center justify-center space-x-2">
                   <Mail className="w-5 h-5" />
-                  <span>Send Email</span>
+                  <span>{t(appContent.leads.leadMgmtEmail)}</span>
                 </button>
                 <button className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-semibold transition-all flex items-center justify-center space-x-2">
                   <Calendar className="w-5 h-5" />
-                  <span>Schedule Meeting</span>
+                  <span>{t(appContent.leads.leadMgmtMeeting)}</span>
                 </button>
               </div>
             </div>
@@ -290,8 +293,8 @@ export function LeadManagement() {
               <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Phone className="w-8 h-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Select a Lead</h3>
-              <p className="text-gray-600">Choose a lead from the list to view details and take actions.</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{t(appContent.leads.leadMgmtSelect)}</h3>
+              <p className="text-gray-600">{t(appContent.leads.leadMgmtSelectMsg)}</p>
             </div>
           )}
         </div>

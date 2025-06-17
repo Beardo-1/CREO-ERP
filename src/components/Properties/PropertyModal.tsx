@@ -1,159 +1,283 @@
-import React from 'react';
-import { X, MapPin, Bed, Bath, Square, Calendar, User } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, MapPin, Bed, Bath, Square, Calendar, DollarSign, Heart, Share2, Phone, Mail, Star, ChevronLeft, ChevronRight, Home, Car, Wifi, Shield, Zap, Trees } from 'lucide-react';
 import { Property } from '../../types';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 interface PropertyModalProps {
-  property: Property | null;
+  property: Property;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export function PropertyModal({ property, isOpen, onClose }: PropertyModalProps) {
-  if (!isOpen || !property) return null;
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { t } = useTranslation();
+
+  if (!isOpen) return null;
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'available':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'under contract':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'sold':
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+      default:
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+    }
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % property.images.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + property.images.length) % property.images.length);
+  };
+
+  const featureIcons: { [key: string]: React.ReactNode } = {
+    'Parking': <Car className="w-4 h-4" />,
+    'WiFi': <Wifi className="w-4 h-4" />,
+    'Security': <Shield className="w-4 h-4" />,
+    'Garden': <Trees className="w-4 h-4" />,
+    'Electricity': <Zap className="w-4 h-4" />,
+    'default': <Home className="w-4 h-4" />
+  };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">{property.title}</h2>
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+        onClick={onClose}
+      />
+      
+      {/* Modal */}
+      <div className="flex min-h-full items-center justify-center p-4">
+        <div className="relative w-full max-w-4xl bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scale-in">
+          {/* Close Button */}
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="absolute top-6 right-6 z-10 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors duration-200 shadow-lg"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-gray-600" />
           </button>
-        </div>
-        
-        <div className="p-6">
+          
           {/* Image Gallery */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            {property.images.map((image, index) => (
-              <img
-                key={index}
-                src={image}
-                alt={`${property.title} ${index + 1}`}
-                className="w-full h-64 object-cover rounded-lg"
-              />
-            ))}
+          <div className="relative h-80 overflow-hidden">
+            <img
+              src={property.images[currentImageIndex]}
+              alt={property.title}
+              className="w-full h-full object-cover"
+            />
+            
+            {/* Image Navigation */}
+            {property.images.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors duration-200 shadow-lg"
+                >
+                  <ChevronLeft className="w-5 h-5 text-gray-600" />
+                </button>
+                <button
+                  onClick={nextImage}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors duration-200 shadow-lg"
+                >
+                  <ChevronRight className="w-5 h-5 text-gray-600" />
+                </button>
+              </>
+            )}
+            
+            {/* Image Indicators */}
+            {property.images.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                {property.images.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                      index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+            
+            {/* Status Badge */}
+            <div className={`absolute top-6 left-6 px-4 py-2 rounded-full text-sm font-semibold border ${getStatusColor(property.status)}`}>
+              {property.status}
+            </div>
+            
+            {/* Price Badge */}
+            <div className="absolute bottom-6 left-6 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-xl font-bold text-xl shadow-lg">
+              {formatPrice(property.price)}
+            </div>
           </div>
           
-          {/* Property Details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Details</h3>
-              
-              <div className="space-y-3">
-                <div className="flex items-center text-gray-600">
-                  <MapPin className="w-5 h-5 mr-3 text-gray-400" />
-                  <span>{property.address}, {property.city}, {property.state} {property.zipCode}</span>
+          {/* Content */}
+          <div className="p-8">
+            {/* Header */}
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">{property.title}</h1>
+                <div className="flex items-center text-gray-600 mb-4">
+                  <MapPin className="w-5 h-5 mr-2" />
+                  <span className="text-lg">{property.address}, {property.city}, {property.state} {property.zipCode}</span>
                 </div>
+                <span className="px-4 py-2 bg-amber-100 text-amber-800 rounded-full text-sm font-semibold">
+                  {property.propertyType}
+                </span>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="flex space-x-3 ml-6">
+                <button className="w-12 h-12 bg-red-100 hover:bg-red-200 rounded-xl flex items-center justify-center transition-colors duration-200">
+                  <Heart className="w-5 h-5 text-red-600" />
+                </button>
+                <button className="w-12 h-12 bg-blue-100 hover:bg-blue-200 rounded-xl flex items-center justify-center transition-colors duration-200">
+                  <Share2 className="w-5 h-5 text-blue-600" />
+                </button>
+              </div>
+            </div>
+            
+            {/* Property Details Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+              {/* Basic Info */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.propertyModal.propertyDetails)}</h3>
                 
-                <div className="flex items-center space-x-6">
-                  {property.bedrooms > 0 && (
-                    <div className="flex items-center text-gray-600">
-                      <Bed className="w-5 h-5 mr-2 text-gray-400" />
-                      <span>{property.bedrooms} Bedrooms</span>
-                    </div>
-                  )}
-                  <div className="flex items-center text-gray-600">
-                    <Bath className="w-5 h-5 mr-2 text-gray-400" />
-                    <span>{property.bathrooms} Bathrooms</span>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Bed className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">{t(appContent.propertyModal.bedrooms)}</p>
+                    <p className="font-semibold text-gray-900">{property.bedrooms}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center text-gray-600">
-                  <Square className="w-5 h-5 mr-2 text-gray-400" />
-                  <span>{property.squareFeet.toLocaleString()} Square Feet</span>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Bath className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">{t(appContent.propertyModal.bathrooms)}</p>
+                    <p className="font-semibold text-gray-900">{property.bathrooms}</p>
+                  </div>
                 </div>
                 
-                <div className="flex items-center text-gray-600">
-                  <Calendar className="w-5 h-5 mr-2 text-gray-400" />
-                  <span>Listed on {new Date(property.listingDate).toLocaleDateString()}</span>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <Square className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">{t(appContent.propertyModal.squareFeet)}</p>
+                    <p className="font-semibold text-gray-900">{property.squareFeet.toLocaleString()}</p>
+                  </div>
                 </div>
                 
                 {property.yearBuilt && (
-                  <div className="flex items-center text-gray-600">
-                    <span className="font-medium mr-2">Year Built:</span>
-                    <span>{property.yearBuilt}</span>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                      <Calendar className="w-5 h-5 text-orange-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">{t(appContent.propertyModal.yearBuilt)}</p>
+                      <p className="font-semibold text-gray-900">{property.yearBuilt}</p>
+                    </div>
                   </div>
                 )}
                 
                 {property.lotSize && (
-                  <div className="flex items-center text-gray-600">
-                    <span className="font-medium mr-2">Lot Size:</span>
-                    <span>{property.lotSize.toLocaleString()} sqft</span>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Trees className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">{t(appContent.propertyModal.lotSize)}</p>
+                      <p className="font-semibold text-gray-900">{property.lotSize.toLocaleString()} {t(appContent.propertyModal.sqFt)}</p>
+                    </div>
                   </div>
                 )}
               </div>
+              
+              {/* Features */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.propertyModal.featuresAmenities)}</h3>
+                <div className="space-y-3">
+                  {property.features.map((feature, index) => (
+                    <div key={index} className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                        {featureIcons[feature] || featureIcons.default}
+                      </div>
+                      <span className="text-gray-700">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Timeline */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.propertyModal.listingInformation)}</h3>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Calendar className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">{t(appContent.propertyModal.listedDate)}</p>
+                      <p className="font-semibold text-gray-900">
+                        {new Date(property.listingDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                      <DollarSign className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">{t(appContent.propertyModal.pricePerSqFt)}</p>
+                      <p className="font-semibold text-gray-900">
+                        ${Math.round(property.price / property.squareFeet)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Pricing & Status</h3>
-              
-              <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                <div className="text-3xl font-bold text-gray-900 mb-2">
-                  ${property.price.toLocaleString()}
-                </div>
-                <div className="text-sm text-gray-600">
-                  ${Math.round(property.price / property.squareFeet).toLocaleString()}/sqft
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <div>
-                  <span className="font-medium text-gray-900">Status: </span>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    property.status === 'Available' ? 'bg-green-100 text-green-800' :
-                    property.status === 'Under Contract' ? 'bg-yellow-100 text-yellow-800' :
-                    property.status === 'Sold' ? 'bg-blue-100 text-blue-800' :
-                    'bg-purple-100 text-purple-800'
-                  }`}>
-                    {property.status}
-                  </span>
-                </div>
-                
-                <div>
-                  <span className="font-medium text-gray-900">Property Type: </span>
-                  <span className="text-gray-600">{property.propertyType}</span>
-                </div>
-              </div>
+            {/* Description */}
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.propertyModal.description)}</h3>
+              <p className="text-gray-700 leading-relaxed">{property.description}</p>
             </div>
-          </div>
-          
-          {/* Description */}
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Description</h3>
-            <p className="text-gray-600 leading-relaxed">{property.description}</p>
-          </div>
-          
-          {/* Features */}
-          {property.features.length > 0 && (
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Features</h3>
-              <div className="flex flex-wrap gap-2">
-                {property.features.map((feature, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
-                  >
-                    {feature}
-                  </span>
-                ))}
-              </div>
+            
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 hover:scale-105 shadow-lg">
+                {t(appContent.propertyModal.scheduleViewing)}
+              </button>
+              <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 hover:scale-105 shadow-lg">
+                {t(appContent.propertyModal.contactAgent)}
+              </button>
+              <button className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 hover:scale-105 shadow-lg">
+                {t(appContent.propertyModal.downloadBrochure)}
+              </button>
             </div>
-          )}
-          
-          {/* Actions */}
-          <div className="mt-8 flex space-x-4">
-            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors">
-              Schedule Showing
-            </button>
-            <button className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 py-3 rounded-lg font-medium transition-colors">
-              Save to Favorites
-            </button>
-            <button className="px-6 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors">
-              Contact Agent
-            </button>
           </div>
         </div>
       </div>
