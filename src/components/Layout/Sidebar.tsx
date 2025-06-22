@@ -83,7 +83,6 @@ interface MenuItem {
   id: string;
   label: string;
   icon: React.ComponentType<any>;
-  badge?: number;
   category: string;
   subItems?: SubMenuItem[];
   priority?: 'high' | 'medium' | 'low';
@@ -94,7 +93,6 @@ interface SubMenuItem {
   id: string;
   label: string;
   icon: React.ComponentType<any>;
-  badge?: number;
 }
 
 const menuCategories = [
@@ -108,52 +106,48 @@ const menuCategories = [
         id: 'dashboard', 
         label: 'Dashboard', 
         icon: Home, 
-        badge: 0, 
         category: 'core',
         priority: 'high' as const,
         subItems: [
-          { id: 'dashboard-overview', label: 'Overview', icon: BarChart3, badge: 0 },
-          { id: 'dashboard-analytics', label: 'Analytics', icon: TrendingUp, badge: 2 },
-          { id: 'dashboard-reports', label: 'Quick Reports', icon: FileText, badge: 0 }
+          { id: 'dashboard-overview', label: 'Overview', icon: BarChart3 },
+          { id: 'dashboard-analytics', label: 'Analytics', icon: TrendingUp },
+          { id: 'dashboard-reports', label: 'Quick Reports', icon: FileText }
         ]
       },
       { 
         id: 'properties', 
         label: 'Properties', 
         icon: Building, 
-        badge: 12, 
         category: 'core',
         priority: 'high' as const,
         subItems: [
-          { id: 'properties-listings', label: 'Active Listings', icon: Building, badge: 8 },
-          { id: 'properties-sold', label: 'Sold Properties', icon: CheckSquare, badge: 0 },
-          { id: 'properties-pending', label: 'Pending Sales', icon: Clock, badge: 4 }
+          { id: 'properties-listings', label: 'Active Listings', icon: Building },
+          { id: 'properties-sold', label: 'Sold Properties', icon: CheckSquare },
+          { id: 'properties-pending', label: 'Pending Sales', icon: Clock }
         ]
       },
       { 
         id: 'contacts', 
         label: 'Contacts', 
         icon: Users, 
-        badge: 5, 
         category: 'core',
         priority: 'high' as const,
         subItems: [
-          { id: 'contacts-clients', label: 'Clients', icon: Users, badge: 3 },
-          { id: 'contacts-prospects', label: 'Prospects', icon: Star, badge: 2 },
-          { id: 'contacts-vendors', label: 'Vendors', icon: Briefcase, badge: 0 }
+          { id: 'contacts-clients', label: 'Clients', icon: Users },
+          { id: 'contacts-prospects', label: 'Prospects', icon: Star },
+          { id: 'contacts-vendors', label: 'Vendors', icon: Briefcase }
         ]
       },
       { 
         id: 'deals', 
         label: 'Deals', 
         icon: Handshake, 
-        badge: 3, 
         category: 'core',
         priority: 'high' as const,
         subItems: [
-          { id: 'deals-active', label: 'Active Deals', icon: Handshake, badge: 3 },
-          { id: 'deals-pipeline', label: 'Pipeline', icon: TrendingUp, badge: 0 },
-          { id: 'deals-closed', label: 'Closed Deals', icon: CheckSquare, badge: 0 }
+          { id: 'deals-active', label: 'Active Deals', icon: Handshake },
+          { id: 'deals-pipeline', label: 'Pipeline', icon: TrendingUp },
+          { id: 'deals-closed', label: 'Closed Deals', icon: CheckSquare }
         ]
       },
     ]
@@ -168,33 +162,30 @@ const menuCategories = [
         id: 'leads', 
         label: 'Lead Management', 
         icon: Phone, 
-        badge: 8, 
         category: 'sales',
         priority: 'high' as const,
         subItems: [
-          { id: 'leads-new', label: 'New Leads', icon: Plus, badge: 5 },
-          { id: 'leads-qualified', label: 'Qualified', icon: CheckSquare, badge: 3 },
-          { id: 'leads-follow-up', label: 'Follow-up', icon: Clock, badge: 0 }
+          { id: 'leads-new', label: 'New Leads', icon: Plus },
+          { id: 'leads-qualified', label: 'Qualified', icon: CheckSquare },
+          { id: 'leads-follow-up', label: 'Follow-up', icon: Clock }
         ]
       },
       { 
         id: 'marketing', 
         label: 'Marketing', 
         icon: Mail, 
-        badge: 2, 
         category: 'sales',
         priority: 'medium' as const,
         subItems: [
-          { id: 'marketing-campaigns', label: 'Campaigns', icon: Mail, badge: 1 },
-          { id: 'marketing-social', label: 'Social Media', icon: Star, badge: 1 },
-          { id: 'marketing-analytics', label: 'Analytics', icon: BarChart3, badge: 0 }
+          { id: 'marketing-campaigns', label: 'Campaigns', icon: Mail },
+          { id: 'marketing-social', label: 'Social Media', icon: Star },
+          { id: 'marketing-analytics', label: 'Analytics', icon: BarChart3 }
         ]
       },
       { 
         id: 'valuations', 
         label: 'Valuations', 
         icon: Calculator, 
-        badge: 0, 
         category: 'sales',
         priority: 'medium' as const
       },
@@ -202,7 +193,6 @@ const menuCategories = [
         id: 'media', 
         label: 'Media Gallery', 
         icon: Camera, 
-        badge: 0, 
         category: 'sales',
         priority: 'low' as const
       },
@@ -218,46 +208,42 @@ const menuCategories = [
         id: 'tasks', 
         label: 'Tasks', 
         icon: CheckSquare, 
-        badge: 7, 
         category: 'operations',
         priority: 'high' as const,
         subItems: [
-          { id: 'tasks-today', label: 'Due Today', icon: AlertCircle, badge: 3 },
-          { id: 'tasks-upcoming', label: 'Upcoming', icon: Clock, badge: 4 },
-          { id: 'tasks-completed', label: 'Completed', icon: CheckSquare, badge: 0 }
+          { id: 'tasks-today', label: 'Due Today', icon: AlertCircle },
+          { id: 'tasks-upcoming', label: 'Upcoming', icon: Clock },
+          { id: 'tasks-completed', label: 'Completed', icon: CheckSquare }
         ]
       },
       { 
         id: 'calendar', 
         label: 'Calendar', 
         icon: Calendar, 
-        badge: 4, 
         category: 'operations',
         priority: 'high' as const,
         subItems: [
-          { id: 'calendar-today', label: 'Today', icon: Calendar, badge: 2 },
-          { id: 'calendar-week', label: 'This Week', icon: Calendar, badge: 2 },
-          { id: 'calendar-showings', label: 'Showings', icon: Building, badge: 0 }
+          { id: 'calendar-today', label: 'Today', icon: Calendar },
+          { id: 'calendar-week', label: 'This Week', icon: Calendar },
+          { id: 'calendar-showings', label: 'Showings', icon: Building }
         ]
       },
       { 
         id: 'inventory', 
         label: 'Inventory', 
         icon: Package, 
-        badge: 3, 
         category: 'operations',
         priority: 'high' as const,
         subItems: [
-          { id: 'inventory-property', label: 'Property Inventory', icon: Building, badge: 2 },
-          { id: 'inventory-equipment', label: 'Equipment', icon: Wrench, badge: 1 },
-          { id: 'inventory-supplies', label: 'Supplies', icon: ShoppingCart, badge: 0 }
+          { id: 'inventory-property', label: 'Property Inventory', icon: Building },
+          { id: 'inventory-equipment', label: 'Equipment', icon: Wrench },
+          { id: 'inventory-supplies', label: 'Supplies', icon: ShoppingCart }
         ]
       },
       { 
         id: 'locations', 
         label: 'Locations', 
         icon: MapPin, 
-        badge: 0, 
         category: 'operations',
         priority: 'medium' as const
       },
@@ -265,13 +251,12 @@ const menuCategories = [
         id: 'agents', 
         label: 'Team', 
         icon: UserCheck, 
-        badge: 1, 
         category: 'operations',
         priority: 'medium' as const,
         subItems: [
-          { id: 'agents-active', label: 'Active Agents', icon: UserCheck, badge: 0 },
-          { id: 'agents-performance', label: 'Performance', icon: TrendingUp, badge: 1 },
-          { id: 'agents-schedule', label: 'Schedules', icon: Calendar, badge: 0 }
+          { id: 'agents-active', label: 'Active Agents', icon: UserCheck },
+          { id: 'agents-performance', label: 'Performance', icon: TrendingUp },
+          { id: 'agents-schedule', label: 'Schedules', icon: Calendar }
         ]
       },
     ]
@@ -286,91 +271,77 @@ const menuCategories = [
         id: 'financial', 
         label: 'Financial', 
         icon: DollarSign, 
-        badge: 0, 
         category: 'management',
         priority: 'high' as const,
         subItems: [
-          { id: 'financial-commissions', label: 'Commissions', icon: DollarSign, badge: 0 },
-          { id: 'financial-expenses', label: 'Expenses', icon: FileText, badge: 0 },
-          { id: 'financial-reports', label: 'Reports', icon: BarChart3, badge: 0 }
+          { id: 'financial-commissions', label: 'Commissions', icon: DollarSign },
+          { id: 'financial-expenses', label: 'Expenses', icon: FileText },
+          { id: 'financial-reports', label: 'Reports', icon: BarChart3 }
         ]
-      },
-      { 
-        id: 'documents', 
-        label: 'Documents', 
-        icon: FileText, 
-        badge: 0, 
-        category: 'management',
-        priority: 'medium' as const
       },
       { 
         id: 'compliance', 
         label: 'Compliance', 
         icon: Shield, 
-        badge: 2, 
         category: 'management',
         priority: 'high' as const,
         subItems: [
-          { id: 'compliance-legal', label: 'Legal Docs', icon: Shield, badge: 1 },
-          { id: 'compliance-audit', label: 'Audit Trail', icon: FileText, badge: 1 },
-          { id: 'compliance-training', label: 'Training', icon: Users, badge: 0 }
+          { id: 'compliance-legal', label: 'Legal Docs', icon: FileText },
+          { id: 'compliance-audit', label: 'Audit Trail', icon: CheckSquare },
+          { id: 'compliance-training', label: 'Training', icon: Users }
         ]
       },
       { 
         id: 'reports', 
         label: 'Reports', 
         icon: BarChart3, 
-        badge: 0, 
         category: 'management',
         priority: 'medium' as const,
         subItems: [
-          { id: 'reports-sales', label: 'Sales Reports', icon: TrendingUp, badge: 0 },
-          { id: 'reports-performance', label: 'Performance', icon: BarChart3, badge: 0 },
-          { id: 'reports-custom', label: 'Custom Reports', icon: Settings, badge: 0 }
+          { id: 'reports-sales', label: 'Sales Reports', icon: TrendingUp },
+          { id: 'reports-performance', label: 'Performance', icon: BarChart3 },
+          { id: 'reports-custom', label: 'Custom Reports', icon: FileText }
         ]
       },
       { 
         id: 'kpi-builder', 
         label: 'KPI Builder', 
-        icon: TrendingUp, 
-        badge: 0, 
+        icon: BarChart3, 
         category: 'management',
         priority: 'high' as const,
         subItems: [
-          { id: 'kpi-create', label: 'Create KPI', icon: Plus, badge: 0 },
-          { id: 'kpi-manage', label: 'Manage KPIs', icon: Settings, badge: 0 },
-          { id: 'kpi-templates', label: 'Templates', icon: FileText, badge: 0 }
+          { id: 'kpi-create', label: 'Create KPI', icon: Plus },
+          { id: 'kpi-manage', label: 'Manage KPIs', icon: Settings },
+          { id: 'kpi-templates', label: 'Templates', icon: FileText }
         ]
       },
       { 
         id: 'data-manager', 
         label: 'Data Manager', 
         icon: Database, 
-        badge: 0, 
         category: 'management',
         priority: 'high' as const,
         subItems: [
-          { id: 'data-import', label: 'Import Data', icon: Upload, badge: 0 },
-          { id: 'data-export', label: 'Export Data', icon: Download, badge: 0 },
-          { id: 'data-templates', label: 'Templates', icon: FileText, badge: 0 }
+          { id: 'data-import', label: 'Import Data', icon: Upload },
+          { id: 'data-export', label: 'Export Data', icon: Download },
+          { id: 'data-templates', label: 'Templates', icon: FileText }
         ]
       },
       { 
         id: 'system-status', 
         label: 'System Status', 
         icon: Monitor, 
-        badge: 0, 
         category: 'management',
         priority: 'high' as const,
         subItems: [
-          { id: 'system-overview', label: 'Overview', icon: Monitor, badge: 0 },
-          { id: 'system-services', label: 'Services', icon: Settings, badge: 0 },
-          { id: 'system-performance', label: 'Performance', icon: TrendingUp, badge: 0 },
-          { id: 'system-alerts', label: 'Alerts', icon: Bell, badge: 0 }
+          { id: 'system-overview', label: 'Overview', icon: Monitor },
+          { id: 'system-services', label: 'Services', icon: Settings },
+          { id: 'system-performance', label: 'Performance', icon: TrendingUp },
+          { id: 'system-alerts', label: 'Alerts', icon: Bell }
         ]
       },
     ]
-  }
+  },
 ];
 
 export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOpen, onMobileToggle }: SidebarProps) {
@@ -401,52 +372,48 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
           id: 'dashboard', 
           label: t(appContent.sidebar.dashboard), 
           icon: Home, 
-          badge: 0, 
           category: 'core',
           priority: 'high' as const,
           subItems: [
-            { id: 'dashboard-overview', label: t(appContent.sidebar.overview), icon: BarChart3, badge: 0 },
-            { id: 'dashboard-analytics', label: t(appContent.sidebar.analytics), icon: TrendingUp, badge: 2 },
-            { id: 'dashboard-reports', label: t(appContent.sidebar.quickReports), icon: FileText, badge: 0 }
+            { id: 'dashboard-overview', label: t(appContent.sidebar.overview), icon: BarChart3 },
+            { id: 'dashboard-analytics', label: t(appContent.sidebar.analytics), icon: TrendingUp },
+            { id: 'dashboard-reports', label: t(appContent.sidebar.quickReports), icon: FileText }
           ]
         },
         { 
           id: 'properties', 
           label: t(appContent.sidebar.properties), 
           icon: Building, 
-          badge: 12, 
           category: 'core',
           priority: 'high' as const,
           subItems: [
-            { id: 'properties-listings', label: t(appContent.sidebar.activeListings), icon: Building, badge: 8 },
-            { id: 'properties-sold', label: t(appContent.sidebar.soldProperties), icon: CheckSquare, badge: 0 },
-            { id: 'properties-pending', label: t(appContent.sidebar.pendingSales), icon: Clock, badge: 4 }
+            { id: 'properties-listings', label: t(appContent.sidebar.activeListings), icon: Building },
+            { id: 'properties-sold', label: t(appContent.sidebar.soldProperties), icon: CheckSquare },
+            { id: 'properties-pending', label: t(appContent.sidebar.pendingSales), icon: Clock }
           ]
         },
         { 
           id: 'contacts', 
           label: t(appContent.sidebar.contacts), 
           icon: Users, 
-          badge: 5, 
           category: 'core',
           priority: 'high' as const,
           subItems: [
-            { id: 'contacts-clients', label: t(appContent.sidebar.clients), icon: Users, badge: 3 },
-            { id: 'contacts-prospects', label: t(appContent.sidebar.prospects), icon: Star, badge: 2 },
-            { id: 'contacts-vendors', label: t(appContent.sidebar.vendors), icon: Briefcase, badge: 0 }
+            { id: 'contacts-clients', label: t(appContent.sidebar.clients), icon: Users },
+            { id: 'contacts-prospects', label: t(appContent.sidebar.prospects), icon: Star },
+            { id: 'contacts-vendors', label: t(appContent.sidebar.vendors), icon: Briefcase }
           ]
         },
         { 
           id: 'deals', 
           label: t(appContent.sidebar.deals), 
           icon: Handshake, 
-          badge: 3, 
           category: 'core',
           priority: 'high' as const,
           subItems: [
-            { id: 'deals-active', label: t(appContent.sidebar.activeDeals), icon: Handshake, badge: 3 },
-            { id: 'deals-pipeline', label: t(appContent.sidebar.pipeline), icon: TrendingUp, badge: 0 },
-            { id: 'deals-closed', label: t(appContent.sidebar.closedDeals), icon: CheckSquare, badge: 0 }
+            { id: 'deals-active', label: t(appContent.sidebar.activeDeals), icon: Handshake },
+            { id: 'deals-pipeline', label: t(appContent.sidebar.pipeline), icon: TrendingUp },
+            { id: 'deals-closed', label: t(appContent.sidebar.closedDeals), icon: CheckSquare }
           ]
         },
       ]
@@ -461,33 +428,30 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
           id: 'leads', 
           label: t(appContent.sidebar.leadManagement), 
           icon: Phone, 
-          badge: 8, 
           category: 'sales',
           priority: 'high' as const,
           subItems: [
-            { id: 'leads-new', label: t(appContent.sidebar.newLeads), icon: Plus, badge: 5 },
-            { id: 'leads-qualified', label: t(appContent.sidebar.qualified), icon: CheckSquare, badge: 3 },
-            { id: 'leads-follow-up', label: t(appContent.sidebar.followUp), icon: Clock, badge: 0 }
+            { id: 'leads-new', label: t(appContent.sidebar.newLeads), icon: Plus },
+            { id: 'leads-qualified', label: t(appContent.sidebar.qualified), icon: CheckSquare },
+            { id: 'leads-follow-up', label: t(appContent.sidebar.followUp), icon: Clock }
           ]
         },
         { 
           id: 'marketing', 
           label: t(appContent.sidebar.marketing), 
           icon: Mail, 
-          badge: 2, 
           category: 'sales',
           priority: 'medium' as const,
           subItems: [
-            { id: 'marketing-campaigns', label: t(appContent.sidebar.campaigns), icon: Mail, badge: 1 },
-            { id: 'marketing-social', label: t(appContent.sidebar.socialMedia), icon: Star, badge: 1 },
-            { id: 'marketing-analytics', label: t(appContent.sidebar.analytics), icon: BarChart3, badge: 0 }
+            { id: 'marketing-campaigns', label: t(appContent.sidebar.campaigns), icon: Mail },
+            { id: 'marketing-social', label: t(appContent.sidebar.socialMedia), icon: Star },
+            { id: 'marketing-analytics', label: t(appContent.sidebar.analytics), icon: BarChart3 }
           ]
         },
         { 
           id: 'valuations', 
           label: t(appContent.sidebar.valuations), 
           icon: Calculator, 
-          badge: 0, 
           category: 'sales',
           priority: 'medium' as const
         },
@@ -495,7 +459,6 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
           id: 'media', 
           label: t(appContent.sidebar.mediaGallery), 
           icon: Camera, 
-          badge: 0, 
           category: 'sales',
           priority: 'low' as const
         },
@@ -511,46 +474,42 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
           id: 'tasks', 
           label: t(appContent.sidebar.tasks), 
           icon: CheckSquare, 
-          badge: 7, 
           category: 'operations',
           priority: 'high' as const,
           subItems: [
-            { id: 'tasks-today', label: t(appContent.sidebar.dueToday), icon: AlertCircle, badge: 3 },
-            { id: 'tasks-upcoming', label: t(appContent.sidebar.upcoming), icon: Clock, badge: 4 },
-            { id: 'tasks-completed', label: t(appContent.sidebar.completed), icon: CheckSquare, badge: 0 }
+            { id: 'tasks-today', label: t(appContent.sidebar.dueToday), icon: AlertCircle },
+            { id: 'tasks-upcoming', label: t(appContent.sidebar.upcoming), icon: Clock },
+            { id: 'tasks-completed', label: t(appContent.sidebar.completed), icon: CheckSquare }
           ]
         },
         { 
           id: 'calendar', 
           label: t(appContent.sidebar.calendar), 
           icon: Calendar, 
-          badge: 4, 
           category: 'operations',
           priority: 'high' as const,
           subItems: [
-            { id: 'calendar-today', label: t(appContent.sidebar.today), icon: Calendar, badge: 2 },
-            { id: 'calendar-week', label: t(appContent.sidebar.thisWeek), icon: Calendar, badge: 2 },
-            { id: 'calendar-showings', label: t(appContent.sidebar.showings), icon: Building, badge: 0 }
+            { id: 'calendar-today', label: t(appContent.sidebar.today), icon: Calendar },
+            { id: 'calendar-week', label: t(appContent.sidebar.thisWeek), icon: Calendar },
+            { id: 'calendar-showings', label: t(appContent.sidebar.showings), icon: Building }
           ]
         },
         { 
           id: 'inventory', 
           label: t(appContent.sidebar.inventory), 
           icon: Package, 
-          badge: 3, 
           category: 'operations',
           priority: 'high' as const,
           subItems: [
-            { id: 'inventory-property', label: t(appContent.sidebar.propertyInventory), icon: Building, badge: 2 },
-            { id: 'inventory-equipment', label: t(appContent.sidebar.equipment), icon: Wrench, badge: 1 },
-            { id: 'inventory-supplies', label: t(appContent.sidebar.supplies), icon: ShoppingCart, badge: 0 }
+            { id: 'inventory-property', label: t(appContent.sidebar.propertyInventory), icon: Building },
+            { id: 'inventory-equipment', label: t(appContent.sidebar.equipment), icon: Wrench },
+            { id: 'inventory-supplies', label: t(appContent.sidebar.supplies), icon: ShoppingCart }
           ]
         },
         { 
           id: 'locations', 
           label: t(appContent.sidebar.locations), 
           icon: MapPin, 
-          badge: 0, 
           category: 'operations',
           priority: 'medium' as const
         },
@@ -558,13 +517,12 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
           id: 'agents', 
           label: t(appContent.sidebar.team), 
           icon: UserCheck, 
-          badge: 1, 
           category: 'operations',
           priority: 'medium' as const,
           subItems: [
-            { id: 'agents-active', label: t(appContent.sidebar.activeAgents), icon: UserCheck, badge: 0 },
-            { id: 'agents-performance', label: t(appContent.sidebar.performance), icon: TrendingUp, badge: 1 },
-            { id: 'agents-schedule', label: t(appContent.sidebar.schedules), icon: Calendar, badge: 0 }
+            { id: 'agents-active', label: t(appContent.sidebar.activeAgents), icon: UserCheck },
+            { id: 'agents-performance', label: t(appContent.sidebar.performance), icon: TrendingUp },
+            { id: 'agents-schedule', label: t(appContent.sidebar.schedules), icon: Calendar }
           ]
         },
       ]
@@ -579,87 +537,73 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
           id: 'financial', 
           label: t(appContent.sidebar.financial), 
           icon: DollarSign, 
-          badge: 0, 
           category: 'management',
           priority: 'high' as const,
           subItems: [
-            { id: 'financial-commissions', label: t(appContent.sidebar.commissions), icon: DollarSign, badge: 0 },
-            { id: 'financial-expenses', label: t(appContent.sidebar.expenses), icon: FileText, badge: 0 },
-            { id: 'financial-reports', label: t(appContent.sidebar.reports), icon: BarChart3, badge: 0 }
+            { id: 'financial-commissions', label: t(appContent.sidebar.commissions), icon: DollarSign },
+            { id: 'financial-expenses', label: t(appContent.sidebar.expenses), icon: FileText },
+            { id: 'financial-reports', label: t(appContent.sidebar.reports), icon: BarChart3 }
           ]
-        },
-        { 
-          id: 'documents', 
-          label: t(appContent.sidebar.documents), 
-          icon: FileText, 
-          badge: 0, 
-          category: 'management',
-          priority: 'medium' as const
         },
         { 
           id: 'compliance', 
           label: t(appContent.sidebar.compliance), 
           icon: Shield, 
-          badge: 2, 
           category: 'management',
           priority: 'high' as const,
           subItems: [
-            { id: 'compliance-legal', label: t(appContent.sidebar.legalDocs), icon: Shield, badge: 1 },
-            { id: 'compliance-audit', label: t(appContent.sidebar.auditTrail), icon: FileText, badge: 1 },
-            { id: 'compliance-training', label: t(appContent.sidebar.training), icon: Users, badge: 0 }
+            { id: 'compliance-legal', label: t(appContent.sidebar.legalDocs), icon: FileText },
+            { id: 'compliance-audit', label: t(appContent.sidebar.auditTrail), icon: CheckSquare },
+            { id: 'compliance-training', label: t(appContent.sidebar.training), icon: Users }
           ]
         },
         { 
           id: 'reports', 
           label: t(appContent.sidebar.reports), 
           icon: BarChart3, 
-          badge: 0, 
           category: 'management',
           priority: 'medium' as const,
           subItems: [
-            { id: 'reports-sales', label: t(appContent.sidebar.salesReports), icon: TrendingUp, badge: 0 },
-            { id: 'reports-performance', label: t(appContent.sidebar.performance), icon: BarChart3, badge: 0 },
-            { id: 'reports-custom', label: t(appContent.sidebar.customReports), icon: Settings, badge: 0 }
+            { id: 'reports-sales', label: t(appContent.sidebar.salesReports), icon: TrendingUp },
+            { id: 'reports-performance', label: t(appContent.sidebar.performance), icon: BarChart3 },
+            { id: 'reports-custom', label: t(appContent.sidebar.customReports), icon: FileText }
           ]
         },
         { 
           id: 'kpi-builder', 
           label: t(appContent.sidebar.kpiBuilder), 
-          icon: TrendingUp, 
-          badge: 0, 
+          icon: BarChart3, 
           category: 'management',
           priority: 'high' as const,
           subItems: [
-            { id: 'kpi-create', label: t(appContent.sidebar.createKpi), icon: Plus, badge: 0 },
-            { id: 'kpi-manage', label: t(appContent.sidebar.manageKpis), icon: Settings, badge: 0 },
-            { id: 'kpi-templates', label: t(appContent.sidebar.templates), icon: FileText, badge: 0 }
+            { id: 'kpi-create', label: t(appContent.sidebar.createKpi), icon: Plus },
+            { id: 'kpi-manage', label: t(appContent.sidebar.manageKpis), icon: Settings },
+            { id: 'kpi-templates', label: t(appContent.sidebar.templates), icon: FileText }
           ]
         },
         { 
           id: 'data-manager', 
           label: t(appContent.sidebar.dataManager), 
           icon: Database, 
-          badge: 0, 
           category: 'management',
           priority: 'high' as const,
           subItems: [
-            { id: 'data-import', label: t(appContent.sidebar.importData), icon: Upload, badge: 0 },
-            { id: 'data-export', label: t(appContent.sidebar.exportData), icon: Download, badge: 0 },
-            { id: 'data-templates', label: t(appContent.sidebar.templates), icon: FileText, badge: 0 }
+            { id: 'data-import', label: t(appContent.sidebar.importData), icon: Upload },
+            { id: 'data-export', label: t(appContent.sidebar.exportData), icon: Download },
+            { id: 'data-templates', label: t(appContent.sidebar.templates), icon: FileText }
           ]
         },
         { 
           id: 'system-status', 
           label: t(appContent.sidebar.systemStatus), 
           icon: Monitor, 
-          badge: 0, 
           category: 'management',
           priority: 'high' as const,
           subItems: [
-            { id: 'system-overview', label: t(appContent.sidebar.overview), icon: Monitor, badge: 0 },
-            { id: 'system-services', label: t(appContent.sidebar.services), icon: Settings, badge: 0 },
-            { id: 'system-performance', label: t(appContent.sidebar.performance), icon: TrendingUp, badge: 0 },
-            { id: 'system-alerts', label: t(appContent.sidebar.alerts), icon: Bell, badge: 0 }
+            { id: 'system-overview', label: t(appContent.sidebar.overview), icon: Monitor },
+            { id: 'system-services', label: t(appContent.sidebar.services), icon: Settings },
+            { id: 'system-performance', label: t(appContent.sidebar.performance), icon: TrendingUp },
+            { id: 'system-alerts', label: t(appContent.sidebar.alerts), icon: Bell }
           ]
         },
       ]
@@ -746,9 +690,7 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
     );
   };
 
-  const getTotalBadgeCount = () => {
-    return allMenuItems.reduce((total, item) => total + (item.badge || 0), 0);
-  };
+
 
   const getCategoryColor = (color: string) => {
     const colors = {
@@ -953,11 +895,6 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                           {item.priority}
                         </span>
                       )}
-                      {item.badge && item.badge > 0 && (
-                        <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
-                          {item.badge}
-                        </span>
-                      )}
                     </button>
                   );
                 })}
@@ -968,7 +905,6 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                 {translatedMenuCategories.map((category) => {
                   const CategoryIcon = category.icon;
                   const isExpanded = expandedCategories.includes(category.id);
-                  const categoryBadgeCount = category.items.reduce((total, item) => total + (item.badge || 0), 0);
                   
                   return (
                     <div key={category.id} className="px-4">
@@ -985,11 +921,6 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                               {category.label}
                             </span>
                             <span className={`w-2 h-2 rounded-full ${getCategoryColor(category.color)?.split(' ')?.[1] || 'bg-gray-100'}`}></span>
-                            {categoryBadgeCount > 0 && (
-                              <span className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                                {categoryBadgeCount}
-                              </span>
-                            )}
                           </div>
                           {isExpanded ? (
                             <ChevronUp className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -1028,7 +959,6 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                                       : 'text-gray-700 hover:bg-white/30 hover:text-orange-600 focus:bg-white/30 focus:text-orange-600 hover:scale-105'
                                   }`}
                                   aria-current={isActive ? 'page' : undefined}
-                                  aria-describedby={item.badge ? `badge-${item.id}` : undefined}
                                 >
                                   {Icon ? (
                                     <Icon className={`w-5 h-5 transition-all duration-200 ${
@@ -1043,22 +973,6 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                                   {!isCollapsed && (
                                     <>
                                       <span className="font-medium text-sm flex-1">{item.label}</span>
-                                      <div className="flex items-center space-x-2">
-                                        {item.priority && (
-                                          <span className={`text-xs px-1.5 py-0.5 rounded-full ${getPriorityColor(item.priority)}`}>
-                                            {item.priority.charAt(0).toUpperCase()}
-                                          </span>
-                                        )}
-                                        {item.badge && item.badge > 0 && (
-                                          <span 
-                                            id={`badge-${item.id}`}
-                                            className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full animate-pulse shadow-lg"
-                                            aria-label={`${item.badge} notifications`}
-                                          >
-                                            {item.badge}
-                                          </span>
-                                        )}
-                                      </div>
                                     </>
                                   )}
                                 </button>
@@ -1101,33 +1015,9 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                                           <Home className="w-4 h-4" />
                                         )}
                                         <span className="flex-1">{subItem.label}</span>
-                                        {subItem.badge && subItem.badge > 0 && (
-                                          <span className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                                            {subItem.badge}
-                                          </span>
-                                        )}
                                       </button>
                                     );
                                   })}
-                                </div>
-                              )}
-                              
-                              {/* Tooltip for collapsed state */}
-                              {isCollapsed && (
-                                <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-                                  <div className="bg-gray-900 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap shadow-xl">
-                                    <div className="font-medium">{item.label}</div>
-                                    {item.badge && item.badge > 0 && (
-                                      <div className="text-xs text-orange-300 mt-1">
-                                        {item.badge} notifications
-                                      </div>
-                                    )}
-                                    {item.priority && (
-                                      <div className="text-xs text-gray-300 mt-1">
-                                        Priority: {item.priority}
-                                      </div>
-                                    )}
-                                  </div>
                                 </div>
                               )}
                             </div>
@@ -1143,17 +1033,6 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
 
           {/* Footer */}
           <div className="p-4 border-t border-white/10 space-y-2">
-            {/* Notification Summary */}
-            {!isCollapsed && getTotalBadgeCount() > 0 && (
-              <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-3 mb-3">
-                <div className="flex items-center space-x-2">
-                  <Bell className="w-4 h-4 text-orange-600 animate-pulse" />
-                  <span className="text-sm text-orange-700 font-medium">
-                    {getTotalBadgeCount()} pending notifications
-                  </span>
-                </div>
-              </div>
-            )}
             
             <button 
               onClick={() => onTabChange('settings')}
