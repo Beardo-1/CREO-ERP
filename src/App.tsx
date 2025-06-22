@@ -1,3 +1,7 @@
+// CREO ERP - Real Estate Management System
+// Build timestamp: 2024-01-20-15:45:32-FORCE-REFRESH
+// This comment forces a fresh build to bypass all caching
+
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from './components/Layout/Sidebar';
 import { Header } from './components/Layout/Header';
