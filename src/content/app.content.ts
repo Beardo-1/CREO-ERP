@@ -4576,7 +4576,7 @@ export const appContent = {
       en: "Spent",
       ar: "المصروف"
     },
-    leads: {
+    dashboardLeads: {
       en: "Leads",
       ar: "العملاء المحتملين"
     },
@@ -4720,7 +4720,7 @@ export const appContent = {
       en: "Conversions",
       ar: "التحويلات"
     },
-    leads: {
+    campaignLeads: {
       en: "Leads",
       ar: "العملاء المحتملون"
     },
@@ -4853,7 +4853,7 @@ export const appContent = {
     referrals: { en: 'Referrals', ar: 'الإحالات' },
     socialMedia: { en: 'Social Media', ar: 'وسائل التواصل الاجتماعي' },
     advertising: { en: 'Advertising', ar: 'الإعلان' },
-    leads: { en: 'leads', ar: 'عملاء محتملون' },
+    analyticsLeads: { en: 'leads', ar: 'عملاء محتملون' },
     agentPerformance: { en: 'Agent Performance', ar: 'أداء الوكلاء' },
     refresh: { en: 'Refresh', ar: 'تحديث' },
     export: { en: 'Export', ar: 'تصدير' },
