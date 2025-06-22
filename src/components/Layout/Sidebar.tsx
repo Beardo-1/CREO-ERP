@@ -51,8 +51,16 @@ const SafeIcon: React.FC<{
   className?: string;
   fallback?: React.ComponentType<any>;
 }> = ({ icon: Icon, className = "", fallback: FallbackIcon = Home }) => {
+  // Debug logging
+  console.log('SafeIcon received:', { 
+    icon: Icon, 
+    iconName: Icon?.name || 'unnamed', 
+    iconType: typeof Icon,
+    isFunction: typeof Icon === 'function'
+  });
+  
   if (!Icon || typeof Icon !== 'function') {
-    console.warn('SafeIcon: Missing or invalid icon, using fallback');
+    console.warn('SafeIcon: Missing or invalid icon, using fallback', { Icon, fallback: FallbackIcon });
     return <FallbackIcon className={className} />;
   }
   
@@ -930,12 +938,15 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                       }`}
                       aria-current={isActive ? 'page' : undefined}
                     >
-                      <SafeIcon 
-                        icon={Icon}
-                        className={`w-5 h-5 transition-all duration-200 ${
+                      {Icon ? (
+                        <Icon className={`w-5 h-5 transition-all duration-200 ${
                           isActive ? 'text-orange-600' : 'text-gray-600 group-hover:text-orange-600 group-focus:text-orange-600'
-                        } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110' : ''}`} 
-                      />
+                        } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110' : ''}`} />
+                      ) : (
+                        <Home className={`w-5 h-5 transition-all duration-200 ${
+                          isActive ? 'text-orange-600' : 'text-gray-600 group-hover:text-orange-600 group-focus:text-orange-600'
+                        } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110' : ''}`} />
+                      )}
                       <span className="font-medium text-sm flex-1">{item.label}</span>
                       {item.priority && (
                         <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(item.priority)}`}>
@@ -1019,12 +1030,15 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                                   aria-current={isActive ? 'page' : undefined}
                                   aria-describedby={item.badge ? `badge-${item.id}` : undefined}
                                 >
-                                  <SafeIcon 
-                                    icon={Icon}
-                                    className={`w-5 h-5 transition-all duration-200 ${
+                                  {Icon ? (
+                                    <Icon className={`w-5 h-5 transition-all duration-200 ${
                                       isActive ? 'text-orange-600' : 'text-gray-600 group-hover:text-orange-600'
-                                    } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110 rotate-12' : ''}`}
-                                  />
+                                    } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110 rotate-12' : ''}`} />
+                                  ) : (
+                                    <Home className={`w-5 h-5 transition-all duration-200 ${
+                                      isActive ? 'text-orange-600' : 'text-gray-600 group-hover:text-orange-600'
+                                    } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110 rotate-12' : ''}`} />
+                                  )}
                                   
                                   {!isCollapsed && (
                                     <>
@@ -1081,10 +1095,11 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                                         }}
                                         className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:text-orange-600 hover:bg-white/20 transition-all duration-200 text-sm"
                                       >
-                                        <SafeIcon 
-                                          icon={SubIcon}
-                                          className="w-4 h-4"
-                                        />
+                                        {SubIcon ? (
+                                          <SubIcon className="w-4 h-4" />
+                                        ) : (
+                                          <Home className="w-4 h-4" />
+                                        )}
                                         <span className="flex-1">{subItem.label}</span>
                                         {subItem.badge && subItem.badge > 0 && (
                                           <span className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full">
