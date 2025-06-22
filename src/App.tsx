@@ -1393,6 +1393,20 @@ function App() {
             />
           );
 
+        case 'leads-follow-up':
+          return (
+            <SafeComponent 
+              component={FollowUpLeads} 
+              name="LeadsFollowUp"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Follow-up Leads</h2>
+                  <p className="text-gray-600">Loading follow-up leads...</p>
+                </div>
+              }
+            />
+          );
+
         default:
           // For truly unknown tabs, show a proper error message without auto-redirect
           return (
