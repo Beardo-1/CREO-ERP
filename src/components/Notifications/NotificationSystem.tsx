@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Bell, X, CheckCircle, AlertCircle, Info, DollarSign, Users, Home, Handshake } from 'lucide-react';
+import { Bell, X, CheckCircle, AlertCircle, Info, DollarSign, Users, Home, Handshake, Calendar } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
+import { unifiedDataService } from '../../services/unifiedDataService';
 
 interface Notification {
   id: string;
@@ -10,48 +13,11 @@ interface Notification {
   timestamp: Date;
   read: boolean;
   icon?: React.ComponentType<any>;
+  actionUrl?: string;
 }
 
-const notificationTemplates = [
-  {
-    type: 'success' as const,
-    title: 'New Lead Converted',
-    message: 'Sarah Johnson has been converted to a client!',
-    icon: Users
-  },
-  {
-    type: 'deal' as const,
-    title: 'Deal Closed',
-    message: 'Congratulations! 123 Oak Street deal closed for $485,000',
-    icon: DollarSign
-  },
-  {
-    type: 'info' as const,
-    title: 'Property Viewed',
-    message: '456 Pine Avenue has been viewed 15 times today',
-    icon: Home
-  },
-  {
-    type: 'warning' as const,
-    title: 'Follow-up Required',
-    message: 'Michael Chen needs follow-up - last contact 5 days ago',
-    icon: AlertCircle
-  },
-  {
-    type: 'success' as const,
-    title: 'New Property Listed',
-    message: '789 Maple Drive has been successfully listed',
-    icon: Home
-  },
-  {
-    type: 'deal' as const,
-    title: 'Offer Received',
-    message: 'New offer received for $320,000 on downtown condo',
-    icon: Handshake
-  }
-];
-
 export function NotificationSystem() {
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [toastNotifications, setToastNotifications] = useState<Notification[]>([]);
@@ -59,47 +25,245 @@ export function NotificationSystem() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Generate random notifications
+  // Load real notifications from system events
   useEffect(() => {
-    const generateNotification = () => {
-      const template = notificationTemplates[Math.floor(Math.random() * notificationTemplates.length)];
-      const newNotification: Notification = {
-        id: Date.now().toString(),
-        ...template,
-        timestamp: new Date(),
-        read: false
-      };
+    const loadNotifications = async () => {
+      try {
+        const [properties, deals, contacts] = await Promise.all([
+          unifiedDataService.getProperties(),
+          unifiedDataService.getDeals(),
+          unifiedDataService.getContacts()
+        ]);
 
-      setNotifications(prev => [newNotification, ...prev.slice(0, 9)]);
-      setToastNotifications(prev => [...prev, newNotification]);
+        const systemNotifications: Notification[] = [];
 
-      // Remove toast after 5 seconds
-      setTimeout(() => {
-        setToastNotifications(prev => prev.filter(n => n.id !== newNotification.id));
-      }, 5000);
+        // Recent property additions
+        const recentProperties = properties
+          .filter(p => {
+            const listingDate = new Date(p.listingDate);
+            const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+            return listingDate > dayAgo;
+          })
+          .slice(0, 3);
+
+        recentProperties.forEach(property => {
+          systemNotifications.push({
+            id: `property-${property.id}`,
+            type: 'success',
+            title: 'New Property Listed',
+            message: `${property.title} - $${property.price.toLocaleString()}`,
+            timestamp: new Date(property.listingDate),
+            read: false,
+            icon: Home,
+            actionUrl: `/properties/${property.id}`
+          });
+        });
+
+        // Recent deals
+        const recentDeals = deals
+          .filter(d => {
+            const createdDate = new Date(d.createdAt);
+            const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+            return createdDate > dayAgo;
+          })
+          .slice(0, 3);
+
+        recentDeals.forEach(deal => {
+          const dealProperty = properties.find(p => p.id === deal.propertyId);
+          systemNotifications.push({
+            id: `deal-${deal.id}`,
+            type: deal.stage === 'Closed' ? 'deal' : 'info',
+            title: deal.stage === 'Closed' ? 'Deal Closed' : 'New Deal Created',
+            message: `${dealProperty?.title || 'Property'} - $${deal.value.toLocaleString()}`,
+            timestamp: new Date(deal.createdAt),
+            read: false,
+            icon: deal.stage === 'Closed' ? DollarSign : Handshake,
+            actionUrl: `/deals/${deal.id}`
+          });
+        });
+
+        // Recent contacts
+        const recentContacts = contacts
+          .filter(c => {
+            const createdDate = new Date(c.createdAt);
+            const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+            return createdDate > dayAgo;
+          })
+          .slice(0, 2);
+
+        recentContacts.forEach(contact => {
+          systemNotifications.push({
+            id: `contact-${contact.id}`,
+            type: 'info',
+            title: 'New Contact Added',
+            message: `${contact.firstName} ${contact.lastName} - ${contact.type}`,
+            timestamp: new Date(contact.createdAt),
+            read: false,
+            icon: Users,
+            actionUrl: `/contacts/${contact.id}`
+          });
+        });
+
+        // Follow-up reminders for old contacts
+        const needFollowUp = contacts.filter(c => {
+          const lastContact = new Date(c.lastContact);
+          const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+          return lastContact < weekAgo && c.status === 'Contacted';
+        }).slice(0, 2);
+
+        needFollowUp.forEach(contact => {
+          systemNotifications.push({
+            id: `followup-${contact.id}`,
+            type: 'warning',
+            title: 'Follow-up Required',
+            message: `${contact.firstName} ${contact.lastName} needs follow-up`,
+            timestamp: new Date(contact.lastContact),
+            read: false,
+            icon: AlertCircle,
+            actionUrl: `/contacts/${contact.id}`
+          });
+        });
+
+        // Sort by timestamp (newest first)
+        systemNotifications.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+
+        // Add system status notifications if no other notifications
+        if (systemNotifications.length === 0) {
+          systemNotifications.push({
+            id: 'system-ready',
+            type: 'success',
+            title: 'System Ready',
+            message: 'Your CRM system is running smoothly',
+            timestamp: new Date(),
+            read: false,
+            icon: CheckCircle
+          });
+        }
+
+        setNotifications(systemNotifications.slice(0, 10)); // Keep only 10 most recent
+      } catch (error) {
+        console.error('Error loading notifications:', error);
+        // Add error notification
+        setNotifications([{
+          id: 'error-loading',
+          type: 'warning',
+          title: 'System Notice',
+          message: 'Unable to load recent activity notifications',
+          timestamp: new Date(),
+          read: false,
+          icon: AlertCircle
+        }]);
+      }
     };
 
-    // Generate initial notifications
-    const initialNotifications = Array.from({ length: 3 }, (_, i) => {
-      const template = notificationTemplates[i];
-      return {
-        id: `initial-${i}`,
-        ...template,
-        timestamp: new Date(Date.now() - i * 1000 * 60 * 30), // 30 minutes apart
-        read: i > 0
-      };
-    });
-    setNotifications(initialNotifications);
+    loadNotifications();
 
-    // Generate new notifications every 10-30 seconds
-    const interval = setInterval(() => {
-      if (Math.random() > 0.3) { // 70% chance
-        generateNotification();
+    // Listen for data changes to generate new notifications
+    const handlePropertyChange = (data: any) => {
+      if (data && data.length > 0) {
+        const latestProperty = data[data.length - 1];
+        const newNotification: Notification = {
+          id: `new-property-${latestProperty.id}`,
+          type: 'success',
+          title: 'New Property Added',
+          message: `${latestProperty.title} has been listed`,
+          timestamp: new Date(),
+          read: false,
+          icon: Home
+        };
+        
+        setNotifications(prev => [newNotification, ...prev.slice(0, 9)]);
+        setToastNotifications(prev => [...prev, newNotification]);
+        
+        // Remove toast after 5 seconds
+        setTimeout(() => {
+          setToastNotifications(prev => prev.filter(n => n.id !== newNotification.id));
+        }, 5000);
       }
-    }, Math.random() * 20000 + 10000);
+    };
 
-    return () => clearInterval(interval);
+    const handleDealChange = (data: any) => {
+      if (data && data.length > 0) {
+        const latestDeal = data[data.length - 1];
+        const newNotification: Notification = {
+          id: `new-deal-${latestDeal.id}`,
+          type: 'deal',
+          title: 'New Deal Created',
+          message: `Deal for $${latestDeal.value.toLocaleString()} created`,
+          timestamp: new Date(),
+          read: false,
+          icon: Handshake
+        };
+        
+        setNotifications(prev => [newNotification, ...prev.slice(0, 9)]);
+        setToastNotifications(prev => [...prev, newNotification]);
+        
+        setTimeout(() => {
+          setToastNotifications(prev => prev.filter(n => n.id !== newNotification.id));
+        }, 5000);
+      }
+    };
+
+    const handleContactChange = (data: any) => {
+      if (data && data.length > 0) {
+        const latestContact = data[data.length - 1];
+        const newNotification: Notification = {
+          id: `new-contact-${latestContact.id}`,
+          type: 'info',
+          title: 'New Contact Added',
+          message: `${latestContact.firstName} ${latestContact.lastName} added`,
+          timestamp: new Date(),
+          read: false,
+          icon: Users
+        };
+        
+        setNotifications(prev => [newNotification, ...prev.slice(0, 9)]);
+        setToastNotifications(prev => [...prev, newNotification]);
+        
+        setTimeout(() => {
+          setToastNotifications(prev => prev.filter(n => n.id !== newNotification.id));
+        }, 5000);
+      }
+    };
+
+    // Subscribe to data changes
+    unifiedDataService.subscribe('propertiesChanged', handlePropertyChange);
+    unifiedDataService.subscribe('dealsChanged', handleDealChange);
+    unifiedDataService.subscribe('contactsChanged', handleContactChange);
+
+    // Refresh notifications every 5 minutes
+    const interval = setInterval(loadNotifications, 5 * 60 * 1000);
+
+    return () => {
+      clearInterval(interval);
+      unifiedDataService.unsubscribe('propertiesChanged', handlePropertyChange);
+      unifiedDataService.unsubscribe('dealsChanged', handleDealChange);
+      unifiedDataService.unsubscribe('contactsChanged', handleContactChange);
+    };
   }, []);
+
+  // Calculate dropdown position
+  const calculateDropdownPosition = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const dropdownWidth = 400;
+      const dropdownHeight = 500;
+      
+      let top = rect.bottom + 8;
+      let right = window.innerWidth - rect.right;
+      
+      // Adjust if dropdown would go off screen
+      if (rect.right + dropdownWidth > window.innerWidth) {
+        right = 16;
+      }
+      
+      if (rect.bottom + dropdownHeight > window.innerHeight) {
+        top = rect.top - dropdownHeight - 8;
+      }
+      
+      setDropdownPosition({ top, right });
+    }
+  };
 
   // Handle window resize to recalculate dropdown position
   useEffect(() => {
@@ -167,39 +331,15 @@ export function NotificationSystem() {
   const formatTime = (timestamp: Date) => {
     const now = new Date();
     const diff = now.getTime() - timestamp.getTime();
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-    if (days > 0) return `${days}d ago`;
-    if (hours > 0) return `${hours}h ago`;
-    if (minutes > 0) return `${minutes}m ago`;
-    return 'Just now';
+    if (minutes < 1) return t(appContent.deals.justNow);
+    if (minutes < 60) return `${minutes}${t(appContent.deals.minutesAgo)}`;
+    if (hours < 24) return `${hours}${t(appContent.deals.hoursAgo)}`;
+    return `${days}${t(appContent.deals.daysAgo)}`;
   };
-
-  // Calculate dropdown position based on button position
-  const calculateDropdownPosition = () => {
-    if (!buttonRef.current) return;
-    
-    const buttonRect = buttonRef.current.getBoundingClientRect();
-    const dropdownWidth = window.innerWidth < 640 ? 320 : window.innerWidth < 768 ? 352 : 384;
-    
-    // Calculate position
-    const top = buttonRect.bottom + 8; // 8px gap below button
-    
-    // For mobile, center the dropdown with some margin
-    if (window.innerWidth < 640) {
-      const left = Math.max(16, Math.min(buttonRect.left, window.innerWidth - dropdownWidth - 16));
-      setDropdownPosition({ top, right: window.innerWidth - left - dropdownWidth });
-    } else {
-      // For desktop, align with button's right edge
-      const right = window.innerWidth - buttonRect.right;
-      const adjustedRight = Math.max(16, Math.min(right, window.innerWidth - dropdownWidth - 16));
-      setDropdownPosition({ top, right: adjustedRight });
-    }
-  };
-
-
 
   return (
     <>
@@ -226,29 +366,40 @@ export function NotificationSystem() {
         {/* Notification Dropdown - Rendered as Portal */}
         {showDropdown && createPortal(
           <div 
-            ref={dropdownRef} 
-            className="notification-dropdown"
-            style={{
-              top: `${dropdownPosition.top}px`,
-              right: `${dropdownPosition.right}px`
+            className="fixed bg-white rounded-2xl shadow-2xl border border-gray-200 z-[99999] w-96 max-h-[500px] overflow-hidden"
+            style={{ 
+              top: `${dropdownPosition.top}px`, 
+              right: `${dropdownPosition.right}px` 
             }}
+            ref={dropdownRef}
           >
-            <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
-              {unreadCount > 0 && (
-                <button
-                  onClick={markAllAsRead}
-                  className="text-sm text-amber-600 hover:text-amber-700 font-medium"
-                >
-                  Mark all read
-                </button>
-              )}
+            <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-orange-500 to-red-500 text-white">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">{t(appContent.deals.notifications)}</h3>
+                <div className="flex items-center space-x-2">
+                  {unreadCount > 0 && (
+                    <button
+                      onClick={markAllAsRead}
+                      className="text-sm text-orange-100 hover:text-white transition-colors"
+                    >
+                      {t(appContent.deals.markAllRead)}
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setShowDropdown(false)}
+                    className="p-1 hover:bg-white/20 rounded-lg transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="max-h-80 overflow-y-auto">
+            
+            <div className="max-h-96 overflow-y-auto">
               {notifications.length === 0 ? (
                 <div className="p-8 text-center text-gray-500">
                   <Bell className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                  <p>No notifications yet</p>
+                  <p>{t(appContent.deals.noNotifications)}</p>
                 </div>
               ) : (
                 notifications.map((notification) => (
@@ -327,15 +478,6 @@ export function NotificationSystem() {
             </div>
           ))}
         </div>,
-        document.body
-      )}
-
-      {/* Click outside to close dropdown */}
-      {showDropdown && createPortal(
-        <div
-          className="fixed inset-0 z-[99998]"
-          onClick={() => setShowDropdown(false)}
-        ></div>,
         document.body
       )}
     </>

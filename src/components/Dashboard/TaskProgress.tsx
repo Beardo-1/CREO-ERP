@@ -61,7 +61,7 @@ export function TaskProgress() {
             </div>
             <div className="flex-1">
               <div className={`font-medium ${task.completed ? 'text-gray-400 line-through' : 'text-white'}`}>
-                {t(appContent.stats[task.titleKey])}
+                {t(appContent.stats[task.titleKey] || { en: String(task.titleKey), ar: String(task.titleKey) })}
               </div>
               <div className="text-sm text-gray-400">{task.time}</div>
             </div>

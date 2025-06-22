@@ -126,12 +126,12 @@ export function ComplianceDashboard() {
         dueDate: new Date(2024, 11, 30),
         lastReviewed: new Date(2024, 10, 15),
         assignedTo: 'John Smith',
-        description: 'Annual real estate license renewal required for continued practice',
+        description: 'Annual real estate license renewal with continuing education requirements',
         requirements: [
-          'Complete 45 hours of continuing education',
+          'Complete 30 hours of continuing education',
           'Submit renewal application',
-          'Pay renewal fees ($350)',
-          'Background check clearance'
+          'Pay licensing fees',
+          'Pass background check'
         ],
         documents: [
           {
@@ -272,33 +272,13 @@ export function ComplianceDashboard() {
     const mockLegalUpdates: LegalUpdate[] = [
       {
         id: '1',
-        title: 'New Disclosure Requirements for Climate Risk',
-        category: 'Environmental Law',
-        date: new Date(2024, 11, 5),
-        impact: 'high',
-        summary: 'New state law requires disclosure of climate-related risks including flood zones, wildfire areas, and earthquake fault lines.',
-        source: 'State Real Estate Commission',
-        actionRequired: true
-      },
-      {
-        id: '2',
-        title: 'Updated Fair Housing Guidelines',
+        title: 'New Fair Housing Regulations',
         category: 'Fair Housing',
-        date: new Date(2024, 10, 28),
-        impact: 'medium',
-        summary: 'HUD has updated guidelines for advertising and marketing practices to ensure compliance with fair housing laws.',
+        date: new Date(2024, 11, 1),
+        impact: 'high',
+        summary: 'Updated guidelines for fair housing compliance in digital marketing',
         source: 'HUD',
         actionRequired: true
-      },
-      {
-        id: '3',
-        title: 'Digital Signature Law Changes',
-        category: 'Contract Law',
-        date: new Date(2024, 10, 20),
-        impact: 'low',
-        summary: 'Minor updates to digital signature requirements for real estate contracts.',
-        source: 'State Legislature',
-        actionRequired: false
       }
     ];
 
@@ -315,8 +295,8 @@ export function ComplianceDashboard() {
             id: 'f1',
             severity: 'medium',
             category: 'Documentation',
-            description: 'Missing signatures on 3 client agreements',
-            remediation: 'Obtain missing signatures within 30 days',
+            description: 'Missing signatures on some disclosure documents',
+            remediation: 'Implement digital signature workflow',
             status: 'in-progress',
             dueDate: '2024-02-15'
           }

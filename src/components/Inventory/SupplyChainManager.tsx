@@ -55,6 +55,11 @@ const SupplyChainManager: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [showAddSupplierModal, setShowAddSupplierModal] = useState(false);
+  const [showCreateOrderModal, setShowCreateOrderModal] = useState(false);
+  const [showTrackShipmentModal, setShowTrackShipmentModal] = useState(false);
+  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<PurchaseOrder | null>(null);
 
   // Sample data
   const supplyMetrics: SupplyMetrics = {
@@ -152,6 +157,47 @@ const SupplyChainManager: React.FC = () => {
       notes: 'Rush order for weekend open houses'
     }
   ];
+
+  // Functionality handlers
+  const handleAddSupplier = (supplierData: Partial<Supplier>) => {
+        setShowAddSupplierModal(false);
+  };
+
+  const handleCreateOrder = (orderData: Partial<PurchaseOrder>) => {
+        setShowCreateOrderModal(false);
+  };
+
+  const handleTrackShipment = (orderId: string) => {
+        setShowTrackShipmentModal(false);
+    setSelectedOrder(null);
+  };
+
+  const handleGenerateReport = () => {
+    const reportData = [
+      ['Supplier ID', 'Name', 'Category', 'Contact Person', 'Email', 'Phone', 'Rating', 'Total Orders', 'Total Spent', 'Status'],
+      ...suppliers.map(supplier => [
+        supplier.id,
+        supplier.name,
+        supplier.category,
+        supplier.contactPerson,
+        supplier.email,
+        supplier.phone,
+        supplier.rating,
+        supplier.totalOrders,
+        supplier.totalSpent,
+        supplier.status
+      ])
+    ];
+    
+    const csvContent = reportData.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `supply-chain-report-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   const getCategoryColor = (category: string) => {
     const colors = {
@@ -306,7 +352,10 @@ const SupplyChainManager: React.FC = () => {
             <option value="pending">Pending</option>
             <option value="suspended">Suspended</option>
           </select>
-          <button className="flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-200 shadow-lg">
+          <button 
+            onClick={() => setShowAddSupplierModal(true)}
+            className="flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-200 shadow-lg"
+          >
             <Plus className="w-4 h-4 text-white" />
             <span className="text-white font-medium">Add Supplier</span>
           </button>
@@ -371,7 +420,13 @@ const SupplyChainManager: React.FC = () => {
             </div>
 
             <div className="flex space-x-2">
-              <button className="flex-1 px-3 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-200 text-sm font-medium">
+              <button 
+                onClick={() => {
+                  setSelectedSupplier(supplier);
+                  setShowCreateOrderModal(true);
+                }}
+                className="flex-1 px-3 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-200 text-sm font-medium"
+              >
                 Create Order
               </button>
               <button className="px-3 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-all duration-200 text-sm">
@@ -429,6 +484,15 @@ const SupplyChainManager: React.FC = () => {
                     <div className="flex space-x-2">
                       <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">View</button>
                       <button className="text-amber-600 hover:text-amber-800 text-sm font-medium">Edit</button>
+                      <button 
+                        onClick={() => {
+                          setSelectedOrder(order);
+                          setShowTrackShipmentModal(true);
+                        }}
+                        className="text-green-600 hover:text-green-800 text-sm font-medium"
+                      >
+                        Track
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -450,9 +514,18 @@ const SupplyChainManager: React.FC = () => {
         </div>
         <h3 className="text-2xl font-bold text-gray-900 mb-2">Supply Chain Analytics</h3>
         <p className="text-gray-600 mb-6">Advanced analytics and reporting for supply chain performance</p>
-        <button className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl text-white font-medium hover:from-amber-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 shadow-lg">
-          View Analytics Dashboard
-        </button>
+        <div className="flex space-x-4 justify-center">
+          <button className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl text-white font-medium hover:from-amber-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 shadow-lg">
+            View Analytics Dashboard
+          </button>
+          <button 
+            onClick={handleGenerateReport}
+            className="px-6 py-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl text-white font-medium hover:from-green-600 hover:to-teal-600 transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center space-x-2"
+          >
+            <Download className="w-4 h-4" />
+            <span>Generate Report</span>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -496,6 +569,247 @@ const SupplyChainManager: React.FC = () => {
           {activeTab === 'orders' && renderOrders()}
           {activeTab === 'analytics' && renderAnalytics()}
         </div>
+
+        {/* Add Supplier Modal */}
+        {showAddSupplierModal && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAddSupplierModal(false)} />
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Supplier</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Supplier Name</label>
+                    <input
+                      type="text"
+                      placeholder="Enter supplier name"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                      <option value="staging">Staging</option>
+                      <option value="marketing">Marketing</option>
+                      <option value="maintenance">Maintenance</option>
+                      <option value="technology">Technology</option>
+                      <option value="security">Security</option>
+                      <option value="general">General</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Contact Person</label>
+                    <input
+                      type="text"
+                      placeholder="Contact person name"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input
+                      type="email"
+                      placeholder="supplier@example.com"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <input
+                      type="tel"
+                      placeholder="(555) 123-4567"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Payment Terms</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                      <option value="Net 15">Net 15</option>
+                      <option value="Net 30">Net 30</option>
+                      <option value="Net 45">Net 45</option>
+                      <option value="Net 60">Net 60</option>
+                      <option value="COD">Cash on Delivery</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                  <textarea
+                    rows={3}
+                    placeholder="Full address"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                    onClick={() => setShowAddSupplierModal(false)}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleAddSupplier({})}
+                    className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 px-4 rounded-xl font-medium transition-all"
+                  >
+                    Add Supplier
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Create Order Modal */}
+        {showCreateOrderModal && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowCreateOrderModal(false)} />
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Create Purchase Order
+                  {selectedSupplier && <span className="text-sm text-gray-500 ml-2">for {selectedSupplier.name}</span>}
+                </h3>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Expected Delivery</label>
+                      <input
+                        type="date"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                      <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Order Items</label>
+                    <div className="space-y-2">
+                      <div className="flex space-x-2">
+                        <input
+                          type="text"
+                          placeholder="Item name"
+                          className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <input
+                          type="number"
+                          placeholder="Qty"
+                          className="w-20 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <input
+                          type="number"
+                          placeholder="Price"
+                          step="0.01"
+                          className="w-24 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <button className="px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all">
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Order Notes</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Special instructions or notes"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                    onClick={() => setShowCreateOrderModal(false)}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleCreateOrder({})}
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-3 px-4 rounded-xl font-medium transition-all"
+                  >
+                    Create Order
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Track Shipment Modal */}
+        {showTrackShipmentModal && selectedOrder && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowTrackShipmentModal(false)} />
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Track Shipment</h3>
+                <div className="space-y-4">
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <h4 className="font-medium text-gray-900 mb-2">Order Details</h4>
+                    <div className="space-y-1 text-sm text-gray-600">
+                      <div>Order ID: {selectedOrder.id}</div>
+                      <div>Supplier: {selectedOrder.supplierName}</div>
+                      <div>Order Date: {selectedOrder.orderDate}</div>
+                      <div>Expected: {selectedOrder.expectedDelivery}</div>
+                      <div>Status: <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedOrder.status)}`}>
+                        {selectedOrder.status}
+                      </span></div>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Tracking Number</label>
+                    <input
+                      type="text"
+                      placeholder="Enter tracking number"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Carrier</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                      <option value="">Select Carrier</option>
+                      <option value="fedex">FedEx</option>
+                      <option value="ups">UPS</option>
+                      <option value="usps">USPS</option>
+                      <option value="dhl">DHL</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Update Status</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                    onClick={() => setShowTrackShipmentModal(false)}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleTrackShipment(selectedOrder.id)}
+                    className="flex-1 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white py-3 px-4 rounded-xl font-medium transition-all"
+                  >
+                    Update Tracking
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

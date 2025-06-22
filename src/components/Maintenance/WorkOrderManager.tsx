@@ -28,53 +28,7 @@ interface WorkOrder {
   attachments?: string[];
 }
 
-const mockWorkOrders: WorkOrder[] = [
-  {
-    id: 'wo1',
-    title: 'HVAC Maintenance',
-    description: 'Regular maintenance and filter replacement for central air system',
-    property: {
-      id: 'p1',
-      address: '123 Oak Street',
-      type: 'Residential'
-    },
-    vendor: {
-      id: 'v1',
-      name: 'Cool Air Pro',
-      phone: '(555) 123-4567',
-      email: 'service@coolairpro.com',
-      rating: 4.8
-    },
-    priority: 'medium',
-    status: 'scheduled',
-    scheduledDate: new Date(2024, 2, 15, 10, 0),
-    estimatedCost: 250,
-    notes: 'Last maintenance was 6 months ago'
-  },
-  {
-    id: 'wo2',
-    title: 'Plumbing Repair',
-    description: 'Fix leaking faucet in master bathroom',
-    property: {
-      id: 'p2',
-      address: '456 Pine Avenue',
-      type: 'Luxury'
-    },
-    vendor: {
-      id: 'v2',
-      name: 'Quick Fix Plumbing',
-      phone: '(555) 987-6543',
-      email: 'service@quickfixplumbing.com',
-      rating: 4.5
-    },
-    priority: 'high',
-    status: 'in-progress',
-    scheduledDate: new Date(2024, 2, 14, 14, 0),
-    estimatedCost: 150,
-    actualCost: 175,
-    notes: 'Client reported water damage to vanity'
-  }
-];
+
 
 const WorkOrderManager: React.FC = () => {
   const { t } = useTranslation();

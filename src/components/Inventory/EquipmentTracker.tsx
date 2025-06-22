@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Wrench, Calendar, AlertTriangle, CheckCircle, Clock, MapPin, User, DollarSign, TrendingUp, Settings, Plus, Search, Filter } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 interface Equipment {
   id: string;
@@ -37,6 +39,7 @@ interface MaintenanceRecord {
 }
 
 const EquipmentTracker: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('equipment');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('all');
@@ -212,43 +215,43 @@ const EquipmentTracker: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'text-green-600 bg-green-100';
-      case 'maintenance': return 'text-yellow-600 bg-yellow-100';
-      case 'repair': return 'text-red-600 bg-red-100';
-      case 'retired': return 'text-gray-600 bg-gray-100';
-      case 'missing': return 'text-purple-600 bg-purple-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'active': return 'bg-green-500 text-white';
+      case 'maintenance': return 'bg-yellow-500 text-white';
+      case 'repair': return 'bg-red-500 text-white';
+      case 'retired': return 'bg-gray-500 text-white';
+      case 'missing': return 'bg-purple-500 text-white';
+      default: return 'bg-gray-500 text-white';
     }
   };
 
   const getConditionColor = (condition: string) => {
     switch (condition) {
-      case 'excellent': return 'text-green-600 bg-green-100';
-      case 'good': return 'text-blue-600 bg-blue-100';
-      case 'fair': return 'text-yellow-600 bg-yellow-100';
-      case 'poor': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'excellent': return 'bg-green-500 text-white';
+      case 'good': return 'bg-blue-500 text-white';
+      case 'fair': return 'bg-yellow-500 text-white';
+      case 'poor': return 'bg-red-500 text-white';
+      default: return 'bg-gray-500 text-white';
     }
   };
 
   const getMaintenanceStatusColor = (status: string) => {
     switch (status) {
-      case 'scheduled': return 'text-blue-600 bg-blue-100';
-      case 'in-progress': return 'text-yellow-600 bg-yellow-100';
-      case 'completed': return 'text-green-600 bg-green-100';
-      case 'cancelled': return 'text-gray-600 bg-gray-100';
-      case 'overdue': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'scheduled': return 'bg-blue-500 text-white';
+      case 'in-progress': return 'bg-yellow-500 text-white';
+      case 'completed': return 'bg-green-500 text-white';
+      case 'cancelled': return 'bg-gray-500 text-white';
+      case 'overdue': return 'bg-red-500 text-white';
+      default: return 'bg-gray-500 text-white';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'low': return 'text-green-600 bg-green-100';
-      case 'medium': return 'text-yellow-600 bg-yellow-100';
-      case 'high': return 'text-orange-600 bg-orange-100';
-      case 'critical': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'low': return 'bg-green-500 text-white';
+      case 'medium': return 'bg-yellow-500 text-white';
+      case 'high': return 'bg-orange-500 text-white';
+      case 'critical': return 'bg-red-500 text-white';
+      default: return 'bg-gray-500 text-white';
     }
   };
 
@@ -263,89 +266,97 @@ const EquipmentTracker: React.FC = () => {
   const renderEquipmentList = () => (
     <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-white/70 text-sm">Total Equipment</p>
-              <p className="text-2xl font-bold text-white">{equipment.length}</p>
+              <p className="text-gray-600 text-sm font-medium">{t(appContent.deals.totalEquipment)}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{equipment.length}</p>
             </div>
-            <Wrench className="w-8 h-8 text-amber-400" />
+            <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl">
+              <Wrench className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-white/70 text-sm">Total Value</p>
-              <p className="text-2xl font-bold text-white">${equipment.reduce((sum, eq) => sum + eq.currentValue, 0).toLocaleString()}</p>
+              <p className="text-gray-600 text-sm font-medium">{t(appContent.deals.totalValue)}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">${equipment.reduce((sum, eq) => sum + eq.currentValue, 0).toLocaleString()}</p>
             </div>
-            <DollarSign className="w-8 h-8 text-green-400" />
+            <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl">
+              <DollarSign className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-white/70 text-sm">Needs Maintenance</p>
-              <p className="text-2xl font-bold text-white">{equipment.filter(eq => eq.status === 'maintenance' || eq.status === 'repair').length}</p>
+              <p className="text-gray-600 text-sm font-medium">{t(appContent.deals.needsMaintenance)}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{equipment.filter(eq => eq.status === 'maintenance' || eq.status === 'repair').length}</p>
             </div>
-            <AlertTriangle className="w-8 h-8 text-yellow-400" />
+            <div className="p-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl">
+              <AlertTriangle className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-white/70 text-sm">Avg Utilization</p>
-              <p className="text-2xl font-bold text-white">{Math.round(equipment.reduce((sum, eq) => sum + eq.utilizationRate, 0) / equipment.length)}%</p>
+              <p className="text-gray-600 text-sm font-medium">{t(appContent.deals.avgUtilization)}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{Math.round(equipment.reduce((sum, eq) => sum + eq.utilizationRate, 0) / equipment.length)}%</p>
             </div>
-            <TrendingUp className="w-8 h-8 text-purple-400" />
+            <div className="p-3 bg-gradient-to-r from-purple-500 to-violet-500 rounded-xl">
+              <TrendingUp className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
-              placeholder="Search equipment..."
+              placeholder={t(appContent.deals.searchEquipment)}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
             />
           </div>
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
           >
-            <option value="all">All Types</option>
-            <option value="camera">Camera</option>
-            <option value="staging">Staging</option>
-            <option value="security">Security</option>
-            <option value="tools">Tools</option>
-            <option value="technology">Technology</option>
-            <option value="vehicle">Vehicle</option>
+            <option value="all">{t(appContent.deals.allTypes)}</option>
+            <option value="camera">{t(appContent.deals.camera)}</option>
+            <option value="staging">{t(appContent.deals.staging)}</option>
+            <option value="security">{t(appContent.deals.security)}</option>
+            <option value="tools">{t(appContent.deals.tools)}</option>
+            <option value="technology">{t(appContent.deals.technology)}</option>
+            <option value="vehicle">{t(appContent.deals.vehicle)}</option>
           </select>
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
           >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="maintenance">Maintenance</option>
-            <option value="repair">Repair</option>
-            <option value="retired">Retired</option>
-            <option value="missing">Missing</option>
+            <option value="all">{t(appContent.deals.allStatus)}</option>
+            <option value="active">{t(appContent.deals.active)}</option>
+            <option value="maintenance">{t(appContent.deals.maintenance)}</option>
+            <option value="repair">{t(appContent.deals.repair)}</option>
+            <option value="retired">{t(appContent.deals.retired)}</option>
+            <option value="missing">{t(appContent.deals.missing)}</option>
           </select>
-          <button className="flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-200">
-            <Plus className="w-4 h-4 text-white" />
-            <span className="text-white">Add Equipment</span>
+          <button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg flex items-center justify-center space-x-2">
+            <Plus className="w-4 h-4" />
+            <span>{t(appContent.deals.addEquipment)}</span>
           </button>
         </div>
       </div>
@@ -353,67 +364,69 @@ const EquipmentTracker: React.FC = () => {
       {/* Equipment Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredEquipment.map((item) => (
-          <div key={item.id} className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-200">
+          <div key={item.id} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-200">
             <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-semibold text-white">{item.name}</h3>
-                <p className="text-white/70 text-sm">{item.model}</p>
-                <p className="text-white/50 text-xs">{item.id}</p>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
+                <p className="text-gray-600 text-sm">{item.model}</p>
+                <p className="text-gray-500 text-xs">{item.id}</p>
               </div>
-              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(item.status)}`}>
-                {item.status}
+              <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(item.status)}`}>
+                {t(appContent.deals[item.status as keyof typeof appContent.deals] || { en: item.status, ar: item.status })}
               </span>
             </div>
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-white/70 text-sm">Current Value</span>
-                <span className="text-white font-medium">${item.currentValue.toLocaleString()}</span>
+                <span className="text-gray-600 text-sm">{t(appContent.deals.currentValue)}</span>
+                <span className="text-gray-900 font-semibold">${item.currentValue.toLocaleString()}</span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-white/70 text-sm">Condition</span>
+                <span className="text-gray-600 text-sm">{t(appContent.deals.condition)}</span>
                 <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getConditionColor(item.condition)}`}>
-                  {item.condition}
+                  {t(appContent.deals[item.condition as keyof typeof appContent.deals] || { en: item.condition, ar: item.condition })}
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-white/70 text-sm">Utilization</span>
+                <span className="text-gray-600 text-sm">{t(appContent.deals.utilization)}</span>
                 <div className="flex items-center space-x-2">
-                  <div className="w-16 bg-white/20 rounded-full h-2">
+                  <div className="w-16 bg-gray-200 rounded-full h-2">
                     <div 
-                      className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full"
+                      className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${item.utilizationRate}%` }}
                     ></div>
                   </div>
-                  <span className="text-white text-sm">{item.utilizationRate}%</span>
+                  <span className="text-gray-900 text-sm font-medium">{item.utilizationRate}%</span>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2 text-white/70 text-sm">
-                <MapPin className="w-4 h-4" />
-                <span>{item.location}</span>
-              </div>
+              <div className="bg-gray-50 rounded-xl p-3 space-y-2">
+                <div className="flex items-center space-x-2 text-gray-600 text-sm">
+                  <MapPin className="w-4 h-4" />
+                  <span>{item.location}</span>
+                </div>
 
-              <div className="flex items-center space-x-2 text-white/70 text-sm">
-                <User className="w-4 h-4" />
-                <span>{item.assignedTo}</span>
-              </div>
+                <div className="flex items-center space-x-2 text-gray-600 text-sm">
+                  <User className="w-4 h-4" />
+                  <span>{item.assignedTo}</span>
+                </div>
 
-              <div className="flex items-center space-x-2 text-white/70 text-sm">
-                <Calendar className="w-4 h-4" />
-                <span>Next Maintenance: {new Date(item.nextMaintenance).toLocaleDateString()}</span>
+                <div className="flex items-center space-x-2 text-gray-600 text-sm">
+                  <Calendar className="w-4 h-4" />
+                  <span>{t(appContent.deals.nextMaintenance)}: {new Date(item.nextMaintenance).toLocaleDateString()}</span>
+                </div>
               </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-white/20">
+            <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="flex space-x-2">
-                <button className="flex-1 px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg text-white text-sm hover:from-blue-600 hover:to-purple-600 transition-all duration-200">
-                  View Details
+                <button className="flex-1 px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors">
+                  {t(appContent.deals.viewDetails)}
                 </button>
-                <button className="flex-1 px-3 py-2 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg text-white text-sm hover:from-green-600 hover:to-teal-600 transition-all duration-200">
-                  Schedule Maintenance
+                <button className="flex-1 px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg text-sm font-medium transition-colors">
+                  {t(appContent.deals.scheduleMaintenance)}
                 </button>
               </div>
             </div>
@@ -426,103 +439,113 @@ const EquipmentTracker: React.FC = () => {
   const renderMaintenanceSchedule = () => (
     <div className="space-y-6">
       {/* Maintenance Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-white/70 text-sm">Scheduled</p>
-              <p className="text-2xl font-bold text-white">{maintenanceRecords.filter(r => r.status === 'scheduled').length}</p>
+              <p className="text-gray-600 text-sm font-medium">{t(appContent.deals.scheduled)}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{maintenanceRecords.filter(r => r.status === 'scheduled').length}</p>
             </div>
-            <Calendar className="w-8 h-8 text-blue-400" />
+            <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl">
+              <Calendar className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-white/70 text-sm">In Progress</p>
-              <p className="text-2xl font-bold text-white">{maintenanceRecords.filter(r => r.status === 'in-progress').length}</p>
+              <p className="text-gray-600 text-sm font-medium">{t(appContent.deals.inProgress)}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{maintenanceRecords.filter(r => r.status === 'in-progress').length}</p>
             </div>
-            <Clock className="w-8 h-8 text-yellow-400" />
+            <div className="p-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl">
+              <Clock className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-white/70 text-sm">Overdue</p>
-              <p className="text-2xl font-bold text-white">{maintenanceRecords.filter(r => r.status === 'overdue').length}</p>
+              <p className="text-gray-600 text-sm font-medium">{t(appContent.deals.overdue)}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{maintenanceRecords.filter(r => r.status === 'overdue').length}</p>
             </div>
-            <AlertTriangle className="w-8 h-8 text-red-400" />
+            <div className="p-3 bg-gradient-to-r from-red-500 to-rose-500 rounded-xl">
+              <AlertTriangle className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-white/70 text-sm">Completed</p>
-              <p className="text-2xl font-bold text-white">{maintenanceRecords.filter(r => r.status === 'completed').length}</p>
+              <p className="text-gray-600 text-sm font-medium">{t(appContent.deals.completed)}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{maintenanceRecords.filter(r => r.status === 'completed').length}</p>
             </div>
-            <CheckCircle className="w-8 h-8 text-green-400" />
+            <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl">
+              <CheckCircle className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Maintenance Records Table */}
-      <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 overflow-hidden">
-        <div className="p-6 border-b border-white/20">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-white">Maintenance Schedule</h3>
-            <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-200">
-              <Plus className="w-4 h-4 text-white" />
-              <span className="text-white">Schedule Maintenance</span>
+            <h3 className="text-xl font-semibold text-gray-900">{t(appContent.deals.maintenanceSchedule)}</h3>
+            <button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg flex items-center space-x-2">
+              <Plus className="w-4 h-4" />
+              <span>{t(appContent.deals.scheduleMaintenance)}</span>
             </button>
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-white/5">
+            <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Equipment</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Scheduled Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Technician</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Cost</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Priority</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t(appContent.deals.equipment)}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t(appContent.deals.type)}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t(appContent.deals.scheduledDate)}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t(appContent.deals.technician)}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t(appContent.deals.cost)}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t(appContent.taskManagement.priority)}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t(appContent.deals.status)}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t(appContent.deals.actions)}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="bg-white divide-y divide-gray-200">
               {maintenanceRecords.map((record) => (
-                <tr key={record.id} className="hover:bg-white/5 transition-colors duration-200">
+                <tr key={record.id} className="hover:bg-gray-50 transition-colors duration-200">
                   <td className="px-6 py-4">
                     <div>
-                      <div className="text-sm font-medium text-white">{record.equipmentName}</div>
-                      <div className="text-sm text-white/70">{record.description}</div>
+                      <div className="text-sm font-medium text-gray-900">{record.equipmentName}</div>
+                      <div className="text-sm text-gray-600">{record.description}</div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-white capitalize">{record.type}</td>
-                  <td className="px-6 py-4 text-sm text-white">{new Date(record.scheduledDate).toLocaleDateString()}</td>
-                  <td className="px-6 py-4 text-sm text-white">{record.technician}</td>
-                  <td className="px-6 py-4 text-sm text-white">${record.cost}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900 capitalize">
+                    {t(appContent.deals[record.type as keyof typeof appContent.deals] || { en: record.type, ar: record.type })}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{new Date(record.scheduledDate).toLocaleDateString()}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{record.technician}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">${record.cost}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(record.priority)}`}>
-                      {record.priority}
+                      {t(appContent.taskManagement[record.priority as keyof typeof appContent.taskManagement] || { en: record.priority, ar: record.priority })}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getMaintenanceStatusColor(record.status)}`}>
-                      {record.status.replace('-', ' ')}
+                      {t(appContent.deals[record.status.replace('-', '') as keyof typeof appContent.deals] || { en: record.status.replace('-', ' '), ar: record.status.replace('-', ' ') })}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex space-x-2">
-                      <button className="text-amber-400 hover:text-amber-300 text-sm">Edit</button>
-                      <button className="text-blue-400 hover:text-blue-300 text-sm">View</button>
+                      <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">{t(appContent.deals.edit)}</button>
+                      <button className="text-green-600 hover:text-green-800 text-sm font-medium">{t(appContent.deals.view)}</button>
                       {record.status === 'scheduled' && (
-                        <button className="text-green-400 hover:text-green-300 text-sm">Start</button>
+                        <button className="text-purple-600 hover:text-purple-800 text-sm font-medium">{t(appContent.deals.start)}</button>
                       )}
                     </div>
                   </td>
@@ -536,29 +559,29 @@ const EquipmentTracker: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
+    <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Equipment Tracker</h1>
-          <p className="text-white/70">Track and manage real estate equipment and maintenance</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t(appContent.deals.equipmentTrackerTitle)}</h1>
+          <p className="text-gray-600">{t(appContent.deals.equipmentTrackerSubtitle)}</p>
         </div>
 
         {/* Navigation Tabs */}
         <div className="mb-8">
-          <div className="flex space-x-1 bg-white/10 backdrop-blur-md rounded-xl p-1 border border-white/20 w-fit">
+          <div className="flex space-x-1 bg-white rounded-2xl p-1 shadow-lg border border-gray-100 w-fit">
             {[
-              { id: 'equipment', label: 'Equipment List', icon: Wrench },
-              { id: 'maintenance', label: 'Maintenance Schedule', icon: Calendar },
-              { id: 'analytics', label: 'Analytics', icon: TrendingUp }
+              { id: 'equipment', label: t(appContent.deals.equipmentList), icon: Wrench },
+              { id: 'maintenance', label: t(appContent.deals.maintenanceSchedule), icon: Calendar },
+              { id: 'analytics', label: t(appContent.deals.analytics), icon: TrendingUp }
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-all duration-200 ${
+                className={`flex items-center space-x-2 px-6 py-3 rounded-xl transition-all duration-200 ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg'
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -573,12 +596,12 @@ const EquipmentTracker: React.FC = () => {
           {activeTab === 'equipment' && renderEquipmentList()}
           {activeTab === 'maintenance' && renderMaintenanceSchedule()}
           {activeTab === 'analytics' && (
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-8 border border-white/20 text-center">
-              <TrendingUp className="w-16 h-16 text-amber-400 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2">Equipment Analytics</h3>
-              <p className="text-white/70 mb-6">Detailed analytics and performance metrics for equipment</p>
-              <button className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg text-white font-medium hover:from-amber-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105">
-                View Analytics
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 text-center">
+              <TrendingUp className="w-16 h-16 text-amber-500 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t(appContent.deals.equipmentAnalytics)}</h3>
+              <p className="text-gray-600 mb-6">{t(appContent.deals.equipmentAnalyticsDesc)}</p>
+              <button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg">
+                {t(appContent.deals.viewAnalytics)}
               </button>
             </div>
           )}

@@ -22,7 +22,9 @@ import {
   Filter,
   Search
 } from 'lucide-react';
-import { dataService } from '../../services/dataService';
+import { unifiedDataService } from '../../services/unifiedDataService';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 interface DataStats {
   properties: number;
@@ -40,6 +42,7 @@ interface ImportResult {
 }
 
 export function DataManager() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'overview' | 'properties' | 'contacts' | 'deals' | 'agents' | 'import' | 'export'>('overview');
   const [dataStats, setDataStats] = useState<DataStats>({
     properties: 0,
@@ -60,10 +63,10 @@ export function DataManager() {
 
   const loadDataStats = () => {
     setDataStats({
-      properties: dataService.getProperties().length,
-      contacts: dataService.getContacts().length,
-      deals: dataService.getDeals().length,
-      agents: dataService.getAgents().length,
+      properties: unifiedDataService.getProperties().length,
+      contacts: unifiedDataService.getContacts().length,
+      deals: unifiedDataService.getDeals().length,
+      agents: unifiedDataService.getAgents().length,
       lastUpdated: new Date()
     });
   };
@@ -130,16 +133,16 @@ export function DataManager() {
         try {
           switch (type) {
             case 'properties':
-              dataService.addProperty(item);
+              unifiedDataService.addProperty(item);
               break;
             case 'contacts':
-              dataService.addContact(item);
+              unifiedDataService.addContact(item);
               break;
             case 'deals':
-              dataService.addDeal(item);
+              unifiedDataService.addDeal(item);
               break;
             case 'agents':
-              dataService.addAgent(item);
+              unifiedDataService.addAgent(item);
               break;
           }
           imported++;
@@ -164,49 +167,81 @@ export function DataManager() {
     }
   };
 
-  const exportData = (type: string) => {
+  const exportData = (type: string, format: 'json' | 'csv' = 'csv') => {
     let data: any[];
     switch (type) {
       case 'properties':
-        data = dataService.getProperties();
+        data = unifiedDataService.getProperties();
         break;
       case 'contacts':
-        data = dataService.getContacts();
+        data = unifiedDataService.getContacts();
         break;
       case 'deals':
-        data = dataService.getDeals();
+        data = unifiedDataService.getDeals();
         break;
       case 'agents':
-        data = dataService.getAgents();
+        data = unifiedDataService.getAgents();
         break;
       default:
         data = [];
     }
 
-    const dataStr = JSON.stringify(data, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `creo-${type}-${new Date().toISOString().split('T')[0]}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+    if (format === 'csv') {
+      // Convert to CSV
+      if (data.length === 0) {
+        // Success: No data to export
+        return;
+      }
+
+      const headers = Object.keys(data[0]);
+      const csvContent = [
+        headers.join(','),
+        ...data.map(item => 
+          headers.map(header => {
+            const value = item[header];
+            // Handle values with commas or quotes
+            if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+              return `"${value.replace(/"/g, '""')}"`;
+            }
+            return value || '';
+          }).join(',')
+        )
+      ].join('\n');
+
+      const dataBlob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `creo-${type}-${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } else {
+      // JSON export
+      const dataStr = JSON.stringify(data, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `creo-${type}-${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
   };
 
   const clearData = (type: string) => {
     if (confirm(`Are you sure you want to clear all ${type} data? This action cannot be undone.`)) {
       switch (type) {
         case 'properties':
-          dataService.setProperties([]);
+          unifiedDataService.setProperties([]);
           break;
         case 'contacts':
-          dataService.setContacts([]);
+          unifiedDataService.setContacts([]);
           break;
         case 'deals':
-          dataService.setDeals([]);
+          unifiedDataService.setDeals([]);
           break;
         case 'agents':
-          dataService.setAgents([]);
+          unifiedDataService.setAgents([]);
           break;
       }
       loadDataStats();
@@ -218,8 +253,8 @@ export function DataManager() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Data Management Center</h1>
-          <p className="text-gray-600">Upload, manage, and export your real estate data</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t(appContent.deals.dataManagementCenter)}</h1>
+          <p className="text-gray-600">{t(appContent.deals.dataManagementSubtitle)}</p>
         </div>
 
         {/* Stats Overview */}
@@ -227,7 +262,7 @@ export function DataManager() {
           <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Properties</p>
+                <p className="text-sm font-medium text-gray-600">{t(appContent.deals.properties)}</p>
                 <p className="text-2xl font-bold text-blue-600">{dataStats.properties}</p>
               </div>
               <Home className="w-8 h-8 text-blue-600" />
@@ -236,7 +271,7 @@ export function DataManager() {
           <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Contacts</p>
+                <p className="text-sm font-medium text-gray-600">{t(appContent.deals.contacts)}</p>
                 <p className="text-2xl font-bold text-green-600">{dataStats.contacts}</p>
               </div>
               <Users className="w-8 h-8 text-green-600" />
@@ -245,7 +280,7 @@ export function DataManager() {
           <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Deals</p>
+                <p className="text-sm font-medium text-gray-600">{t(appContent.deals.deals)}</p>
                 <p className="text-2xl font-bold text-purple-600">{dataStats.deals}</p>
               </div>
               <Handshake className="w-8 h-8 text-purple-600" />
@@ -254,7 +289,7 @@ export function DataManager() {
           <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Agents</p>
+                <p className="text-sm font-medium text-gray-600">{t(appContent.deals.agents)}</p>
                 <p className="text-2xl font-bold text-orange-600">{dataStats.agents}</p>
               </div>
               <Users className="w-8 h-8 text-orange-600" />
@@ -267,9 +302,9 @@ export function DataManager() {
           <div className="border-b border-gray-200">
             <nav className="flex space-x-8 px-6">
               {[
-                { id: 'overview', label: 'Overview', icon: Database },
-                { id: 'import', label: 'Import Data', icon: Upload },
-                { id: 'export', label: 'Export Data', icon: Download }
+                { id: 'overview', label: t(appContent.deals.overview), icon: Database },
+                { id: 'import', label: t(appContent.deals.importData), icon: Upload },
+                { id: 'export', label: t(appContent.deals.exportData), icon: Download }
               ].map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -296,34 +331,34 @@ export function DataManager() {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.deals.quickActions)}</h3>
                     <div className="space-y-3">
                       <button
                         onClick={() => setActiveTab('import')}
                         className="w-full flex items-center space-x-3 p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors"
                       >
                         <Upload className="w-5 h-5 text-blue-600" />
-                        <span>Import New Data</span>
+                        <span>{t(appContent.deals.importNewData)}</span>
                       </button>
                       <button
                         onClick={() => setActiveTab('export')}
                         className="w-full flex items-center space-x-3 p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors"
                       >
                         <Download className="w-5 h-5 text-purple-600" />
-                        <span>Export All Data</span>
+                        <span>{t(appContent.deals.exportAllData)}</span>
                       </button>
                     </div>
                   </div>
 
                   <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Status</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.deals.dataStatus)}</h3>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Last Updated</span>
+                        <span className="text-gray-600">{t(appContent.deals.lastUpdated)}</span>
                         <span className="font-medium">{dataStats.lastUpdated.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Total Records</span>
+                        <span className="text-gray-600">{t(appContent.deals.totalRecords)}</span>
                         <span className="font-medium">{dataStats.properties + dataStats.contacts + dataStats.deals + dataStats.agents}</span>
                       </div>
                     </div>
@@ -336,28 +371,28 @@ export function DataManager() {
             {activeTab === 'import' && (
               <div className="space-y-6">
                 <div className="bg-blue-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Import Data</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.deals.importData)}</h3>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Data Type
+                        {t(appContent.deals.dataType)}
                       </label>
                       <select
                         value={importType}
                         onChange={(e) => setImportType(e.target.value as any)}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
-                        <option value="properties">Properties</option>
-                        <option value="contacts">Contacts</option>
-                        <option value="deals">Deals</option>
-                        <option value="agents">Agents</option>
+                        <option value="properties">{t(appContent.deals.properties)}</option>
+                        <option value="contacts">{t(appContent.deals.contacts)}</option>
+                        <option value="deals">{t(appContent.deals.deals)}</option>
+                        <option value="agents">{t(appContent.deals.agents)}</option>
                       </select>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Upload File
+                        {t(appContent.deals.uploadFile)}
                       </label>
                       <input
                         type="file"
@@ -411,7 +446,7 @@ export function DataManager() {
             {activeTab === 'export' && (
               <div className="space-y-6">
                 <div className="bg-green-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Export Data</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.deals.exportData)}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {['properties', 'contacts', 'deals', 'agents'].map((type) => (
                       <div key={type} className="bg-white rounded-lg p-4 border border-gray-200">

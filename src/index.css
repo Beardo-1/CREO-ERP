@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Arabic Font Support */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
 @layer base {
   body {
     @apply font-sans antialiased;
@@ -472,8 +475,6 @@
   }
 }
 
-
-
 /* Custom cursor styles */
 .custom-cursor {
   pointer-events: none;
@@ -496,9 +497,6 @@
 [dir="ltr"] {
   direction: ltr;
 }
-
-/* Arabic Font Support */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 
 body[dir="rtl"] {
   font-family: 'Noto Sans Arabic', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

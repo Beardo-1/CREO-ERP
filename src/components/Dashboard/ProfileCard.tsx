@@ -21,7 +21,7 @@ export function ProfileCard({ name, role, earnings, profileImage }: ProfileCardP
             <img src={profileImage} alt={name} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-white text-sm sm:text-base lg:text-lg font-bold">
-              {name.split(' ').map(n => n[0]).join('')}
+              {(name || '').split(' ').map(n => n[0]).join('')}
             </div>
           )}
         </div>

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Calendar, Clock, User, MapPin, Phone, Mail, Star } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Clock, User, MapPin, Phone, Mail, MoreVertical, Plus, Filter, Search, Download, Eye, Edit, Trash2, CheckCircle, AlertCircle, Calendar as CalendarIcon, Target, TrendingUp, Users, Award } from 'lucide-react';
 import { useTranslation } from '../../contexts/TranslationContext';
-import { appContent } from '../../content/app.content';
+import { unifiedDataService } from '../../services/unifiedDataService';
 
 interface Agent {
   id: string;
@@ -38,66 +38,108 @@ interface Appointment {
   notes?: string;
 }
 
-const mockAgents: Agent[] = [
-  {
-    id: 'a1',
-    name: 'Emma Wilson',
-    role: 'Senior Agent',
-    phone: '(555) 123-4567',
-    email: 'emma.wilson@creo.com',
-    rating: 4.8,
-    availability: {
-      monday: { start: '09:00', end: '17:00' },
-      tuesday: { start: '09:00', end: '17:00' },
-      wednesday: { start: '09:00', end: '17:00' },
-      thursday: { start: '09:00', end: '17:00' },
-      friday: { start: '09:00', end: '17:00' },
-      saturday: { start: '10:00', end: '15:00' },
-      sunday: { start: '10:00', end: '15:00' }
-    },
-    appointments: [
-      {
-        id: 'apt1',
-        title: 'Property Showing',
-        type: 'showing',
-        start: new Date(2024, 2, 15, 14, 0),
-        end: new Date(2024, 2, 15, 15, 0),
-        location: '123 Oak Street',
-        client: {
-          name: 'John Smith',
-          phone: '(555) 987-6543',
-          email: 'john.smith@email.com'
-        },
-        status: 'scheduled',
-        notes: 'Client interested in backyard space'
-      }
-    ]
-  },
-  {
-    id: 'a2',
-    name: 'Michael Brown',
-    role: 'Agent',
-    phone: '(555) 234-5678',
-    email: 'michael.brown@creo.com',
-    rating: 4.5,
-    availability: {
-      monday: { start: '10:00', end: '18:00' },
-      tuesday: { start: '10:00', end: '18:00' },
-      wednesday: { start: '10:00', end: '18:00' },
-      thursday: { start: '10:00', end: '18:00' },
-      friday: { start: '10:00', end: '18:00' },
-      saturday: { start: '11:00', end: '16:00' },
-      sunday: { start: '11:00', end: '16:00' }
-    },
-    appointments: []
-  }
-];
-
 const AgentSchedules: React.FC = () => {
   const { t } = useTranslation();
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [view, setView] = useState<'list' | 'calendar'>('list');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterRole, setFilterRole] = useState('all');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+
+  // Load agents from dataService and generate schedule data
+  useEffect(() => {
+    const loadAgents = () => {
+      const agentsData = unifiedDataService.getAgents();
+      const propertiesData = unifiedDataService.getProperties();
+      const contactsData = unifiedDataService.getContacts();
+      
+             // Convert agents to schedule format with appointments
+       const agentsWithSchedules = agentsData.map(agent => ({
+         id: agent.id,
+         name: `${agent.firstName} ${agent.lastName}`,
+         role: agent.role || 'Agent',
+         phone: agent.phone,
+         email: agent.email,
+         rating: 4.0 + Math.random() * 1.0, // Generate rating
+        availability: {
+          monday: { start: '09:00', end: '17:00' },
+          tuesday: { start: '09:00', end: '17:00' },
+          wednesday: { start: '09:00', end: '17:00' },
+          thursday: { start: '09:00', end: '17:00' },
+          friday: { start: '09:00', end: '17:00' },
+          saturday: { start: '10:00', end: '15:00' },
+          sunday: { start: '10:00', end: '15:00' }
+        },
+        appointments: generateAppointments(agent, propertiesData, contactsData)
+      }));
+
+      setAgents(agentsWithSchedules);
+    };
+
+    loadAgents();
+
+    // Subscribe to data changes
+    unifiedDataService.subscribe('agents', loadAgents);
+    unifiedDataService.subscribe('properties', loadAgents);
+    unifiedDataService.subscribe('contacts', loadAgents);
+
+    return () => {
+      unifiedDataService.unsubscribe('agents', loadAgents);
+      unifiedDataService.unsubscribe('properties', loadAgents);
+      unifiedDataService.unsubscribe('contacts', loadAgents);
+    };
+  }, []);
+
+  // Generate appointments for agents based on real data
+  const generateAppointments = (agent: any, properties: any[], contacts: any[]): Appointment[] => {
+    const appointments: Appointment[] = [];
+    const today = new Date();
+    
+    // Generate some appointments for the next 7 days
+    for (let i = 0; i < 7; i++) {
+      const appointmentDate = new Date(today);
+      appointmentDate.setDate(today.getDate() + i);
+      
+      // Random chance of having appointments
+      if (Math.random() > 0.6) {
+        const randomProperty = properties[Math.floor(Math.random() * properties.length)];
+        const randomContact = contacts[Math.floor(Math.random() * contacts.length)];
+        
+        if (randomProperty && randomContact) {
+          const startHour = 9 + Math.floor(Math.random() * 8); // 9 AM to 5 PM
+          const start = new Date(appointmentDate);
+          start.setHours(startHour, 0, 0, 0);
+          
+          const end = new Date(start);
+          end.setHours(startHour + 1); // 1 hour appointments
+          
+          const appointmentTypes: Appointment['type'][] = ['showing', 'meeting', 'closing', 'inspection'];
+          const type = appointmentTypes[Math.floor(Math.random() * appointmentTypes.length)];
+          
+          appointments.push({
+            id: `apt_${agent.id}_${i}`,
+            title: `${type === 'showing' ? 'Property Showing' : type === 'meeting' ? 'Client Meeting' : type === 'closing' ? 'Property Closing' : 'Property Inspection'}`,
+            type,
+            start,
+            end,
+            location: randomProperty.address,
+            client: {
+              name: `${randomContact.firstName} ${randomContact.lastName}`,
+              phone: randomContact.phone,
+              email: randomContact.email
+            },
+            status: 'scheduled',
+            notes: `${type} for ${randomProperty.title}`
+          });
+        }
+      }
+    }
+    
+    return appointments;
+  };
 
   const handleAgentClick = (agent: Agent) => {
     setSelectedAgent(agent);
@@ -110,6 +152,18 @@ const AgentSchedules: React.FC = () => {
   const handleCloseModal = () => {
     setSelectedAgent(null);
     setSelectedAppointment(null);
+    setShowAddModal(false);
+    setShowScheduleModal(false);
+  };
+
+  const handleAddAppointment = () => {
+    setShowScheduleModal(true);
+  };
+
+  const handleScheduleAppointment = () => {
+    // In a real app, this would save to the database
+    // Success: Appointment scheduled successfully!
+    setShowScheduleModal(false);
   };
 
   const getAppointmentTypeColor = (type: Appointment['type']) => {
@@ -126,6 +180,42 @@ const AgentSchedules: React.FC = () => {
         return 'bg-gray-100 text-gray-800';
     }
   };
+
+  const getStatusColor = (status: Appointment['status']) => {
+    switch (status) {
+      case 'scheduled':
+        return 'bg-blue-100 text-blue-800';
+      case 'completed':
+        return 'bg-green-100 text-green-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // Filter agents
+  const filteredAgents = agents.filter(agent => {
+    const matchesSearch = agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         agent.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = filterRole === 'all' || agent.role.toLowerCase() === filterRole.toLowerCase();
+    
+    return matchesSearch && matchesRole;
+  });
+
+  if (agents.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-12">
+            <CalendarIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Agents Found</h3>
+            <p className="text-gray-600 mb-6">Add some agents to start managing schedules.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-8">
@@ -167,7 +257,7 @@ const AgentSchedules: React.FC = () => {
 
             {view === 'list' ? (
               <div className="space-y-4">
-                {mockAgents.map((agent) => (
+                {filteredAgents.map((agent) => (
                   <div
                     key={agent.id}
                     className="p-4 bg-white border border-gray-200 rounded-lg hover:border-amber-500 cursor-pointer transition-colors"
@@ -239,7 +329,28 @@ const AgentSchedules: React.FC = () => {
               </div>
             ) : (
               <div className="h-[600px] bg-gray-50 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Calendar view coming soon</p>
+                <div className="bg-white rounded-lg p-4 border border-gray-200">
+                  <div className="grid grid-cols-7 gap-2 mb-4">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                      <div key={day} className="text-center text-sm font-medium text-gray-600 py-2">
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-7 gap-2">
+                    {Array.from({ length: 35 }, (_, i) => {
+                      const date = i + 1;
+                      const hasEvent = [5, 12, 18, 23, 28].includes(date);
+                      return (
+                        <div key={i} className={`aspect-square flex items-center justify-center text-sm rounded-lg cursor-pointer transition-colors ${
+                          date <= 31 ? 'hover:bg-gray-100' : ''
+                        } ${hasEvent ? 'bg-blue-100 text-blue-900 font-semibold' : 'text-gray-700'}`}>
+                          {date <= 31 ? date : ''}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -251,7 +362,7 @@ const AgentSchedules: React.FC = () => {
               Today's Schedule
             </h4>
             <div className="space-y-4">
-              {mockAgents
+              {filteredAgents
                 .flatMap((agent) =>
                   agent.appointments.filter(
                     (apt) =>
@@ -284,7 +395,7 @@ const AgentSchedules: React.FC = () => {
               Agent Availability
             </h4>
             <div className="space-y-4">
-              {mockAgents.map((agent) => (
+              {filteredAgents.map((agent) => (
                 <div
                   key={agent.id}
                   className="p-4 bg-orange-50 rounded-lg cursor-pointer hover:bg-orange-100 transition-colors"

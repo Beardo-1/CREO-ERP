@@ -485,10 +485,115 @@ export function LeadScoring() {
       )}
 
       {viewMode === 'analytics' && (
-        <div className="text-center py-12">
-          <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-gray-900 mb-2">Lead Scoring Analytics</h3>
-          <p className="text-gray-600">Detailed analytics and performance metrics coming soon</p>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl">
+              <h4 className="font-semibold text-blue-900 mb-2">Total Leads</h4>
+              <p className="text-3xl font-bold text-blue-600">{filteredLeads.length}</p>
+              <p className="text-sm text-blue-700">+12% this month</p>
+            </div>
+            
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl">
+              <h4 className="font-semibold text-green-900 mb-2">Avg Score</h4>
+              <p className="text-3xl font-bold text-green-600">
+                {Math.round(filteredLeads.reduce((sum, lead) => sum + lead.score, 0) / filteredLeads.length)}
+              </p>
+              <p className="text-sm text-green-700">Quality improving</p>
+            </div>
+            
+            <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-6 rounded-xl">
+              <h4 className="font-semibold text-purple-900 mb-2">A-Grade Leads</h4>
+              <p className="text-3xl font-bold text-purple-600">
+                {filteredLeads.filter(lead => lead.grade === 'A').length}
+              </p>
+              <p className="text-sm text-purple-700">High potential</p>
+            </div>
+            
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-6 rounded-xl">
+              <h4 className="font-semibold text-orange-900 mb-2">Conversion Rate</h4>
+              <p className="text-3xl font-bold text-orange-600">24.5%</p>
+              <p className="text-sm text-orange-700">Above target</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-xl border border-gray-200">
+              <h4 className="font-semibold text-gray-900 mb-4">Score Distribution</h4>
+              <div className="space-y-3">
+                {['A', 'B', 'C', 'D'].map(grade => {
+                  const count = filteredLeads.filter(lead => lead.grade === grade).length;
+                  const percentage = (count / filteredLeads.length) * 100;
+                  return (
+                    <div key={grade} className="flex items-center space-x-3">
+                      <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${getGradeColor(grade)}`}>
+                        {grade}
+                      </span>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-medium text-gray-700">Grade {grade}</span>
+                          <span className="text-sm text-gray-600">{count} leads</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900">{percentage.toFixed(1)}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-xl border border-gray-200">
+              <h4 className="font-semibold text-gray-900 mb-4">Lead Sources</h4>
+              <div className="space-y-3">
+                {['Website', 'Social Media', 'Referral', 'Cold Call', 'Event'].map(source => {
+                  const count = filteredLeads.filter(lead => lead.source === source).length;
+                  const percentage = (count / filteredLeads.length) * 100;
+                  return (
+                    <div key={source} className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-medium text-gray-700">{source}</span>
+                          <span className="text-sm text-gray-600">{count}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white p-6 rounded-xl border border-gray-200">
+            <h4 className="font-semibold text-gray-900 mb-4">Top Performing Scoring Factors</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {['Budget Range', 'Response Time', 'Property Interest', 'Engagement Level'].map((factor, index) => (
+                <div key={factor} className="p-4 bg-gray-50 rounded-lg">
+                  <h5 className="font-medium text-gray-900 mb-2">{factor}</h5>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex-1 bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full"
+                        style={{ width: `${85 - index * 10}%` }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">{85 - index * 10}%</span>
+                  </div>
+                  <p className="text-xs text-gray-600 mt-1">Impact on conversion</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 

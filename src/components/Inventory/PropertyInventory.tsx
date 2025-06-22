@@ -49,6 +49,12 @@ const PropertyInventory: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedProperty, setSelectedProperty] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [showAddItemModal, setShowAddItemModal] = useState(false);
+  const [showStagePropertyModal, setShowStagePropertyModal] = useState(false);
+  const [showScheduleInspectionModal, setShowScheduleInspectionModal] = useState(false);
+  const [showMaintenanceAlertModal, setShowMaintenanceAlertModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<PropertyInventoryItem | null>(null);
+  const [selectedPropertyForStaging, setSelectedPropertyForStaging] = useState<PropertySummary | null>(null);
 
   // Sample data
   const inventoryStats: InventoryStats = {
@@ -208,6 +214,26 @@ const PropertyInventory: React.FC = () => {
     }
   ];
 
+  // Functionality handlers
+  const handleAddItem = (newItem: Partial<PropertyInventoryItem>) => {
+        setShowAddItemModal(false);
+  };
+
+  const handleStageProperty = (propertyId: string, stagingItems: string[]) => {
+        setShowStagePropertyModal(false);
+    setSelectedPropertyForStaging(null);
+  };
+
+  const handleScheduleInspection = (itemId: string, inspectionDate: string, inspectionType: string) => {
+        setShowScheduleInspectionModal(false);
+    setSelectedItem(null);
+  };
+
+  const handleMaintenanceAlert = (itemId: string, alertType: string, priority: string, notes: string) => {
+        setShowMaintenanceAlertModal(false);
+    setSelectedItem(null);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'text-green-600 bg-green-100';
@@ -366,19 +392,31 @@ const PropertyInventory: React.FC = () => {
       <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <button className="flex items-center space-x-3 p-4 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 shadow-lg">
+          <button 
+            onClick={() => setShowAddItemModal(true)}
+            className="flex items-center space-x-3 p-4 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 shadow-lg"
+          >
             <Plus className="w-5 h-5 text-white" />
             <span className="text-white font-medium">Add Item</span>
           </button>
-          <button className="flex items-center space-x-3 p-4 bg-gradient-to-r from-purple-500 to-violet-500 rounded-xl hover:from-purple-600 hover:to-violet-600 transition-all duration-200 transform hover:scale-105 shadow-lg">
+          <button 
+            onClick={() => setShowStagePropertyModal(true)}
+            className="flex items-center space-x-3 p-4 bg-gradient-to-r from-purple-500 to-violet-500 rounded-xl hover:from-purple-600 hover:to-violet-600 transition-all duration-200 transform hover:scale-105 shadow-lg"
+          >
             <Star className="w-5 h-5 text-white" />
             <span className="text-white font-medium">Stage Property</span>
           </button>
-          <button className="flex items-center space-x-3 p-4 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl hover:from-green-600 hover:to-teal-600 transition-all duration-200 transform hover:scale-105 shadow-lg">
+          <button 
+            onClick={() => setShowScheduleInspectionModal(true)}
+            className="flex items-center space-x-3 p-4 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl hover:from-green-600 hover:to-teal-600 transition-all duration-200 transform hover:scale-105 shadow-lg"
+          >
             <Calendar className="w-5 h-5 text-white" />
             <span className="text-white font-medium">Schedule Inspection</span>
           </button>
-          <button className="flex items-center space-x-3 p-4 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 transform hover:scale-105 shadow-lg">
+          <button 
+            onClick={() => setShowMaintenanceAlertModal(true)}
+            className="flex items-center space-x-3 p-4 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 transform hover:scale-105 shadow-lg"
+          >
             <AlertTriangle className="w-5 h-5 text-white" />
             <span className="text-white font-medium">Maintenance Alert</span>
           </button>
@@ -440,7 +478,10 @@ const PropertyInventory: React.FC = () => {
             <option value="maintenance">Maintenance</option>
             <option value="storage">Storage</option>
           </select>
-          <button className="flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-200 shadow-lg">
+          <button 
+            onClick={() => setShowAddItemModal(true)}
+            className="flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-200 shadow-lg"
+          >
             <Plus className="w-4 h-4 text-white" />
             <span className="text-white font-medium">Add Item</span>
           </button>
@@ -586,6 +627,281 @@ const PropertyInventory: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Add Item Modal */}
+        {showAddItemModal && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAddItemModal(false)} />
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Property Inventory Item</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Property</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                      {propertySummaries.map((property) => (
+                        <option key={property.propertyId} value={property.propertyId}>
+                          {property.address}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Item Name</label>
+                    <input
+                      type="text"
+                      placeholder="Enter item name"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                      <option value="staging">Staging</option>
+                      <option value="fixtures">Fixtures</option>
+                      <option value="appliances">Appliances</option>
+                      <option value="furniture">Furniture</option>
+                      <option value="decor">Decor</option>
+                      <option value="maintenance">Maintenance</option>
+                      <option value="security">Security</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Value</label>
+                    <input
+                      type="number"
+                      placeholder="0.00"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                    <input
+                      type="text"
+                      placeholder="Room or area"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Condition</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                      <option value="excellent">Excellent</option>
+                      <option value="good">Good</option>
+                      <option value="fair">Fair</option>
+                      <option value="poor">Poor</option>
+                      <option value="needs-replacement">Needs Replacement</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                  <textarea
+                    rows={3}
+                    placeholder="Additional notes about the item"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                    onClick={() => setShowAddItemModal(false)}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleAddItem({})}
+                    className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 px-4 rounded-xl font-medium transition-all"
+                  >
+                    Add Item
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Stage Property Modal */}
+        {showStagePropertyModal && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowStagePropertyModal(false)} />
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Stage Property</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Select Property</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                      {propertySummaries.map((property) => (
+                        <option key={property.propertyId} value={property.propertyId}>
+                          {property.address}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Staging Date</label>
+                    <input
+                      type="date"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Staging Items</label>
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {inventoryItems.filter(item => item.category === 'staging').map(item => (
+                        <label key={item.id} className="flex items-center space-x-3">
+                          <input type="checkbox" className="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                          <span className="text-sm text-gray-900">{item.itemName}</span>
+                          <span className="text-xs text-gray-500">({item.location})</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                    onClick={() => setShowStagePropertyModal(false)}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleStageProperty('', [])}
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white py-3 px-4 rounded-xl font-medium transition-all"
+                  >
+                    Stage Property
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Schedule Inspection Modal */}
+        {showScheduleInspectionModal && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowScheduleInspectionModal(false)} />
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Schedule Inspection</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Item</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                      {inventoryItems.map(item => (
+                        <option key={item.id} value={item.id}>
+                          {item.itemName} - {item.propertyAddress.split(',')[0]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Inspection Date</label>
+                    <input
+                      type="date"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Inspection Type</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                      <option value="routine">Routine Inspection</option>
+                      <option value="maintenance">Maintenance Check</option>
+                      <option value="warranty">Warranty Inspection</option>
+                      <option value="damage">Damage Assessment</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Inspection notes"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                    onClick={() => setShowScheduleInspectionModal(false)}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleScheduleInspection('', '', '')}
+                    className="flex-1 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white py-3 px-4 rounded-xl font-medium transition-all"
+                  >
+                    Schedule
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Maintenance Alert Modal */}
+        {showMaintenanceAlertModal && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowMaintenanceAlertModal(false)} />
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Create Maintenance Alert</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Item</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                      {inventoryItems.map(item => (
+                        <option key={item.id} value={item.id}>
+                          {item.itemName} - {item.propertyAddress.split(',')[0]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Alert Type</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                      <option value="repair">Repair Needed</option>
+                      <option value="replacement">Replacement Required</option>
+                      <option value="service">Service Due</option>
+                      <option value="warranty">Warranty Expiring</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                      <option value="urgent">Urgent</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Describe the maintenance issue"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                    onClick={() => setShowMaintenanceAlertModal(false)}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleMaintenanceAlert('', '', '', '')}
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-3 px-4 rounded-xl font-medium transition-all"
+                  >
+                    Create Alert
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

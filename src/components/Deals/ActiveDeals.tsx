@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Handshake,
   DollarSign,
@@ -23,6 +23,8 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
+import { unifiedDataService } from '../../services/unifiedDataService';
+import { Deal as DataDeal } from '../../types';
 
 interface Deal {
   id: string;
@@ -65,111 +67,105 @@ export default function ActiveDeals() {
   const [filterStage, setFilterStage] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'value' | 'closeDate' | 'probability'>('closeDate');
+  const [deals, setDeals] = useState<Deal[]>([]);
 
-  const mockDeals: Deal[] = [
-    {
-      id: '1',
-      title: 'Downtown Apartment Sale',
-      property: {
-        id: '1',
-        address: '123 Oak Street, Downtown',
-        type: 'apartment',
-        image: '/api/placeholder/400/300'
-      },
-      client: {
-        id: '1',
-        name: 'Sarah Johnson',
-        email: 'sarah.johnson@email.com',
-        phone: '+1 (555) 123-4567',
-        avatar: '/api/placeholder/40/40',
-        type: 'buyer'
-      },
-      agent: {
-        id: '1',
-        name: 'Mike Chen',
-        avatar: '/api/placeholder/40/40'
-      },
-      value: 450000,
-      commission: 27000,
-      stage: 'negotiation',
-      probability: 75,
-      expectedCloseDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-      createdDate: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000),
-      lastActivity: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      daysInStage: 7,
-      notes: 'Client is very interested. Negotiating on price and closing date.',
-      nextAction: 'Follow up on counteroffer',
-      priority: 'high'
-    },
-    {
-      id: '2',
-      title: 'Luxury Home Listing',
-      property: {
-        id: '2',
-        address: '456 Pine Avenue, Suburbs',
-        type: 'house',
-        image: '/api/placeholder/400/300'
-      },
-      client: {
-        id: '2',
-        name: 'Robert Williams',
-        email: 'robert.williams@email.com',
-        phone: '+1 (555) 234-5678',
-        avatar: '/api/placeholder/40/40',
-        type: 'seller'
-      },
-      agent: {
-        id: '2',
-        name: 'Emily Davis',
-        avatar: '/api/placeholder/40/40'
-      },
-      value: 750000,
-      commission: 45000,
-      stage: 'contract',
-      probability: 90,
-      expectedCloseDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      createdDate: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
-      lastActivity: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      daysInStage: 5,
-      notes: 'Contract signed. Waiting for inspection and appraisal.',
-      nextAction: 'Schedule home inspection',
-      priority: 'urgent'
-    },
-    {
-      id: '3',
-      title: 'Studio Loft Purchase',
-      property: {
-        id: '3',
-        address: '789 Elm Street, Arts District',
-        type: 'loft',
-        image: '/api/placeholder/400/300'
-      },
-      client: {
-        id: '3',
-        name: 'Jessica Brown',
-        email: 'jessica.brown@email.com',
-        phone: '+1 (555) 345-6789',
-        avatar: '/api/placeholder/40/40',
-        type: 'buyer'
-      },
-      agent: {
-        id: '3',
-        name: 'David Wilson',
-        avatar: '/api/placeholder/40/40'
-      },
-      value: 320000,
-      commission: 19200,
-      stage: 'qualified',
-      probability: 60,
-      expectedCloseDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      createdDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
-      lastActivity: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      daysInStage: 8,
-      notes: 'First-time buyer. Pre-approved for mortgage. Needs guidance.',
-      nextAction: 'Schedule property viewing',
-      priority: 'medium'
-    }
-  ];
+  // Load deals from dataService
+  useEffect(() => {
+    const loadDeals = async () => {
+      try {
+        const allDeals = await unifiedDataService.getDeals();
+        // Ensure we have an array
+        const safeDeals = Array.isArray(allDeals) ? allDeals : [];
+      // Convert DataDeal to Deal format for display
+        const formattedDeals: Deal[] = safeDeals.map(deal => ({
+        id: deal.id,
+        title: `${deal.type} - ${deal.stage}`,
+        property: {
+          id: deal.propertyId,
+          address: `Property ${deal.propertyId}`,
+          type: 'property',
+          image: ""
+        },
+        client: {
+          id: deal.clientId,
+          name: `Client ${deal.clientId}`,
+          email: 'client@example.com',
+          phone: '+1 (555) 000-0000',
+          avatar: "",
+          type: 'buyer'
+        },
+        agent: {
+          id: deal.agentId,
+          name: `Agent ${deal.agentId}`,
+          avatar: ""
+        },
+        value: deal.value,
+        commission: deal.commission,
+        stage: deal.stage.toLowerCase() as Deal['stage'],
+        probability: 50, // Default probability
+        expectedCloseDate: new Date(deal.expectedCloseDate),
+        createdDate: new Date(deal.createdAt),
+        lastActivity: new Date(deal.updatedAt),
+        daysInStage: Math.floor((Date.now() - new Date(deal.updatedAt).getTime()) / (1000 * 60 * 60 * 24)),
+        notes: deal.notes,
+        nextAction: 'Follow up',
+        priority: 'medium'
+      }));
+      setDeals(formattedDeals);
+      } catch (error) {
+        console.error('Error loading deals:', error);
+        setDeals([]);
+      }
+    };
+
+    loadDeals();
+
+    // Subscribe to data changes
+    const handleDealsChange = (updatedDeals: DataDeal[]) => {
+      const safeDeals = Array.isArray(updatedDeals) ? updatedDeals : [];
+      const formattedDeals: Deal[] = safeDeals.map(deal => ({
+        id: deal.id,
+        title: `${deal.type} - ${deal.stage}`,
+        property: {
+          id: deal.propertyId,
+          address: `Property ${deal.propertyId}`,
+          type: 'property',
+          image: ""
+        },
+        client: {
+          id: deal.clientId,
+          name: `Client ${deal.clientId}`,
+          email: 'client@example.com',
+          phone: '+1 (555) 000-0000',
+          avatar: "",
+          type: 'buyer'
+        },
+        agent: {
+          id: deal.agentId,
+          name: `Agent ${deal.agentId}`,
+          avatar: ""
+        },
+        value: deal.value,
+        commission: deal.commission,
+        stage: deal.stage.toLowerCase() as Deal['stage'],
+        probability: 50,
+        expectedCloseDate: new Date(deal.expectedCloseDate),
+        createdDate: new Date(deal.createdAt),
+        lastActivity: new Date(deal.updatedAt),
+        daysInStage: Math.floor((Date.now() - new Date(deal.updatedAt).getTime()) / (1000 * 60 * 60 * 24)),
+        notes: deal.notes,
+        nextAction: 'Follow up',
+        priority: 'medium'
+      }));
+      setDeals(formattedDeals);
+    };
+
+    unifiedDataService.subscribe('dealsChanged', handleDealsChange);
+
+    return () => {
+      unifiedDataService.unsubscribe('dealsChanged', handleDealsChange);
+    };
+  }, []);
 
   const getStageColor = (stage: string) => {
     const colors = {
@@ -219,7 +215,7 @@ export default function ActiveDeals() {
     return ((currentIndex + 1) / stages.length) * 100;
   };
 
-  const filteredDeals = mockDeals.filter(deal => {
+  const filteredDeals = deals.filter(deal => {
     const matchesSearch = deal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          deal.client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          deal.property.address.toLowerCase().includes(searchTerm.toLowerCase());
@@ -228,11 +224,11 @@ export default function ActiveDeals() {
     return matchesSearch && matchesStage && matchesPriority;
   });
 
-  const totalValue = mockDeals.reduce((sum, deal) => sum + deal.value, 0);
-  const totalCommission = mockDeals.reduce((sum, deal) => sum + deal.commission, 0);
-  const averageProbability = Math.round(
-    mockDeals.reduce((sum, deal) => sum + deal.probability, 0) / mockDeals.length
-  );
+  const totalValue = deals.reduce((sum, deal) => sum + deal.value, 0);
+  const totalCommission = deals.reduce((sum, deal) => sum + deal.commission, 0);
+  const averageProbability = deals.length > 0 ? Math.round(
+    deals.reduce((sum, deal) => sum + deal.probability, 0) / deals.length
+  ) : 0;
 
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white">
@@ -288,7 +284,7 @@ export default function ActiveDeals() {
                 <Handshake className="w-6 h-6 text-white" />
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-1">{mockDeals.length}</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-1">{deals.length}</h3>
             <p className="text-gray-600 text-sm">{t(appContent.deals.activeDeals)}</p>
           </div>
         </div>

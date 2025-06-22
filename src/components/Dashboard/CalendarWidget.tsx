@@ -15,9 +15,9 @@ export function CalendarWidget() {
       subtitleKey: 'discussProgress' as const,
       time: '8:00 am',
       attendees: [
-        'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100',
-        'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100',
-        'https://images.pexels.com/photos/1239288/pexels-photo-1239288.jpeg?auto=compress&cs=tinysrgb&w=100'
+        "",
+        "",
+        ""
       ]
     },
     {
@@ -26,8 +26,8 @@ export function CalendarWidget() {
       subtitleKey: 'introductionNewHires' as const,
       time: '10:00 am',
       attendees: [
-        'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100',
-        'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100'
+        "",
+        ""
       ]
     }
   ];
@@ -54,8 +54,8 @@ export function CalendarWidget() {
       
       <div className="grid grid-cols-6 gap-3 mb-4">
         {weekDays.map((day, index) => (
-          <div key={day.key} className="text-center">
-            <div className="text-xs text-gray-500 mb-2">{t(appContent.calendar[day.key])}</div>
+                  <div key={day.key} className="text-center">
+          <div className="text-xs text-gray-500 mb-2">{t(appContent.calendar[day.key] || { en: String(day.short), ar: String(day.short) })}</div>
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium ${
               index === 2 ? 'bg-gray-900 text-white' : 'text-gray-700'
             }`}>
@@ -70,8 +70,8 @@ export function CalendarWidget() {
           <div key={meeting.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-2xl">
             <div className="text-sm font-medium text-gray-600">{meeting.time}</div>
             <div className="flex-1">
-              <div className="font-medium text-gray-900">{t(appContent.calendar[meeting.titleKey])}</div>
-              <div className="text-sm text-gray-600">{t(appContent.calendar[meeting.subtitleKey])}</div>
+                          <div className="font-medium text-gray-900">{t(appContent.calendar[meeting.titleKey] || { en: String(meeting.titleKey), ar: String(meeting.titleKey) })}</div>
+            <div className="text-sm text-gray-600">{t(appContent.calendar[meeting.subtitleKey] || { en: String(meeting.subtitleKey), ar: String(meeting.subtitleKey) })}</div>
             </div>
             <div className="flex -space-x-2">
               {meeting.attendees.map((avatar, index) => (

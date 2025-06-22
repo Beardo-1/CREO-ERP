@@ -276,32 +276,7 @@ class ApiIntegrationService {
   async getRealEstateNews(location?: string): Promise<ApiResponse<NewsData[]>> {
     try {
       // Mock implementation - in real app would use NewsAPI or similar
-      const mockNews: NewsData[] = [
-        {
-          title: 'Housing Market Shows Strong Growth in Q4 2024',
-          description: 'Real estate prices continue to rise with increased demand and limited inventory.',
-          url: 'https://example.com/news/1',
-          source: 'Real Estate Weekly',
-          publishedAt: new Date(2024, 11, 10),
-          category: 'market'
-        },
-        {
-          title: 'New Construction Projects Approved Downtown',
-          description: 'City council approves three new residential developments in the downtown area.',
-          url: 'https://example.com/news/2',
-          source: 'Local News',
-          publishedAt: new Date(2024, 11, 9),
-          category: 'local'
-        },
-        {
-          title: 'Interest Rates Expected to Stabilize',
-          description: 'Federal Reserve signals potential pause in rate adjustments for 2025.',
-          url: 'https://example.com/news/3',
-          source: 'Financial Times',
-          publishedAt: new Date(2024, 11, 8),
-          category: 'finance'
-        }
-      ];
+      
 
       return {
         success: true,

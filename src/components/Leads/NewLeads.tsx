@@ -60,19 +60,19 @@ export default function NewLeads() {
   const mockLeads: Lead[] = [
     {
       id: '1',
-      name: 'Jennifer Martinez',
-      email: 'jennifer.martinez@email.com',
+      name: 'Emma Rodriguez',
+      email: 'emma.rodriguez@email.com',
       phone: '+1 (555) 123-4567',
       source: 'website',
       status: 'new',
       score: 85,
       interest: 'buying',
       budget: {
-        min: 400000,
-        max: 600000
+        min: 300000,
+        max: 450000
       },
       location: 'Downtown',
-      propertyType: ['apartment', 'condo'],
+      propertyType: ['condo', 'apartment'],
       notes: 'Looking for modern apartment with city view. First-time buyer.',
       createdDate: new Date(Date.now() - 2 * 60 * 60 * 1000),
       lastContact: new Date(Date.now() - 2 * 60 * 60 * 1000),

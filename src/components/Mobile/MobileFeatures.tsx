@@ -150,176 +150,29 @@ export function MobileFeatures() {
   const [checkIns, setCheckIns] = useState<PropertyCheckIn[]>([]);
   const [notifications, setNotifications] = useState<PushNotification[]>([]);
   const [isRecording, setIsRecording] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
+  const [recordingDuration, setRecordingDuration] = useState(0);
   const [activeTab, setActiveTab] = useState<'overview' | 'voice' | 'checkins' | 'photos' | 'notifications' | 'offline'>('overview');
   const [selectedCheckIn, setSelectedCheckIn] = useState<PropertyCheckIn | null>(null);
 
-  // Mock data and real-time updates
   useEffect(() => {
-    const mockSession: MobileSession = {
-      id: 'session-1',
-      userId: 'user-123',
-      deviceId: 'device-456',
+    // Initialize with empty data for production
+    setMobileSession({
+      id: '1',
+      userId: 'user1',
+      deviceId: 'device123',
       deviceType: 'ios',
-      appVersion: '2.1.0',
+      appVersion: '1.0.0',
       isOnline: true,
       lastSync: new Date(),
-      batteryLevel: 78,
+      batteryLevel: 85,
       signalStrength: 4,
-      location: {
-        latitude: 40.7128,
-        longitude: -74.0060,
-        accuracy: 5,
-        timestamp: new Date()
-      },
       offlineData: {
-        pendingUploads: 3,
-        cachedProperties: 25,
-        offlineNotes: 7,
-        queuedActions: 12
+        pendingUploads: 0,
+        cachedProperties: 0,
+        offlineNotes: 0,
+        queuedActions: 0
       }
-    };
-
-    const mockVoiceNotes: VoiceNote[] = [
-      {
-        id: '1',
-        propertyId: 'prop-001',
-        duration: 45,
-        recordedAt: new Date(2024, 11, 12, 14, 30),
-        transcription: 'Property has excellent natural light in the living room. Kitchen needs minor updates but overall condition is good. Client seemed very interested in the master bedroom.',
-        isTranscribing: false,
-        tags: ['property-showing', 'client-feedback', 'positive'],
-        priority: 'medium',
-        status: 'transcribed',
-        fileSize: 2048576,
-        location: {
-          latitude: 40.7128,
-          longitude: -74.0060,
-          address: '123 Oak Street, Downtown'
-        }
-      },
-      {
-        id: '2',
-        duration: 23,
-        recordedAt: new Date(2024, 11, 12, 16, 15),
-        transcription: 'Follow up with Sarah Johnson about financing options. She mentioned pre-approval amount of 450K.',
-        isTranscribing: false,
-        tags: ['follow-up', 'financing', 'client-sarah'],
-        priority: 'high',
-        status: 'transcribed',
-        fileSize: 1024768
-      }
-    ];
-
-    const mockCheckIns: PropertyCheckIn[] = [
-      {
-        id: '1',
-        propertyId: 'prop-001',
-        propertyAddress: '123 Oak Street, Downtown',
-        checkInTime: new Date(2024, 11, 12, 14, 0),
-        checkOutTime: new Date(2024, 11, 12, 15, 30),
-        location: {
-          latitude: 40.7128,
-          longitude: -74.0060,
-          accuracy: 3
-        },
-        photos: [
-          {
-            id: '1',
-            url: '/api/photos/living-room-1.jpg',
-            thumbnail: '/api/photos/thumbs/living-room-1.jpg',
-            caption: 'Living room with natural light',
-            timestamp: new Date(2024, 11, 12, 14, 15),
-            tags: ['living-room', 'natural-light'],
-            room: 'Living Room',
-            isUploaded: true,
-            fileSize: 3145728
-          },
-          {
-            id: '2',
-            url: '/api/photos/kitchen-1.jpg',
-            thumbnail: '/api/photos/thumbs/kitchen-1.jpg',
-            caption: 'Kitchen with granite countertops',
-            timestamp: new Date(2024, 11, 12, 14, 25),
-            tags: ['kitchen', 'granite', 'countertops'],
-            room: 'Kitchen',
-            isUploaded: false,
-            fileSize: 2897152
-          }
-        ],
-        notes: 'Property showing went well. Clients were impressed with the layout and natural light.',
-        tasks: [
-          {
-            id: '1',
-            title: 'Take exterior photos',
-            description: 'Capture front and back of property',
-            isCompleted: true,
-            completedAt: new Date(2024, 11, 12, 14, 10),
-            photos: ['exterior-1.jpg', 'exterior-2.jpg'],
-            notes: 'Good lighting conditions'
-          },
-          {
-            id: '2',
-            title: 'Check HVAC system',
-            description: 'Verify heating and cooling functionality',
-            isCompleted: true,
-            completedAt: new Date(2024, 11, 12, 14, 45),
-            photos: [],
-            notes: 'System working properly, recently serviced'
-          }
-        ],
-        weather: {
-          temperature: 72,
-          condition: 'Sunny',
-          humidity: 45
-        },
-        duration: 90,
-        purpose: 'showing'
-      }
-    ];
-
-    const mockNotifications: PushNotification[] = [
-      {
-        id: '1',
-        title: 'New Lead Alert',
-        body: 'High-priority lead from website contact form',
-        type: 'urgent',
-        priority: 'high',
-        sentAt: new Date(2024, 11, 12, 16, 30),
-        isRead: false,
-        actionUrl: '/leads/new-lead-123',
-        category: 'leads',
-        data: { leadId: 'lead-123', source: 'website' }
-      },
-      {
-        id: '2',
-        title: 'Property Showing Reminder',
-        body: 'Showing at 456 Pine Ave in 30 minutes',
-        type: 'reminder',
-        priority: 'high',
-        scheduledFor: new Date(2024, 11, 12, 17, 0),
-        sentAt: new Date(2024, 11, 12, 16, 30),
-        isRead: true,
-        actionUrl: '/properties/prop-456',
-        category: 'properties'
-      },
-      {
-        id: '3',
-        title: 'Document Signed',
-        body: 'Purchase agreement for 789 Elm St has been signed',
-        type: 'update',
-        priority: 'normal',
-        sentAt: new Date(2024, 11, 12, 15, 45),
-        isRead: false,
-        actionUrl: '/documents/doc-789',
-        category: 'properties'
-      }
-    ];
-
-    setMobileSession(mockSession);
-    setVoiceNotes(mockVoiceNotes);
-    setCheckIns(mockCheckIns);
-    setNotifications(mockNotifications);
+    });
 
     // Simulate real-time updates
     const interval = setInterval(() => {

@@ -58,147 +58,47 @@ interface MarketInsight {
 
 export function LocationAnalytics() {
   const [locations, setLocations] = useState<LocationData[]>([]);
-  const [insights, setInsights] = useState<MarketInsight[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(null);
-  const [viewMode, setViewMode] = useState<'map' | 'list' | 'comparison'>('list');
-  const [filterType, setFilterType] = useState('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
-  const [timeRange, setTimeRange] = useState('6months');
+  const [sortBy, setSortBy] = useState<'price' | 'volume' | 'growth'>('price');
 
   useEffect(() => {
-    // Mock data - in real app, this would come from MLS and market data APIs
-    const mockLocations: LocationData[] = [
-      {
-        id: '1',
-        area: 'Downtown District',
-        city: 'Metro City',
-        state: 'CA',
-        zipCode: '90210',
-        averagePrice: 850000,
-        priceChange: 12.5,
-        daysOnMarket: 18,
-        inventory: 45,
-        salesVolume: 125,
-        pricePerSqft: 425,
-        walkScore: 92,
-        schoolRating: 8.5,
-        crimeRate: 2.1,
-        demographics: {
-          medianAge: 34,
-          medianIncome: 95000,
-          populationGrowth: 3.2
-        },
-        marketTrends: [
-          { month: 'Jan', averagePrice: 820000, salesCount: 18 },
-          { month: 'Feb', averagePrice: 835000, salesCount: 22 },
-          { month: 'Mar', averagePrice: 850000, salesCount: 25 },
-          { month: 'Apr', averagePrice: 865000, salesCount: 28 },
-          { month: 'May', averagePrice: 850000, salesCount: 32 },
-          { month: 'Jun', averagePrice: 850000, salesCount: 30 }
-        ]
-      },
-      {
-        id: '2',
-        area: 'Suburban Heights',
-        city: 'Metro City',
-        state: 'CA',
-        zipCode: '90211',
-        averagePrice: 650000,
-        priceChange: 8.3,
-        daysOnMarket: 25,
-        inventory: 78,
-        salesVolume: 89,
-        pricePerSqft: 285,
-        walkScore: 65,
-        schoolRating: 9.2,
-        crimeRate: 1.2,
-        demographics: {
-          medianAge: 42,
-          medianIncome: 78000,
-          populationGrowth: 1.8
-        },
-        marketTrends: [
-          { month: 'Jan', averagePrice: 620000, salesCount: 12 },
-          { month: 'Feb', averagePrice: 635000, salesCount: 15 },
-          { month: 'Mar', averagePrice: 645000, salesCount: 18 },
-          { month: 'Apr', averagePrice: 655000, salesCount: 16 },
-          { month: 'May', averagePrice: 650000, salesCount: 14 },
-          { month: 'Jun', averagePrice: 650000, salesCount: 14 }
-        ]
-      },
-      {
-        id: '3',
-        area: 'Waterfront District',
-        city: 'Metro City',
-        state: 'CA',
-        zipCode: '90212',
-        averagePrice: 1200000,
-        priceChange: -2.1,
-        daysOnMarket: 42,
-        inventory: 23,
-        salesVolume: 34,
-        pricePerSqft: 580,
-        walkScore: 78,
-        schoolRating: 7.8,
-        crimeRate: 1.8,
-        demographics: {
-          medianAge: 48,
-          medianIncome: 125000,
-          populationGrowth: 0.5
-        },
-        marketTrends: [
-          { month: 'Jan', averagePrice: 1250000, salesCount: 8 },
-          { month: 'Feb', averagePrice: 1230000, salesCount: 6 },
-          { month: 'Mar', averagePrice: 1210000, salesCount: 5 },
-          { month: 'Apr', averagePrice: 1200000, salesCount: 7 },
-          { month: 'May', averagePrice: 1195000, salesCount: 4 },
-          { month: 'Jun', averagePrice: 1200000, salesCount: 4 }
-        ]
-      }
-    ];
-
-    const mockInsights: MarketInsight[] = [
-      {
-        id: '1',
-        type: 'opportunity',
-        title: 'Emerging Market Opportunity',
-        description: 'Suburban Heights showing strong price growth with increasing inventory',
-        location: 'Suburban Heights, CA 90211',
-        impact: 'high',
-        confidence: 87
-      },
-      {
-        id: '2',
-        type: 'hot-market',
-        title: 'Hot Market Alert',
-        description: 'Downtown District properties selling 40% faster than city average',
-        location: 'Downtown District, CA 90210',
-        impact: 'high',
-        confidence: 94
-      },
-      {
-        id: '3',
-        type: 'warning',
-        title: 'Market Cooling',
-        description: 'Waterfront District showing price decline and increased days on market',
-        location: 'Waterfront District, CA 90212',
-        impact: 'medium',
-        confidence: 78
-      },
-      {
-        id: '4',
-        type: 'trend',
-        title: 'School District Impact',
-        description: 'Areas with 9+ school ratings showing 15% premium pricing',
-        location: 'Multiple Locations',
-        impact: 'medium',
-        confidence: 91
-      }
-    ];
-
-    setLocations(mockLocations);
-    setInsights(mockInsights);
+    // Initialize with empty data for production
+    setLocations([]);
   }, []);
+
+  const filteredLocations = locations.filter(location =>
+    location.area.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    location.city.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const sortedLocations = [...filteredLocations].sort((a, b) => {
+    switch (sortBy) {
+      case 'price':
+        return b.averagePrice - a.averagePrice;
+      case 'volume':
+        return b.salesVolume - a.salesVolume;
+      case 'growth':
+        return b.priceChange - a.priceChange;
+      default:
+        return 0;
+    }
+  });
+
+  if (locations.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-12">
+            <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Location Data</h3>
+            <p className="text-gray-600 mb-6">Start by adding properties to analyze location trends.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const getInsightIcon = (type: string) => {
     switch (type) {
@@ -220,13 +120,6 @@ export function LocationAnalytics() {
     }
   };
 
-  const filteredLocations = locations.filter(location => {
-    const matchesSearch = location.area.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         location.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         location.zipCode.includes(searchTerm);
-    return matchesSearch;
-  });
-
   return (
     <div className="min-h-screen p-8">
       <div className="mb-8">
@@ -237,14 +130,13 @@ export function LocationAnalytics() {
           </div>
           <div className="flex items-center space-x-4">
             <select
-              value={timeRange}
-              onChange={(e) => setTimeRange(e.target.value)}
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'price' | 'volume' | 'growth')}
               className="px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500"
             >
-              <option value="3months">Last 3 Months</option>
-              <option value="6months">Last 6 Months</option>
-              <option value="1year">Last Year</option>
-              <option value="2years">Last 2 Years</option>
+              <option value="price">Price</option>
+              <option value="volume">Sales Volume</option>
+              <option value="growth">Price Change</option>
             </select>
             <button className="flex items-center space-x-2 px-4 py-2 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors">
               <RefreshCw className="w-4 h-4" />
@@ -265,68 +157,13 @@ export function LocationAnalytics() {
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
             />
           </div>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setViewMode('list')}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                viewMode === 'list' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              List View
-            </button>
-            <button
-              onClick={() => setViewMode('map')}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                viewMode === 'map' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Map View
-            </button>
-            <button
-              onClick={() => setViewMode('comparison')}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                viewMode === 'comparison' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Compare
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Market Insights */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Market Insights</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {insights.map((insight) => {
-            const Icon = getInsightIcon(insight.type);
-            return (
-              <div
-                key={insight.id}
-                className={`p-4 rounded-xl border ${getInsightColor(insight.type)}`}
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <Icon className="w-5 h-5" />
-                  <span className="text-xs font-medium">
-                    {insight.confidence}% confidence
-                  </span>
-                </div>
-                <h3 className="font-semibold mb-2">{insight.title}</h3>
-                <p className="text-sm mb-2">{insight.description}</p>
-                <div className="flex items-center justify-between text-xs">
-                  <span>{insight.location}</span>
-                  <span className="font-medium">{insight.impact.toUpperCase()}</span>
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
 
       {/* Location Data */}
-      {viewMode === 'list' && (
+      {viewMode === 'grid' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredLocations.map((location) => (
+          {sortedLocations.map((location) => (
             <div
               key={location.id}
               className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
@@ -407,58 +244,6 @@ export function LocationAnalytics() {
                 <li>• Market boundary definitions</li>
               </ul>
             </div>
-          </div>
-        </div>
-      )}
-
-      {viewMode === 'comparison' && (
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6">Location Comparison</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-semibold text-gray-900">Location</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-900">Avg. Price</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-900">Price Change</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-900">Days on Market</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-900">Inventory</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-900">Walk Score</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-900">Schools</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredLocations.map((location) => (
-                  <tr key={location.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4">
-                      <div>
-                        <div className="font-medium text-gray-900">{location.area}</div>
-                        <div className="text-sm text-gray-600">{location.zipCode}</div>
-                      </div>
-                    </td>
-                    <td className="text-right py-3 px-4 font-medium">
-                      ${(location.averagePrice / 1000).toFixed(0)}K
-                    </td>
-                    <td className="text-right py-3 px-4">
-                      <span className={`flex items-center justify-end space-x-1 ${
-                        location.priceChange >= 0 ? 'text-green-600' : 'text-red-600'
-                      }`}>
-                        {location.priceChange >= 0 ? (
-                          <TrendingUp className="w-4 h-4" />
-                        ) : (
-                          <TrendingDown className="w-4 h-4" />
-                        )}
-                        <span>{Math.abs(location.priceChange)}%</span>
-                      </span>
-                    </td>
-                    <td className="text-right py-3 px-4">{location.daysOnMarket}</td>
-                    <td className="text-right py-3 px-4">{location.inventory}</td>
-                    <td className="text-right py-3 px-4">{location.walkScore}</td>
-                    <td className="text-right py-3 px-4">{location.schoolRating}/10</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
       )}

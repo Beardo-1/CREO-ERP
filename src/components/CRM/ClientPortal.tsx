@@ -1,36 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  User, 
-  Home, 
-  FileText, 
-  MessageCircle, 
-  Calendar, 
-  DollarSign, 
-  Download, 
-  Upload, 
-  Eye, 
-  Star, 
-  Heart, 
-  Share2, 
-  Bell, 
-  Settings, 
-  Search,
-  Filter,
-  Plus,
-  Edit,
-  Trash2,
-  Phone,
-  Mail,
-  MapPin,
-  Clock,
-  CheckCircle,
-  AlertTriangle,
-  Camera,
-  Video,
-  Paperclip,
-  Send
+  User, Users, Phone, Mail, Calendar, MessageCircle, 
+  FileText, Star, TrendingUp, Clock, MapPin, Send,
+  Plus, Search, Filter, MoreVertical, Edit, Trash2,
+  Eye, Download, Upload, Bell, Settings
 } from 'lucide-react';
 
+// Interface definitions
 interface Client {
   id: string;
   name: string;
@@ -41,17 +17,24 @@ interface Client {
   type: 'buyer' | 'seller' | 'renter' | 'investor';
   joinDate: string;
   lastActivity: string;
+  totalValue: number;
+  lifetimeValue: number;
+  satisfactionScore: number;
+  referrals: number;
   preferences: {
     propertyTypes: string[];
     priceRange: { min: number; max: number };
     locations: string[];
     bedrooms: number;
     bathrooms: number;
+    amenities: string[];
   };
   savedProperties: string[];
   documents: ClientDocument[];
   communications: Communication[];
   appointments: Appointment[];
+  notes: ClientNote[];
+  tags: string[];
 }
 
 interface ClientDocument {
@@ -62,6 +45,8 @@ interface ClientDocument {
   size: number;
   status: 'pending' | 'approved' | 'rejected';
   isConfidential: boolean;
+  downloadCount: number;
+  expiryDate?: string;
 }
 
 interface Communication {
@@ -72,6 +57,8 @@ interface Communication {
   timestamp: string;
   direction: 'inbound' | 'outbound';
   status: 'sent' | 'delivered' | 'read' | 'replied';
+  priority: 'low' | 'medium' | 'high';
+  followUpDate?: string;
 }
 
 interface Appointment {
@@ -84,460 +71,483 @@ interface Appointment {
   location: string;
   status: 'scheduled' | 'confirmed' | 'completed' | 'cancelled';
   notes?: string;
+  attendees: string[];
+  reminders: boolean;
+}
+
+interface ClientNote {
+  id: string;
+  content: string;
+  timestamp: string;
+  author: string;
+  isPrivate: boolean;
+  category: 'general' | 'preference' | 'concern' | 'follow-up';
 }
 
 export function ClientPortal() {
-  const [clients, setClients] = useState<Client[]>([
-    {
-      id: '1',
-      name: 'Sarah Johnson',
-      email: 'sarah.johnson@email.com',
-      phone: '(555) 123-4567',
-      status: 'active',
-      type: 'buyer',
-      joinDate: '2024-01-10',
-      lastActivity: '2024-01-16',
-      preferences: {
-        propertyTypes: ['Single Family', 'Condo'],
-        priceRange: { min: 300000, max: 500000 },
-        locations: ['Downtown', 'Suburbs'],
-        bedrooms: 3,
-        bathrooms: 2
-      },
-      savedProperties: ['prop-1', 'prop-2', 'prop-3'],
-      documents: [
-        {
-          id: 'doc-1',
-          name: 'Pre-approval Letter',
-          type: 'financial',
-          uploadDate: '2024-01-12',
-          size: 1024000,
-          status: 'approved',
-          isConfidential: true
-        }
-      ],
-      communications: [
-        {
-          id: 'comm-1',
-          type: 'email',
-          subject: 'New Property Matches',
-          content: 'Found 3 new properties matching your criteria...',
-          timestamp: '2024-01-16T10:30:00Z',
-          direction: 'outbound',
-          status: 'read'
-        }
-      ],
-      appointments: [
-        {
-          id: 'appt-1',
-          title: 'Property Showing - 123 Oak Street',
-          type: 'showing',
-          date: '2024-01-20',
-          time: '14:00',
-          duration: 60,
-          location: '123 Oak Street, Springfield',
-          status: 'scheduled'
-        }
-      ]
-    }
-  ]);
-
-  const [selectedClient, setSelectedClient] = useState<Client | null>(clients[0]);
-  const [activeTab, setActiveTab] = useState<'overview' | 'properties' | 'documents' | 'communications' | 'appointments'>('overview');
+  const [clients, setClients] = useState<Client[]>([]);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [activeTab, setActiveTab] = useState<'overview' | 'communications' | 'documents' | 'appointments' | 'notes'>('overview');
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState<string>('all');
-  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterType, setFilterType] = useState('all');
+  const [showAddClientModal, setShowAddClientModal] = useState(false);
   const [showMessageModal, setShowMessageModal] = useState(false);
-  const [newMessage, setNewMessage] = useState('');
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'inactive': return 'bg-gray-100 text-gray-800';
-      case 'prospect': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const [newClient, setNewClient] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    type: 'buyer' as Client['type'],
+    status: 'prospect' as Client['status']
+  });
+
+  const [newMessage, setNewMessage] = useState({
+    content: '',
+    type: 'email' as Communication['type'],
+    priority: 'medium' as Communication['priority']
+  });
+
+  const [newAppointment, setNewAppointment] = useState({
+    title: '',
+    type: 'consultation' as Appointment['type'],
+    date: '',
+    time: '',
+    location: '',
+    duration: 60,
+    notes: ''
+  });
+
+  // Sample data
+  useEffect(() => {
+    const sampleClients: Client[] = [
+      {
+        id: '1',
+        name: 'Sarah Johnson',
+        email: 'sarah.johnson@email.com',
+        phone: '+1 (555) 123-4567',
+        avatar: "",
+        status: 'active',
+        type: 'buyer',
+        joinDate: '2024-01-15',
+        lastActivity: '2024-03-10',
+        totalValue: 750000,
+        lifetimeValue: 750000,
+        satisfactionScore: 4.8,
+        referrals: 3,
+        preferences: {
+          propertyTypes: ['apartment', 'villa'],
+          priceRange: { min: 500000, max: 1000000 },
+          locations: ['Downtown', 'Marina'],
+          bedrooms: 3,
+          bathrooms: 2,
+          amenities: ['parking', 'gym', 'pool']
+        },
+        savedProperties: ['prop1', 'prop2'],
+        documents: [],
+        communications: [],
+        appointments: [],
+        notes: [],
+        tags: ['VIP', 'First-time buyer']
+      },
+      {
+        id: '2',
+        name: 'Michael Chen',
+        email: 'michael.chen@email.com',
+        phone: '+1 (555) 987-6543',
+        status: 'prospect',
+        type: 'investor',
+        joinDate: '2024-02-20',
+        lastActivity: '2024-03-08',
+        totalValue: 2500000,
+        lifetimeValue: 2500000,
+        satisfactionScore: 4.9,
+        referrals: 1,
+        preferences: {
+          propertyTypes: ['commercial', 'office'],
+          priceRange: { min: 1000000, max: 5000000 },
+          locations: ['Business District', 'Financial Center'],
+          bedrooms: 0,
+          bathrooms: 0,
+          amenities: ['parking', 'security']
+        },
+        savedProperties: ['prop3', 'prop4'],
+        documents: [],
+        communications: [],
+        appointments: [],
+        notes: [],
+        tags: ['Investor', 'High-value']
+      }
+    ];
+
+    setClients(sampleClients);
+    setSelectedClient(sampleClients[0]);
+  }, []);
+
+  const handleAddClient = () => {
+    const client: Client = {
+      id: Date.now().toString(),
+      ...newClient,
+      joinDate: new Date().toISOString().split('T')[0],
+      lastActivity: new Date().toISOString().split('T')[0],
+      totalValue: 0,
+      lifetimeValue: 0,
+      satisfactionScore: 0,
+      referrals: 0,
+      preferences: {
+        propertyTypes: [],
+        priceRange: { min: 0, max: 0 },
+        locations: [],
+        bedrooms: 0,
+        bathrooms: 0,
+        amenities: []
+      },
+      savedProperties: [],
+      documents: [],
+      communications: [],
+      appointments: [],
+      notes: [],
+      tags: []
+    };
+
+    setClients([...clients, client]);
+    setNewClient({ name: '', email: '', phone: '', type: 'buyer', status: 'prospect' });
+    setShowAddClientModal(false);
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'buyer': return 'bg-purple-100 text-purple-800';
-      case 'seller': return 'bg-orange-100 text-orange-800';
-      case 'renter': return 'bg-blue-100 text-blue-800';
-      case 'investor': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const handleSendMessage = () => {
+    if (!selectedClient) return;
+
+    const message: Communication = {
+      id: Date.now().toString(),
+      ...newMessage,
+      timestamp: new Date().toISOString(),
+      direction: 'outbound',
+      status: 'sent'
+    };
+
+    const updatedClient = {
+      ...selectedClient,
+      communications: [...selectedClient.communications, message]
+    };
+
+    setClients(clients.map(c => c.id === selectedClient.id ? updatedClient : c));
+    setSelectedClient(updatedClient);
+    setNewMessage({ content: '', type: 'email', priority: 'medium' });
+    setShowMessageModal(false);
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  const handleScheduleAppointment = () => {
+    if (!selectedClient) return;
+
+    const appointment: Appointment = {
+      id: Date.now().toString(),
+      ...newAppointment,
+      status: 'scheduled',
+      attendees: [selectedClient.id],
+      reminders: true
+    };
+
+    const updatedClient = {
+      ...selectedClient,
+      appointments: [...selectedClient.appointments, appointment]
+    };
+
+    setClients(clients.map(c => c.id === selectedClient.id ? updatedClient : c));
+    setSelectedClient(updatedClient);
+    setNewAppointment({
+      title: '',
+      type: 'consultation',
+      date: '',
+      time: '',
+      location: '',
+      duration: 60,
+      notes: ''
+    });
+    setShowAppointmentModal(false);
   };
 
-  const clientStats = {
-    total: clients.length,
-    active: clients.filter(c => c.status === 'active').length,
-    prospects: clients.filter(c => c.status === 'prospect').length,
-    buyers: clients.filter(c => c.type === 'buyer').length,
-    sellers: clients.filter(c => c.type === 'seller').length
-  };
+  const filteredClients = clients.filter(client => {
+    const matchesSearch = client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         client.phone.includes(searchTerm);
+    const matchesStatus = filterStatus === 'all' || client.status === filterStatus;
+    const matchesType = filterType === 'all' || client.type === filterType;
+    
+    return matchesSearch && matchesStatus && matchesType;
+  });
 
   return (
-    <div className="min-h-screen p-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Client Portal</h1>
-        <p className="text-gray-600">Manage client relationships and provide personalized service</p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <User className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900">{clientStats.total}</p>
-              <p className="text-sm text-gray-600">Total Clients</p>
-            </div>
-          </div>
+    <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Client Portal</h1>
+          <p className="text-gray-600">Manage your client relationships and communications</p>
         </div>
 
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-              <CheckCircle className="w-6 h-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900">{clientStats.active}</p>
-              <p className="text-sm text-gray-600">Active Clients</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-              <Star className="w-6 h-6 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900">{clientStats.prospects}</p>
-              <p className="text-sm text-gray-600">Prospects</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-              <Home className="w-6 h-6 text-orange-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900">{clientStats.buyers}</p>
-              <p className="text-sm text-gray-600">Active Buyers</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Client List */}
-        <div className="lg:col-span-1">
-          <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 overflow-hidden">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">Clients</h3>
-                <button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white p-2 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg">
-                  <Plus className="w-4 h-4" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Client List */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-900">Clients</h2>
+                <button
+                  onClick={() => setShowAddClientModal(true)}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-2 rounded-xl font-medium transition-all"
+                >
+                  <Plus className="w-4 h-4 mr-2 inline" />
+                  Add Client
                 </button>
               </div>
-              
-              <div className="relative mb-4">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search clients..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                />
+
+              {/* Search and Filters */}
+              <div className="space-y-4 mb-6">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="text"
+                    placeholder="Search clients..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  >
+                    <option value="all">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="prospect">Prospect</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+
+                  <select
+                    value={filterType}
+                    onChange={(e) => setFilterType(e.target.value)}
+                    className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  >
+                    <option value="all">All Types</option>
+                    <option value="buyer">Buyer</option>
+                    <option value="seller">Seller</option>
+                    <option value="renter">Renter</option>
+                    <option value="investor">Investor</option>
+                  </select>
+                </div>
               </div>
-            </div>
-            
-            <div className="max-h-96 overflow-y-auto">
-              {clients.map(client => (
-                <div
-                  key={client.id}
-                  onClick={() => setSelectedClient(client)}
-                  className={`p-4 border-b border-gray-100 cursor-pointer transition-colors hover:bg-gray-50 ${
-                    selectedClient?.id === client.id ? 'bg-amber-50 border-amber-200' : ''
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">
-                      {client.name.charAt(0)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 truncate">{client.name}</p>
-                      <div className="flex items-center space-x-2">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(client.status)}`}>
-                          {client.status}
-                        </span>
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(client.type)}`}>
-                          {client.type}
-                        </span>
+
+              {/* Client List */}
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {filteredClients.map((client) => (
+                  <div
+                    key={client.id}
+                    onClick={() => setSelectedClient(client)}
+                    className={`p-4 rounded-xl cursor-pointer transition-all ${
+                      selectedClient?.id === client.id
+                        ? 'bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200'
+                        : 'bg-gray-50 hover:bg-gray-100 border border-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-semibold">
+                        {client.name.charAt(0)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 truncate">{client.name}</p>
+                        <p className="text-sm text-gray-500 truncate">{client.email}</p>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <span className={`px-2 py-1 text-xs rounded-full ${
+                            client.status === 'active' ? 'bg-green-100 text-green-800' :
+                            client.status === 'prospect' ? 'bg-blue-100 text-blue-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {client.status}
+                          </span>
+                          <span className="text-xs text-gray-500">{client.type}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Client Details */}
-        <div className="lg:col-span-3">
-          {selectedClient ? (
-            <div className="space-y-6">
-              {/* Client Header */}
-              <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-6">
-                <div className="flex items-center justify-between">
+          {/* Client Details */}
+          <div className="lg:col-span-2">
+            {selectedClient ? (
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                {/* Client Header */}
+                <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                    <div className="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
                       {selectedClient.name.charAt(0)}
                     </div>
                     <div>
                       <h2 className="text-2xl font-bold text-gray-900">{selectedClient.name}</h2>
-                      <div className="flex items-center space-x-4 mt-1">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedClient.status)}`}>
+                      <p className="text-gray-600">{selectedClient.email}</p>
+                      <div className="flex items-center space-x-3 mt-1">
+                        <span className={`px-3 py-1 text-sm rounded-full ${
+                          selectedClient.status === 'active' ? 'bg-green-100 text-green-800' :
+                          selectedClient.status === 'prospect' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
                           {selectedClient.status}
                         </span>
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getTypeColor(selectedClient.type)}`}>
-                          {selectedClient.type}
-                        </span>
+                        <span className="text-sm text-gray-500">{selectedClient.type}</span>
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="flex space-x-3">
+                  <div className="flex space-x-2">
                     <button
                       onClick={() => setShowMessageModal(true)}
-                      className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg font-medium transition-colors"
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl font-medium transition-all"
                     >
                       <MessageCircle className="w-4 h-4 mr-2 inline" />
                       Message
                     </button>
-                    <button className="bg-green-100 hover:bg-green-200 text-green-700 px-4 py-2 rounded-lg font-medium transition-colors">
-                      <Phone className="w-4 h-4 mr-2 inline" />
-                      Call
-                    </button>
-                    <button className="bg-purple-100 hover:bg-purple-200 text-purple-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                    <button
+                      onClick={() => setShowAppointmentModal(true)}
+                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl font-medium transition-all"
+                    >
                       <Calendar className="w-4 h-4 mr-2 inline" />
                       Schedule
                     </button>
                   </div>
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                  <div>
-                    <p className="text-sm text-gray-500">Contact Information</p>
-                    <div className="space-y-1 mt-1">
-                      <p className="text-sm text-gray-900">{selectedClient.email}</p>
-                      <p className="text-sm text-gray-900">{selectedClient.phone}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Client Since</p>
-                    <p className="text-sm text-gray-900 mt-1">{new Date(selectedClient.joinDate).toLocaleDateString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Last Activity</p>
-                    <p className="text-sm text-gray-900 mt-1">{new Date(selectedClient.lastActivity).toLocaleDateString()}</p>
-                  </div>
-                </div>
-              </div>
 
-              {/* Navigation Tabs */}
-              <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20">
-                <div className="flex border-b border-gray-200">
-                  {[
-                    { id: 'overview', label: 'Overview', icon: User },
-                    { id: 'properties', label: 'Properties', icon: Home },
-                    { id: 'documents', label: 'Documents', icon: FileText },
-                    { id: 'communications', label: 'Communications', icon: MessageCircle },
-                    { id: 'appointments', label: 'Appointments', icon: Calendar }
-                  ].map(tab => {
-                    const Icon = tab.icon;
-                    return (
-                      <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id as any)}
-                        className={`flex items-center space-x-2 px-6 py-4 font-medium transition-colors ${
-                          activeTab === tab.id
-                            ? 'text-amber-600 border-b-2 border-amber-600 bg-amber-50'
-                            : 'text-gray-600 hover:text-gray-900'
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                        <span>{tab.label}</span>
-                      </button>
-                    );
-                  })}
+                {/* Tabs */}
+                <div className="border-b border-gray-200 mb-6">
+                  <nav className="flex space-x-8">
+                    {[
+                      { id: 'overview', label: 'Overview', icon: User },
+                      { id: 'communications', label: 'Communications', icon: MessageCircle },
+                      { id: 'documents', label: 'Documents', icon: FileText },
+                      { id: 'appointments', label: 'Appointments', icon: Calendar },
+                      { id: 'notes', label: 'Notes', icon: Edit }
+                    ].map(tab => {
+                      const Icon = tab.icon;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setActiveTab(tab.id as any)}
+                          className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                            activeTab === tab.id
+                              ? 'border-amber-500 text-amber-600'
+                              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                          }`}
+                        >
+                          <Icon className="w-4 h-4" />
+                          <span>{tab.label}</span>
+                        </button>
+                      );
+                    })}
+                  </nav>
                 </div>
 
                 {/* Tab Content */}
-                <div className="p-6">
-                  {activeTab === 'overview' && (
-                    <div className="space-y-6">
-                      {/* Preferences */}
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-4">Client Preferences</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div>
-                            <p className="text-sm text-gray-500 mb-2">Property Types</p>
-                            <div className="flex flex-wrap gap-2">
-                              {selectedClient.preferences.propertyTypes.map((type, index) => (
-                                <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                                  {type}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500 mb-2">Price Range</p>
-                            <p className="text-sm text-gray-900">
-                              ${selectedClient.preferences.priceRange.min.toLocaleString()} - ${selectedClient.preferences.priceRange.max.toLocaleString()}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500 mb-2">Preferred Locations</p>
-                            <div className="flex flex-wrap gap-2">
-                              {selectedClient.preferences.locations.map((location, index) => (
-                                <span key={index} className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                                  {location}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500 mb-2">Requirements</p>
-                            <p className="text-sm text-gray-900">
-                              {selectedClient.preferences.bedrooms} bed, {selectedClient.preferences.bathrooms} bath
-                            </p>
-                          </div>
-                        </div>
+                {activeTab === 'overview' && (
+                  <div className="space-y-6">
+                    {/* Stats */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl">
+                        <div className="text-2xl font-bold text-green-600">${selectedClient.totalValue.toLocaleString()}</div>
+                        <div className="text-sm text-green-700">Total Value</div>
                       </div>
+                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl">
+                        <div className="text-2xl font-bold text-blue-600">{selectedClient.satisfactionScore.toFixed(1)}</div>
+                        <div className="text-sm text-blue-700">Satisfaction</div>
+                      </div>
+                      <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-4 rounded-xl">
+                        <div className="text-2xl font-bold text-purple-600">{selectedClient.referrals}</div>
+                        <div className="text-sm text-purple-700">Referrals</div>
+                      </div>
+                      <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-4 rounded-xl">
+                        <div className="text-2xl font-bold text-orange-600">{selectedClient.savedProperties.length}</div>
+                        <div className="text-sm text-orange-700">Saved Properties</div>
+                      </div>
+                    </div>
 
-                      {/* Quick Stats */}
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-4">Activity Summary</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                          <div className="bg-gray-50 rounded-lg p-4 text-center">
-                            <p className="text-2xl font-bold text-gray-900">{selectedClient.savedProperties.length}</p>
-                            <p className="text-sm text-gray-600">Saved Properties</p>
-                          </div>
-                          <div className="bg-gray-50 rounded-lg p-4 text-center">
-                            <p className="text-2xl font-bold text-gray-900">{selectedClient.documents.length}</p>
-                            <p className="text-sm text-gray-600">Documents</p>
-                          </div>
-                          <div className="bg-gray-50 rounded-lg p-4 text-center">
-                            <p className="text-2xl font-bold text-gray-900">{selectedClient.communications.length}</p>
-                            <p className="text-sm text-gray-600">Communications</p>
-                          </div>
-                          <div className="bg-gray-50 rounded-lg p-4 text-center">
-                            <p className="text-2xl font-bold text-gray-900">{selectedClient.appointments.length}</p>
-                            <p className="text-sm text-gray-600">Appointments</p>
-                          </div>
+                    {/* Contact Information */}
+                    <div className="bg-gray-50 rounded-xl p-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex items-center space-x-3">
+                          <Phone className="w-5 h-5 text-gray-400" />
+                          <span className="text-gray-600">{selectedClient.phone}</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <Mail className="w-5 h-5 text-gray-400" />
+                          <span className="text-gray-600">{selectedClient.email}</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <Calendar className="w-5 h-5 text-gray-400" />
+                          <span className="text-gray-600">Client since {selectedClient.joinDate}</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <Clock className="w-5 h-5 text-gray-400" />
+                          <span className="text-gray-600">Last activity {selectedClient.lastActivity}</span>
                         </div>
                       </div>
                     </div>
-                  )}
 
-                  {activeTab === 'documents' && (
-                    <div>
-                      <div className="flex items-center justify-between mb-6">
-                        <h4 className="font-semibold text-gray-900">Client Documents</h4>
-                        <button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 shadow-lg">
-                          <Upload className="w-4 h-4 mr-2 inline" />
-                          Upload Document
-                        </button>
-                      </div>
-                      
-                      <div className="space-y-4">
-                        {selectedClient.documents.map(doc => (
-                          <div key={doc.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div className="flex items-center space-x-3">
-                              <FileText className="w-8 h-8 text-blue-600" />
-                              <div>
-                                <p className="font-medium text-gray-900">{doc.name}</p>
-                                <div className="flex items-center space-x-4 text-sm text-gray-600">
-                                  <span>{doc.type}</span>
-                                  <span>{formatFileSize(doc.size)}</span>
-                                  <span>{new Date(doc.uploadDate).toLocaleDateString()}</span>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                doc.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                doc.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                'bg-red-100 text-red-800'
-                              }`}>
-                                {doc.status}
-                              </span>
-                              <button className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors">
-                                <Eye className="w-4 h-4" />
-                              </button>
-                              <button className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors">
-                                <Download className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
+                    {/* Preferences */}
+                    <div className="bg-gray-50 rounded-xl p-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Preferences</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="font-medium text-gray-700 mb-2">Budget Range</h4>
+                          <p className="text-gray-600">
+                            ${selectedClient.preferences.priceRange.min.toLocaleString()} - ${selectedClient.preferences.priceRange.max.toLocaleString()}
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-700 mb-2">Property Types</h4>
+                          <p className="text-gray-600">
+                            {selectedClient.preferences.propertyTypes.join(', ') || 'Not specified'}
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-700 mb-2">Preferred Locations</h4>
+                          <p className="text-gray-600">
+                            {selectedClient.preferences.locations.join(', ') || 'Not specified'}
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-700 mb-2">Requirements</h4>
+                          <p className="text-gray-600">
+                            {selectedClient.preferences.bedrooms} bed, {selectedClient.preferences.bathrooms} bath
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* Placeholder for other tabs */}
-                  {(activeTab === 'properties' || activeTab === 'communications' || activeTab === 'appointments') && (
-                    <div className="text-center py-12">
-                      <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        {activeTab === 'properties' ? (
-                          <Home className="w-8 h-8 text-amber-600" />
-                        ) : activeTab === 'communications' ? (
-                          <MessageCircle className="w-8 h-8 text-amber-600" />
-                        ) : (
-                          <Calendar className="w-8 h-8 text-amber-600" />
-                        )}
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        {activeTab === 'properties' ? 'Property Management' :
-                         activeTab === 'communications' ? 'Communication History' : 'Appointment Scheduling'}
-                      </h3>
-                      <p className="text-gray-600 mb-6">
-                        {activeTab === 'properties' ? 'Manage saved properties and recommendations' :
-                         activeTab === 'communications' ? 'View all client communications and messages' :
-                         'Schedule and manage client appointments'}
-                      </p>
-                      <button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 shadow-lg">
-                        Coming Soon
-                      </button>
+                {/* Other tab contents would go here */}
+                {activeTab !== 'overview' && (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <FileText className="w-8 h-8 text-gray-400" />
                     </div>
-                  )}
-                </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</h3>
+                    <p className="text-gray-600">This section is under development</p>
+                  </div>
+                )}
               </div>
-            </div>
-          ) : (
-            <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 p-12 text-center">
-              <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Select a Client</h3>
-              <p className="text-gray-600">Choose a client from the list to view their details and manage their account</p>
-            </div>
-          )}
+            ) : (
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
+                <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Select a Client</h3>
+                <p className="text-gray-600">Choose a client from the list to view their details and manage their account</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -555,7 +565,7 @@ export function ClientPortal() {
                   <input
                     type="text"
                     value={selectedClient?.name || ''}
-                    disabled
+                    disabled={true}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
                   />
                 </div>
@@ -563,8 +573,8 @@ export function ClientPortal() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
                   <textarea
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
+                    value={newMessage.content}
+                    onChange={(e) => setNewMessage({ ...newMessage, content: e.target.value })}
                     placeholder="Type your message..."
                     rows={4}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
@@ -579,9 +589,204 @@ export function ClientPortal() {
                 >
                   Cancel
                 </button>
-                <button className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-2 px-4 rounded-lg font-medium transition-all duration-200">
+                <button 
+                  onClick={handleSendMessage}
+                  disabled={!newMessage.content}
+                  className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white py-2 px-4 rounded-lg font-medium transition-all duration-200"
+                >
                   <Send className="w-4 h-4 mr-2 inline" />
                   Send
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Client Modal */}
+      {showAddClientModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAddClientModal(false)} />
+            <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Client</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter client name"
+                    value={newClient.name}
+                    onChange={(e) => setNewClient({...newClient, name: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <input
+                    type="email"
+                    placeholder="Enter email address"
+                    value={newClient.email}
+                    onChange={(e) => setNewClient({...newClient, email: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <input
+                    type="tel"
+                    placeholder="Enter phone number"
+                    value={newClient.phone}
+                    onChange={(e) => setNewClient({...newClient, phone: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Client Type</label>
+                    <select
+                      value={newClient.type}
+                      onChange={(e) => setNewClient({...newClient, type: e.target.value as Client['type']})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    >
+                      <option value="buyer">Buyer</option>
+                      <option value="seller">Seller</option>
+                      <option value="renter">Renter</option>
+                      <option value="investor">Investor</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select
+                      value={newClient.status}
+                      onChange={(e) => setNewClient({...newClient, status: e.target.value as Client['status']})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    >
+                      <option value="prospect">Prospect</option>
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex space-x-3 mt-6">
+                <button
+                  onClick={() => setShowAddClientModal(false)}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleAddClient}
+                  disabled={!newClient.name || !newClient.email || !newClient.phone}
+                  className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white py-2 px-4 rounded-lg font-medium transition-all duration-200"
+                >
+                  Add Client
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Schedule Appointment Modal */}
+      {showAppointmentModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAppointmentModal(false)} />
+            <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Schedule Appointment</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                  <input
+                    type="text"
+                    placeholder="Enter appointment title"
+                    value={newAppointment.title}
+                    onChange={(e) => setNewAppointment({...newAppointment, title: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                  <select
+                    value={newAppointment.type}
+                    onChange={(e) => setNewAppointment({...newAppointment, type: e.target.value as Appointment['type']})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="showing">Property Showing</option>
+                    <option value="consultation">Consultation</option>
+                    <option value="signing">Document Signing</option>
+                    <option value="inspection">Inspection</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input
+                      type="date"
+                      value={newAppointment.date}
+                      onChange={(e) => setNewAppointment({...newAppointment, date: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                    <input
+                      type="time"
+                      value={newAppointment.time}
+                      onChange={(e) => setNewAppointment({...newAppointment, time: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                  <input
+                    type="text"
+                    placeholder="Enter location"
+                    value={newAppointment.location}
+                    onChange={(e) => setNewAppointment({...newAppointment, location: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                  <textarea
+                    placeholder="Add any notes..."
+                    value={newAppointment.notes}
+                    onChange={(e) => setNewAppointment({...newAppointment, notes: e.target.value})}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex space-x-3 mt-6">
+                <button
+                  onClick={() => setShowAppointmentModal(false)}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleScheduleAppointment}
+                  disabled={!newAppointment.title || !newAppointment.date || !newAppointment.time}
+                  className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white py-2 px-4 rounded-lg font-medium transition-all duration-200"
+                >
+                  Schedule
                 </button>
               </div>
             </div>

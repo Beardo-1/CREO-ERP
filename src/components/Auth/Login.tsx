@@ -22,8 +22,6 @@ export function Login({ onLoginSuccess }: LoginProps) {
   const audioRef = useRef<any>(null);
   
 
-
-
   // Initialize ambient music
   useEffect(() => {
     // Create audio element with your forest ambient music
@@ -35,8 +33,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
 
     // Handle audio loading
     const handleCanPlay = () => {
-      console.log('Ambient music loaded and ready to play');
-    };
+          };
 
     const handleError = (e: any) => {
       console.error('Error loading ambient music:', e);
@@ -55,8 +52,6 @@ export function Login({ onLoginSuccess }: LoginProps) {
     };
       }, []);
 
-
-
   const toggleMusic = async () => {
     if (audioRef.current) {
       if (isMusicPlaying) {
@@ -67,8 +62,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
           await audioRef.current.play();
           setIsMusicPlaying(true);
         } catch (error) {
-          console.log('Could not play ambient music:', error);
-          setIsMusicPlaying(false);
+                    setIsMusicPlaying(false);
         }
       }
     }
@@ -85,13 +79,32 @@ export function Login({ onLoginSuccess }: LoginProps) {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoading(false);
-      if (onLoginSuccess) {
-        onLoginSuccess();
+    try {
+      // Use simple authentication service for reliable login
+      const { simpleAuthService } = await import('../../services/SimpleAuthService');
+      
+      const result = await simpleAuthService.login({
+        email: formData.email,
+        password: formData.password
+      });
+      
+      if (result.success && result.user) {
+        // Store user session
+        localStorage.setItem('creo_user', JSON.stringify(result.user));
+        localStorage.setItem('creo_authenticated', 'true');
+        
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+      } else {
+        alert(result.message || 'Invalid email or password. Please check your credentials.');
       }
-    }, 2000);
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Login failed. Please check your credentials and try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,8 +121,6 @@ export function Login({ onLoginSuccess }: LoginProps) {
       <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 animate-gradient-slow"></div>
       <div className="absolute inset-0 bg-gradient-to-tr from-yellow-100/50 via-amber-100/30 to-orange-100/50 animate-gradient-reverse"></div>
       <div className="absolute inset-0 bg-gradient-to-bl from-orange-50/70 via-yellow-50/40 to-amber-50/60 animate-gradient-diagonal"></div>
-
-
 
       {/* Language Switcher Orb - Top Right */}
       <div className="absolute top-8 right-8 z-30">
@@ -510,6 +521,17 @@ export function Login({ onLoginSuccess }: LoginProps) {
               </svg>
               Facebook
             </button>
+          </div>
+
+          {/* Demo Credentials */}
+          <div className="mt-6 p-4 bg-amber-50 rounded-xl border border-amber-200">
+            <h4 className="text-sm font-semibold text-amber-800 mb-2">Demo Credentials</h4>
+            <div className="space-y-1 text-xs text-amber-700">
+              <p><strong>Admin:</strong> admin@creoerp.com / admin123</p>
+              <p><strong>Manager:</strong> manager@creoerp.com / manager123</p>
+              <p><strong>Agent:</strong> agent@creoerp.com / agent123</p>
+              <p><strong>Demo:</strong> demo@creoerp.com / demo123</p>
+            </div>
           </div>
 
           {/* Footer */}

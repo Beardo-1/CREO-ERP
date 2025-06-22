@@ -1,5 +1,7 @@
 import React from 'react';
 import { Clock, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 const tasks = [
   {
@@ -33,6 +35,8 @@ const tasks = [
 ];
 
 export function UpcomingTasks() {
+  const { t } = useTranslation();
+  
   const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
       case 'high': return 'text-red-600 bg-red-100';
@@ -45,9 +49,9 @@ export function UpcomingTasks() {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">Upcoming Tasks</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{t(appContent.deals.upcomingTasks)}</h3>
         <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-          View all
+          {t(appContent.deals.viewAll)}
         </button>
       </div>
       <div className="space-y-3">

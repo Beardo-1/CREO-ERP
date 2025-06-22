@@ -41,8 +41,27 @@ import {
   ShoppingCart,
   Wrench,
   Upload,
-  Download
+  Download,
+  Monitor
 } from 'lucide-react';
+
+// Safe Icon Component to prevent React errors
+const SafeIcon: React.FC<{
+  icon: React.ComponentType<any> | undefined | null;
+  className?: string;
+  fallback?: React.ComponentType<any>;
+}> = ({ icon: Icon, className = "", fallback: FallbackIcon = AlertCircle }) => {
+  if (!Icon || typeof Icon !== 'function') {
+    return <FallbackIcon className={className} />;
+  }
+  
+  try {
+    return <Icon className={className} />;
+  } catch (error) {
+    console.error('Error rendering icon:', error);
+    return <FallbackIcon className={className} />;
+  }
+};
 
 interface SidebarProps {
   activeTab: string;
@@ -327,6 +346,20 @@ const menuCategories = [
           { id: 'data-templates', label: 'Templates', icon: FileText, badge: 0 }
         ]
       },
+      { 
+        id: 'system-status', 
+        label: 'System Status', 
+        icon: Monitor, 
+        badge: 0, 
+        category: 'management',
+        priority: 'high' as const,
+        subItems: [
+          { id: 'system-overview', label: 'Overview', icon: Monitor, badge: 0 },
+          { id: 'system-services', label: 'Services', icon: Settings, badge: 0 },
+          { id: 'system-performance', label: 'Performance', icon: TrendingUp, badge: 0 },
+          { id: 'system-alerts', label: 'Alerts', icon: Bell, badge: 0 }
+        ]
+      },
     ]
   }
 ];
@@ -606,6 +639,20 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
             { id: 'data-templates', label: t(appContent.sidebar.templates), icon: FileText, badge: 0 }
           ]
         },
+        { 
+          id: 'system-status', 
+          label: t(appContent.sidebar.systemStatus), 
+          icon: Monitor, 
+          badge: 0, 
+          category: 'management',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'system-overview', label: t(appContent.sidebar.overview), icon: Monitor, badge: 0 },
+            { id: 'system-services', label: t(appContent.sidebar.services), icon: Settings, badge: 0 },
+            { id: 'system-performance', label: t(appContent.sidebar.performance), icon: TrendingUp, badge: 0 },
+            { id: 'system-alerts', label: t(appContent.sidebar.alerts), icon: Bell, badge: 0 }
+          ]
+        },
       ]
     }
   ];
@@ -713,6 +760,21 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
     return colors[priority as keyof typeof colors] || 'text-gray-600 bg-gray-100';
   };
 
+  // Safe function to get background color from category color string
+  const getCategoryBgColor = (color: string) => {
+    try {
+      const colorString = getCategoryColor(color);
+      if (!colorString || typeof colorString !== 'string') {
+        return 'bg-gray-100';
+      }
+      const parts = colorString.split(' ');
+      return parts.length > 1 ? parts[1] : 'bg-gray-100'; // Safely get background color
+    } catch (error) {
+      console.error('Error in getCategoryBgColor:', error);
+      return 'bg-gray-100';
+    }
+  };
+
   // Mobile menu button (only show if no external control)
   const MobileMenuButton = () => !onMobileToggle ? (
     <button
@@ -774,6 +836,22 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                 </div>
               </div>
               
+              {/* Mobile Close Button */}
+              <button
+                onClick={() => {
+                  if (onMobileToggle) {
+                    onMobileToggle(false);
+                  } else {
+                    setInternalMobileOpen(false);
+                  }
+                }}
+                className="lg:hidden p-2 rounded-xl bg-white/20 hover:bg-white/30 transition-all duration-200 hover:scale-110 group"
+                aria-label="Close sidebar"
+              >
+                <X className="w-5 h-5 text-gray-700 group-hover:text-orange-600" />
+              </button>
+              
+              {/* Desktop Collapse Button */}
               <button
                 onClick={() => setIsCollapsed(!isCollapsed)}
                 className="hidden lg:flex p-2 rounded-xl bg-white/20 hover:bg-white/30 transition-all duration-200 hover:scale-110 group"
@@ -829,7 +907,7 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                   Search Results ({filteredItems.length})
                 </h3>
                 {filteredItems.map((item) => {
-          const Icon = item.icon;
+          const Icon = item.icon || AlertCircle;
           const isActive = activeTab === item.id;
           
           return (
@@ -891,7 +969,7 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                             <span className="text-xs font-semibold uppercase tracking-wider">
                               {category.label}
                             </span>
-                            <span className={`w-2 h-2 rounded-full ${getCategoryColor(category.color).split(' ')[1]}`}></span>
+                            <span className={`w-2 h-2 rounded-full ${getCategoryColor(category.color)?.split(' ')?.[1] || 'bg-gray-100'}`}></span>
                             {categoryBadgeCount > 0 && (
                               <span className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full">
                                 {categoryBadgeCount}
@@ -912,7 +990,7 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                           isCollapsed ? '' : isExpanded ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden'
                         }`}>
                         {category.items.map((item) => {
-                          const Icon = item.icon;
+                          const Icon = item.icon || AlertCircle;
                           const isActive = activeTab === item.id;
                           const hasSubMenu = item.subItems && item.subItems.length > 0;
                           const isSubMenuExpanded = expandedSubMenus.includes(item.id);
@@ -930,16 +1008,20 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                                   onFocus={() => setFocusedItem(item.id)}
                                   onBlur={() => setFocusedItem(null)}
                                   className={`flex-1 flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
-                isActive 
+                                    isActive 
                                       ? 'bg-gradient-to-r from-orange-500/20 to-orange-600/20 text-orange-700 shadow-lg border border-orange-500/30 scale-105' 
                                       : 'text-gray-700 hover:bg-white/30 hover:text-orange-600 focus:bg-white/30 focus:text-orange-600 hover:scale-105'
                                   }`}
                                   aria-current={isActive ? 'page' : undefined}
                                   aria-describedby={item.badge ? `badge-${item.id}` : undefined}
                                 >
-                                  <Icon className={`w-5 h-5 transition-all duration-200 ${
-                                    isActive ? 'text-orange-600' : 'text-gray-600 group-hover:text-orange-600'
-                                  } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110 rotate-12' : ''}`} />
+                                  {Icon && typeof Icon === 'function' ? (
+                                    <Icon className={`w-5 h-5 transition-all duration-200 ${
+                                      isActive ? 'text-orange-600' : 'text-gray-600 group-hover:text-orange-600'
+                                    } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110 rotate-12' : ''}`} />
+                                  ) : (
+                                    <AlertCircle className={`w-5 h-5 transition-all duration-200 text-gray-400`} />
+                                  )}
                                   
                                   {!isCollapsed && (
                                     <>
@@ -986,7 +1068,7 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                                   isSubMenuExpanded ? 'opacity-100 max-h-96' : 'opacity-0 max-h-0 overflow-hidden'
                                 }`}>
                                   {item.subItems?.map((subItem) => {
-                                    const SubIcon = subItem.icon;
+                                    const SubIcon = subItem.icon || AlertCircle;
                                     return (
                                       <button
                                         key={subItem.id}
@@ -996,7 +1078,11 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                                         }}
                                         className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:text-orange-600 hover:bg-white/20 transition-all duration-200 text-sm"
                                       >
-                                        <SubIcon className="w-4 h-4" />
+                                        {SubIcon && typeof SubIcon === 'function' ? (
+                                          <SubIcon className="w-4 h-4" />
+                                        ) : (
+                                          <AlertCircle className="w-4 h-4 text-gray-400" />
+                                        )}
                                         <span className="flex-1">{subItem.label}</span>
                                         {subItem.badge && subItem.badge > 0 && (
                                           <span className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full">
@@ -1053,6 +1139,7 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
             )}
             
             <button 
+              onClick={() => onTabChange('settings')}
               className={`w-full flex items-center space-x-3 px-3 py-3 text-gray-700 hover:text-orange-600 hover:bg-white/20 rounded-xl transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-orange-500/50 ${
                 isCollapsed ? 'justify-center' : ''
               }`}
@@ -1063,6 +1150,15 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
             </button>
             
             <button 
+              onClick={() => {
+                if (window.confirm('Are you sure you want to logout?')) {
+                  // Clear production authentication
+                  localStorage.removeItem('creo_user');
+                  localStorage.removeItem('creo_authenticated');
+                  localStorage.clear();
+                  window.location.reload();
+                }
+              }}
               className={`w-full flex items-center space-x-3 px-3 py-3 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-red-500/50 ${
                 isCollapsed ? 'justify-center' : ''
               }`}

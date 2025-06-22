@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 import { 
   Shield, 
   Clock, 
@@ -98,6 +100,7 @@ interface AuditFilter {
 }
 
 export function AuditTrail() {
+  const { t } = useTranslation();
   const [auditEntries, setAuditEntries] = useState<AuditEntry[]>([
     {
       id: '1',
@@ -386,8 +389,8 @@ export function AuditTrail() {
     <div className="min-h-screen p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Audit Trail</h1>
-        <p className="text-gray-600">Track all system activities and changes</p>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">{t(appContent.deals.auditTrail)}</h1>
+        <p className="text-gray-600">{t(appContent.deals.auditTrailSubtitle)}</p>
       </div>
 
       {/* Stats Cards */}

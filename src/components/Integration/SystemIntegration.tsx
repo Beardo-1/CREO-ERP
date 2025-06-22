@@ -75,8 +75,8 @@ export function SystemIntegration() {
         category: 'core',
         status: 'connected',
         lastSync: new Date(),
-        description: 'Central customer relationship management system',
-        dependencies: ['database', 'auth-service'],
+        description: 'Core customer relationship management system',
+        dependencies: [],
         metrics: {
           uptime: 99.9,
           responseTime: 120,

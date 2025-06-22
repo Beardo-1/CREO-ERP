@@ -58,6 +58,11 @@ export default function MarketingCampaigns() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('last-modified');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
+  const [campaignList, setCampaignList] = useState<Campaign[]>([]);
 
   const campaigns: Campaign[] = [
     {
@@ -198,6 +203,108 @@ export default function MarketingCampaigns() {
 
   const totalBudget = filteredCampaigns.reduce((sum, campaign) => sum + campaign.budget, 0);
   const totalSpent = filteredCampaigns.reduce((sum, campaign) => sum + campaign.spent, 0);
+
+  // Functionality handlers
+  const handleCreateCampaign = (campaignData: Partial<Campaign>) => {
+    const newCampaign: Campaign = {
+      id: `CAMP-${(campaigns.length + 1).toString().padStart(3, '0')}`,
+      name: campaignData.name || 'New Campaign',
+      type: campaignData.type || 'email',
+      status: 'draft',
+      budget: campaignData.budget || 0,
+      spent: 0,
+      startDate: campaignData.startDate || new Date().toISOString().split('T')[0],
+      endDate: campaignData.endDate || new Date().toISOString().split('T')[0],
+      targetAudience: campaignData.targetAudience || '',
+      objectives: campaignData.objectives || [],
+      metrics: {
+        impressions: 0,
+        clicks: 0,
+        conversions: 0,
+        leads: 0,
+        cost_per_lead: 0,
+        roi: 0
+      },
+      channels: campaignData.channels || [],
+      createdBy: 'Current User',
+      lastModified: new Date().toISOString().split('T')[0]
+    };
+    setCampaignList([...campaignList, newCampaign]);
+    setShowCreateModal(false);
+  };
+
+  const handleEditCampaign = (campaignData: Partial<Campaign>) => {
+    
+    setShowEditModal(false);
+    setSelectedCampaign(null);
+  };
+
+  const handleDuplicateCampaign = (campaign: Campaign) => {
+    const duplicatedCampaign: Campaign = {
+      ...campaign,
+      id: `CAMP-${(campaigns.length + 1).toString().padStart(3, '0')}`,
+      name: `${campaign.name} (Copy)`,
+      status: 'draft',
+      spent: 0,
+      metrics: {
+        impressions: 0,
+        clicks: 0,
+        conversions: 0,
+        leads: 0,
+        cost_per_lead: 0,
+        roi: 0
+      },
+      createdBy: 'Current User',
+      lastModified: new Date().toISOString().split('T')[0]
+    };
+    setCampaignList([...campaignList, duplicatedCampaign]);
+  };
+
+  const handleToggleCampaignStatus = (campaignId: string) => {
+    
+    // In a real app, this would update the campaign status
+  };
+
+  const handleDeleteCampaign = (campaignId: string) => {
+    if (window.confirm('Are you sure you want to delete this campaign?')) {
+      
+      // In a real app, this would delete the campaign
+    }
+  };
+
+  const handleViewAnalytics = (campaign: Campaign) => {
+    setSelectedCampaign(campaign);
+    setShowAnalyticsModal(true);
+  };
+
+  const handleExportCampaignData = () => {
+    const reportData = [
+      ['Campaign ID', 'Name', 'Type', 'Status', 'Budget', 'Spent', 'Impressions', 'Clicks', 'Conversions', 'Leads', 'CPL', 'ROI'],
+      ...filteredCampaigns.map(campaign => [
+        campaign.id,
+        campaign.name,
+        campaign.type,
+        campaign.status,
+        campaign.budget,
+        campaign.spent,
+        campaign.metrics.impressions,
+        campaign.metrics.clicks,
+        campaign.metrics.conversions,
+        campaign.metrics.leads,
+        campaign.metrics.cost_per_lead.toFixed(2),
+        campaign.metrics.roi.toFixed(2) + '%'
+      ])
+    ];
+    
+    const csvContent = reportData.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `marketing-campaigns-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
   const totalLeads = filteredCampaigns.reduce((sum, campaign) => sum + campaign.metrics.leads, 0);
   const avgROI = Math.round(filteredCampaigns.reduce((sum, campaign) => sum + campaign.metrics.roi, 0) / filteredCampaigns.length);
 
@@ -236,10 +343,22 @@ export default function MarketingCampaigns() {
                   {t(appContent.marketing.listView)}
                 </button>
               </div>
-              <button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center space-x-3">
-                <Plus className="w-6 h-6" />
-                <span>{t(appContent.marketing.createCampaign)}</span>
-              </button>
+              <div className="flex space-x-3">
+                <button 
+                  onClick={handleExportCampaignData}
+                  className="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white px-6 py-4 rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center space-x-2"
+                >
+                  <BarChart3 className="w-5 h-5" />
+                  <span>Export Data</span>
+                </button>
+                <button 
+                  onClick={() => setShowCreateModal(true)}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center space-x-3"
+                >
+                  <Plus className="w-6 h-6" />
+                  <span>{t(appContent.marketing.createCampaign)}</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -470,22 +589,45 @@ export default function MarketingCampaigns() {
                   </div>
                   <div className="flex items-center space-x-2">
                     {campaign.status === 'active' && (
-                      <button className="p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all duration-200">
+                      <button 
+                        onClick={() => handleToggleCampaignStatus(campaign.id)}
+                        className="p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all duration-200"
+                        title="Pause Campaign"
+                      >
                         <Pause className="w-4 h-4" />
                       </button>
                     )}
                     {campaign.status === 'paused' && (
-                      <button className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200">
+                      <button 
+                        onClick={() => handleToggleCampaignStatus(campaign.id)}
+                        className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200"
+                        title="Resume Campaign"
+                      >
                         <Play className="w-4 h-4" />
                       </button>
                     )}
-                    <button className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200">
+                    <button 
+                      onClick={() => handleViewAnalytics(campaign)}
+                      className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                      title="View Analytics"
+                    >
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button className="p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all duration-200">
+                    <button 
+                      onClick={() => {
+                        setSelectedCampaign(campaign);
+                        setShowEditModal(true);
+                      }}
+                      className="p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all duration-200"
+                      title="Edit Campaign"
+                    >
                       <Edit className="w-4 h-4" />
                     </button>
-                    <button className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200">
+                    <button 
+                      onClick={() => handleDuplicateCampaign(campaign)}
+                      className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                      title="Duplicate Campaign"
+                    >
                       <Copy className="w-4 h-4" />
                     </button>
                   </div>
@@ -508,6 +650,288 @@ export default function MarketingCampaigns() {
               <button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg">
                 {t(appContent.marketing.clearCampaignFilters)}
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Create Campaign Modal */}
+        {showCreateModal && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowCreateModal(false)} />
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-3xl">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Create New Marketing Campaign</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Campaign Name</label>
+                    <input
+                      type="text"
+                      placeholder="Enter campaign name"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Campaign Type</label>
+                    <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                      <option value="email">Email Marketing</option>
+                      <option value="social">Social Media</option>
+                      <option value="ppc">Pay-Per-Click</option>
+                      <option value="sms">SMS Marketing</option>
+                      <option value="direct-mail">Direct Mail</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                    <input
+                      type="date"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                    <input
+                      type="date"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Budget</label>
+                    <input
+                      type="number"
+                      placeholder="0.00"
+                      step="0.01"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Target Audience</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., First-time home buyers aged 25-40"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Objectives</label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {['Lead Generation', 'Brand Awareness', 'Property Promotion', 'Client Retention', 'Market Expansion', 'Event Promotion'].map(objective => (
+                      <label key={objective} className="flex items-center space-x-3">
+                        <input type="checkbox" className="rounded border-gray-300 text-amber-600 focus:ring-amber-500" />
+                        <span className="text-sm text-gray-900">{objective}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Marketing Channels</label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {['Email', 'Facebook', 'Instagram', 'LinkedIn', 'Google Ads', 'SMS', 'Direct Mail', 'Website'].map(channel => (
+                      <label key={channel} className="flex items-center space-x-3">
+                        <input type="checkbox" className="rounded border-gray-300 text-amber-600 focus:ring-amber-500" />
+                        <span className="text-sm text-gray-900">{channel}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                    onClick={() => setShowCreateModal(false)}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleCreateCampaign({})}
+                    className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 px-4 rounded-xl font-medium transition-all"
+                  >
+                    Create Campaign
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Campaign Modal */}
+        {showEditModal && selectedCampaign && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowEditModal(false)} />
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-3xl">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Campaign: {selectedCampaign.name}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Campaign Name</label>
+                    <input
+                      type="text"
+                      defaultValue={selectedCampaign.name}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select 
+                      defaultValue={selectedCampaign.status}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="draft">Draft</option>
+                      <option value="active">Active</option>
+                      <option value="paused">Paused</option>
+                      <option value="completed">Completed</option>
+                      <option value="scheduled">Scheduled</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Budget</label>
+                    <input
+                      type="number"
+                      defaultValue={selectedCampaign.budget}
+                      step="0.01"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                    <input
+                      type="date"
+                      defaultValue={selectedCampaign.endDate}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Target Audience</label>
+                  <textarea
+                    rows={3}
+                    defaultValue={selectedCampaign.targetAudience}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                    onClick={() => setShowEditModal(false)}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleEditCampaign({})}
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-3 px-4 rounded-xl font-medium transition-all"
+                  >
+                    Update Campaign
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Analytics Modal */}
+        {showAnalyticsModal && selectedCampaign && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAnalyticsModal(false)} />
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-4xl">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Analytics: {selectedCampaign.name}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                  <div className="bg-blue-50 rounded-xl p-4 text-center">
+                    <Eye className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-blue-600">{selectedCampaign.metrics.impressions.toLocaleString()}</p>
+                    <p className="text-sm text-gray-600">Impressions</p>
+                  </div>
+                  <div className="bg-green-50 rounded-xl p-4 text-center">
+                    <MousePointer className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-green-600">{selectedCampaign.metrics.clicks.toLocaleString()}</p>
+                    <p className="text-sm text-gray-600">Clicks</p>
+                  </div>
+                  <div className="bg-purple-50 rounded-xl p-4 text-center">
+                    <Target className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-purple-600">{selectedCampaign.metrics.conversions}</p>
+                    <p className="text-sm text-gray-600">Conversions</p>
+                  </div>
+                  <div className="bg-amber-50 rounded-xl p-4 text-center">
+                    <Users className="w-8 h-8 text-amber-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-amber-600">{selectedCampaign.metrics.leads}</p>
+                    <p className="text-sm text-gray-600">Leads</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-sm text-gray-600">Cost Per Lead</p>
+                    <p className="text-2xl font-bold text-gray-900">${selectedCampaign.metrics.cost_per_lead.toFixed(2)}</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-sm text-gray-600">Click-Through Rate</p>
+                    <p className="text-2xl font-bold text-gray-900">{((selectedCampaign.metrics.clicks / selectedCampaign.metrics.impressions) * 100).toFixed(2)}%</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-sm text-gray-600">Return on Investment</p>
+                    <p className={`text-2xl font-bold ${selectedCampaign.metrics.roi >= 150 ? 'text-green-600' : selectedCampaign.metrics.roi >= 100 ? 'text-amber-600' : 'text-red-600'}`}>
+                      {selectedCampaign.metrics.roi}%
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <h4 className="font-medium text-gray-900 mb-3">Campaign Details</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-gray-600">Duration:</p>
+                      <p className="font-medium">{selectedCampaign.startDate} to {selectedCampaign.endDate}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600">Budget Utilization:</p>
+                      <p className="font-medium">{((selectedCampaign.spent / selectedCampaign.budget) * 100).toFixed(1)}%</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600">Target Audience:</p>
+                      <p className="font-medium">{selectedCampaign.targetAudience}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600">Channels:</p>
+                      <p className="font-medium">{selectedCampaign.channels.join(', ')}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                    onClick={() => setShowAnalyticsModal(false)}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                  >
+                    Close
+                  </button>
+                  <button 
+                    onClick={() => {
+                      // Export this specific campaign's analytics
+                      const reportData = [
+                        ['Metric', 'Value'],
+                        ['Campaign Name', selectedCampaign.name],
+                        ['Type', selectedCampaign.type],
+                        ['Status', selectedCampaign.status],
+                        ['Budget', selectedCampaign.budget],
+                        ['Spent', selectedCampaign.spent],
+                        ['Impressions', selectedCampaign.metrics.impressions],
+                        ['Clicks', selectedCampaign.metrics.clicks],
+                        ['Conversions', selectedCampaign.metrics.conversions],
+                        ['Leads', selectedCampaign.metrics.leads],
+                        ['Cost Per Lead', selectedCampaign.metrics.cost_per_lead.toFixed(2)],
+                        ['ROI', selectedCampaign.metrics.roi.toFixed(2) + '%']
+                      ];
+                      const csvContent = reportData.map(row => row.join(',')).join('\n');
+                      const blob = new Blob([csvContent], { type: 'text/csv' });
+                      const url = window.URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `campaign-analytics-${selectedCampaign.id}-${new Date().toISOString().split('T')[0]}.csv`;
+                      a.click();
+                      window.URL.revokeObjectURL(url);
+                    }}
+                    className="flex-1 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white py-3 px-4 rounded-xl font-medium transition-all"
+                  >
+                    Export Analytics
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}

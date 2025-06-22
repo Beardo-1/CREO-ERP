@@ -1,4 +1,4 @@
-import { Property, Contact, Deal, Agent } from '../types';
+import { Property, Contact, Deal, Agent, Task } from '../types';
 
 // Data Service for Real-Time Data Management
 export class DataService {
@@ -28,6 +28,9 @@ export class DataService {
     }
     if (!this.hasData('agents')) {
       this.setAgents(this.getDefaultAgents());
+    }
+    if (!this.hasData('tasks')) {
+      this.setTasks(this.getDefaultTasks());
     }
   }
 
@@ -160,6 +163,52 @@ export class DataService {
     this.setAgents(agents);
   }
 
+  // Tasks
+  public getTasks(): Task[] {
+    const data = localStorage.getItem('creo-tasks');
+    return data ? JSON.parse(data) : [];
+  }
+
+  public setTasks(tasks: Task[]): void {
+    localStorage.setItem('creo-tasks', JSON.stringify(tasks));
+    this.notifyDataChange('tasks', tasks);
+  }
+
+  public addTask(task: Task): void {
+    const tasks = this.getTasks();
+    tasks.push({ ...task, id: this.generateId() });
+    this.setTasks(tasks);
+  }
+
+  public updateTask(id: string, updates: Partial<Task>): void {
+    const tasks = this.getTasks();
+    const index = tasks.findIndex(t => t.id === id);
+    if (index !== -1) {
+      tasks[index] = { ...tasks[index], ...updates };
+      this.setTasks(tasks);
+    }
+  }
+
+  public deleteTask(id: string): void {
+    const tasks = this.getTasks().filter(t => t.id !== id);
+    this.setTasks(tasks);
+  }
+
+  public getTasksByStatus(status: Task['status']): Task[] {
+    return this.getTasks().filter(task => task.status === status);
+  }
+
+  public getTasksByAssignee(assigneeId: string): Task[] {
+    return this.getTasks().filter(task => task.assignedTo === assigneeId);
+  }
+
+  public getOverdueTasks(): Task[] {
+    const now = new Date().toISOString();
+    return this.getTasks().filter(task => 
+      task.dueDate < now && task.status !== 'Completed'
+    );
+  }
+
   // Utility methods
   private generateId(): string {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -170,23 +219,26 @@ export class DataService {
     localStorage.removeItem('creo-contacts');
     localStorage.removeItem('creo-deals');
     localStorage.removeItem('creo-agents');
+    localStorage.removeItem('creo-tasks');
     this.initializeData();
   }
 
-  public exportData(): { properties: Property[], contacts: Contact[], deals: Deal[], agents: Agent[] } {
+  public exportData(): { properties: Property[], contacts: Contact[], deals: Deal[], agents: Agent[], tasks: Task[] } {
     return {
       properties: this.getProperties(),
       contacts: this.getContacts(),
       deals: this.getDeals(),
-      agents: this.getAgents()
+      agents: this.getAgents(),
+      tasks: this.getTasks()
     };
   }
 
-  public importData(data: { properties?: Property[], contacts?: Contact[], deals?: Deal[], agents?: Agent[] }): void {
+  public importData(data: { properties?: Property[], contacts?: Contact[], deals?: Deal[], agents?: Agent[], tasks?: Task[] }): void {
     if (data.properties) this.setProperties(data.properties);
     if (data.contacts) this.setContacts(data.contacts);
     if (data.deals) this.setDeals(data.deals);
     if (data.agents) this.setAgents(data.agents);
+    if (data.tasks) this.setTasks(data.tasks);
   }
 
   // Event system for real-time updates
@@ -214,158 +266,28 @@ export class DataService {
 
   // Default data
   private getDefaultProperties(): Property[] {
-    return [
-      {
-        id: '1',
-        title: 'Modern Downtown Condo',
-        address: '123 Main Street',
-        city: 'Downtown',
-        state: 'CA',
-        zipCode: '90210',
-        price: 850000,
-        bedrooms: 2,
-        bathrooms: 2,
-        squareFeet: 1200,
-        propertyType: 'Residential',
-        status: 'Available',
-        description: 'Stunning modern condo in the heart of downtown with city views, high-end finishes, and premium amenities.',
-        images: [
-          'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=1200',
-          'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=1200'
-        ],
-        listingDate: '2024-01-15',
-        agentId: '1',
-        features: ['City View', 'Balcony', 'Gym', 'Pool', 'Parking'],
-        yearBuilt: 2020
-      },
-      {
-        id: '2',
-        title: 'Family Home with Garden',
-        address: '456 Oak Avenue',
-        city: 'Suburbia',
-        state: 'CA',
-        zipCode: '90211',
-        price: 1200000,
-        bedrooms: 4,
-        bathrooms: 3,
-        squareFeet: 2500,
-        propertyType: 'Residential',
-        status: 'Under Contract',
-        description: 'Beautiful family home with spacious rooms, modern kitchen, and large backyard perfect for entertaining.',
-        images: [
-          'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=1200',
-          'https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress&cs=tinysrgb&w=1200'
-        ],
-        listingDate: '2024-01-10',
-        agentId: '2',
-        features: ['Garden', 'Garage', 'Fireplace', 'Walk-in Closet'],
-        yearBuilt: 2015,
-        lotSize: 8000
-      }
-    ];
+    // Production: Start with empty data
+    return [];
   }
 
   private getDefaultContacts(): Contact[] {
-    return [
-      {
-        id: '1',
-        firstName: 'John',
-        lastName: 'Smith',
-        email: 'john.smith@email.com',
-        phone: '(555) 123-4567',
-        type: 'Lead',
-        status: 'Qualified',
-        source: 'Website',
-        assignedAgent: '1',
-        notes: 'Looking for a downtown condo, budget 800k-1M',
-        createdAt: '2024-01-18',
-        lastContact: '2024-01-20',
-        propertyInterests: ['1'],
-        budget: { min: 800000, max: 1000000 }
-      },
-      {
-        id: '2',
-        firstName: 'Sarah',
-        lastName: 'Johnson',
-        email: 'sarah.johnson@email.com',
-        phone: '(555) 987-6543',
-        type: 'Client',
-        status: 'Converted',
-        source: 'Referral',
-        assignedAgent: '2',
-        notes: 'Family with 2 kids, needs 4+ bedrooms',
-        createdAt: '2024-01-05',
-        lastContact: '2024-01-19',
-        propertyInterests: ['2'],
-        budget: { min: 1000000, max: 1500000 }
-      }
-    ];
+    // Production: Start with empty data
+    return [];
   }
 
   private getDefaultDeals(): Deal[] {
-    return [
-      {
-        id: '1',
-        propertyId: '2',
-        clientId: '2',
-        agentId: '2',
-        type: 'Sale',
-        stage: 'Contract',
-        value: 1200000,
-        commission: 72000,
-        expectedCloseDate: '2024-02-15',
-        notes: 'Buyer pre-approved, inspection scheduled',
-        createdAt: '2024-01-10',
-        updatedAt: '2024-01-20',
-        paymentMethod: 'Bank Transfer'
-      },
-      {
-        id: '2',
-        propertyId: '1',
-        clientId: '1',
-        agentId: '1',
-        type: 'Sale',
-        stage: 'Proposal',
-        value: 850000,
-        commission: 51000,
-        expectedCloseDate: '2024-02-28',
-        notes: 'Offer submitted, awaiting response',
-        createdAt: '2024-01-18',
-        updatedAt: '2024-01-21',
-        paymentMethod: 'Cash'
-      }
-    ];
+    // Production: Start with empty data
+    return [];
   }
 
   private getDefaultAgents(): Agent[] {
-    return [
-      {
-        id: '1',
-        firstName: 'Emma',
-        lastName: 'Wilson',
-        email: 'emma.wilson@realestate.com',
-        phone: '(555) 111-2222',
-        role: 'Agent',
-        licenseNumber: 'RE12345',
-        joinDate: '2020-03-15',
-        totalSales: 15600000,
-        activeListings: 8,
-        commission: 156000
-      },
-      {
-        id: '2',
-        firstName: 'David',
-        lastName: 'Brown',
-        email: 'david.brown@realestate.com',
-        phone: '(555) 333-4444',
-        role: 'Manager',
-        licenseNumber: 'RE67890',
-        joinDate: '2018-08-20',
-        totalSales: 28900000,
-        activeListings: 12,
-        commission: 289000
-      }
-    ];
+    // Production: Start with empty data
+    return [];
+  }
+
+  private getDefaultTasks(): Task[] {
+    // Production: Start with empty data
+    return [];
   }
 }
 

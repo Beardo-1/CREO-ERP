@@ -9,7 +9,7 @@ interface TranslationContextType {
   isRTL: boolean;
   toggleLanguage: () => void;
   setLanguage: (lang: Language) => void;
-  t: (content: { en: string; ar: string }) => string;
+  t: (content: { en: string; ar: string } | string | undefined | null) => string;
   
   // Dynamic translations (LibreTranslate)
   translateDynamic: (text: string, targetLang?: string) => Promise<string>;
@@ -32,8 +32,33 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
   const [translationError, setTranslationError] = useState<string | null>(null);
 
   // Translation function
-  const t = (content: { en: string; ar: string }) => {
-    return content[currentLanguage] || content.en;
+  const t = (content: { en: string; ar: string } | string | undefined | null) => {
+    // Handle null/undefined cases
+    if (content === null || content === undefined) {
+      console.warn('Translation content is null or undefined:', content);
+      return '';
+    }
+    
+    // Handle string content (already translated)
+    if (typeof content === 'string') {
+      return content;
+    }
+    
+    // Handle object content (translation object)
+    if (typeof content === 'object') {
+      // Ensure content has the required language properties
+      if (!content.en && !content.ar) {
+        console.warn('Translation content missing language properties:', content);
+        return '';
+      }
+      
+      const translatedText = content[currentLanguage] || content.en || '';
+      return String(translatedText);
+    }
+    
+    // Fallback for any other type
+    console.warn('Translation content has unexpected type:', typeof content, content);
+    return String(content);
   };
 
   // Map our language codes to LibreTranslate codes

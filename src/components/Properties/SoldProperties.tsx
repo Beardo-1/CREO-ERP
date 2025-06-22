@@ -54,28 +54,28 @@ export default function SoldProperties() {
   const mockSoldProperties: SoldProperty[] = [
     {
       id: '1',
-      title: 'Modern Downtown Apartment',
-      address: '123 Oak Street, Downtown',
-      listPrice: 450000,
-      soldPrice: 465000,
+      title: 'Modern Downtown Condo',
+      address: '123 Main Street, Downtown',
+      listPrice: 650000,
+      soldPrice: 675000,
       bedrooms: 2,
       bathrooms: 2,
       squareFootage: 1200,
-      propertyType: 'apartment',
+      propertyType: 'condo',
       listingDate: new Date('2024-01-15'),
       soldDate: new Date('2024-02-28'),
       daysOnMarket: 44,
       agent: {
         id: '1',
         name: 'Sarah Johnson',
-        avatar: '/api/placeholder/40/40'
+        avatar: ""
       },
       buyer: {
-        name: 'Michael Smith',
+        name: 'Smith Family',
         type: 'individual'
       },
-      commission: 27900,
-      images: ['/api/placeholder/400/300']
+      commission: 40500,
+      images: [""]
     },
     {
       id: '2',
@@ -93,14 +93,14 @@ export default function SoldProperties() {
       agent: {
         id: '2',
         name: 'Mike Chen',
-        avatar: '/api/placeholder/40/40'
+        avatar: ""
       },
       buyer: {
         name: 'Johnson Family',
         type: 'individual'
       },
       commission: 44100,
-      images: ['/api/placeholder/400/300']
+      images: [""]
     }
   ];
 
@@ -137,7 +137,39 @@ export default function SoldProperties() {
             <p className="text-gray-600">{mockSoldProperties.length} {t(appContent.soldProperties.propertiesSold)}</p>
           </div>
           
-          <button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2">
+          <button 
+            onClick={() => {
+              const csvData = mockSoldProperties.map(property => ({
+                Title: property.title,
+                Address: property.address,
+                'List Price': property.listPrice,
+                'Sold Price': property.soldPrice,
+                'Bedrooms': property.bedrooms,
+                'Bathrooms': property.bathrooms,
+                'Square Footage': property.squareFootage,
+                'Property Type': property.propertyType,
+                'Days on Market': property.daysOnMarket,
+                'Agent': property.agent.name,
+                'Buyer': property.buyer.name,
+                'Commission': property.commission,
+                'Sold Date': property.soldDate.toLocaleDateString()
+              }));
+              
+              const csvContent = [
+                Object.keys(csvData[0]).join(','),
+                ...csvData.map(row => Object.values(row).join(','))
+              ].join('\n');
+              
+              const blob = new Blob([csvContent], { type: 'text/csv' });
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `sold-properties-${new Date().toISOString().split('T')[0]}.csv`;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            }}
+            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2"
+          >
             <Download className="w-5 h-5" />
             <span>{t(appContent.soldProperties.exportReport)}</span>
           </button>

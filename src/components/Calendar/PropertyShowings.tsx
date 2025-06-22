@@ -1,7 +1,10 @@
 import React from 'react';
 import { Calendar, Clock, User, Star } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { appContent } from '../../content/app.content';
 
 const PropertyShowings: React.FC = () => {
+  const { t } = useTranslation();
   const showings = [
     {
       id: 'SHOW-001',
@@ -35,8 +38,8 @@ const PropertyShowings: React.FC = () => {
   return (
     <div className="min-h-screen p-8">
       <div className="mb-8">
-        <h3 className="text-2xl font-bold text-gray-900">Property Showings</h3>
-        <p className="text-gray-600">Manage property viewings and appointments</p>
+        <h3 className="text-2xl font-bold text-gray-900">{t(appContent.deals.calendarSchedulingTitle)}</h3>
+        <p className="text-gray-600">{t(appContent.deals.calendarSchedulingSubtitle)}</p>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100">

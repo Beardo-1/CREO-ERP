@@ -77,6 +77,11 @@ export const componentSizes = {
     small: 'p-4 sm:p-6',
     medium: 'p-4 sm:p-6 lg:p-8',
     large: 'p-6 sm:p-8 lg:p-10 xl:p-12',
+  },
+  badge: {
+    small: 'px-2 py-1 text-xs font-medium rounded-full',
+    medium: 'px-3 py-1 text-sm font-medium rounded-full',
+    large: 'px-4 py-2 text-sm font-semibold rounded-full',
   }
 } as const;
 

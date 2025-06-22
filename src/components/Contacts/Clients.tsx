@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Users,
   Phone,
@@ -20,10 +20,16 @@ import {
   CheckCircle,
   AlertCircle,
   User,
-  Briefcase
+  Briefcase,
+  Download,
+  Upload,
+  FileText
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
+import { unifiedDataService } from '../../services/unifiedDataService';
+import { Contact } from '../../types';
+import { importContactsFromCSV, downloadCSVTemplate, CSVImportResult } from '../../utils/csvImport';
 
 interface Client {
   id: string;
@@ -61,96 +67,77 @@ export default function Clients() {
   const [filterType, setFilterType] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'name' | 'lastContact' | 'totalValue'>('lastContact');
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importResult, setImportResult] = useState<CSVImportResult | null>(null);
 
-  const mockClients: Client[] = [
-    {
-      id: '1',
-      name: 'Sarah Johnson',
-      email: 'sarah.johnson@email.com',
-      phone: '+1 (555) 123-4567',
-      avatar: '/api/placeholder/40/40',
-      type: 'buyer',
-      status: 'active',
-      budget: {
-        min: 400000,
-        max: 600000
-      },
+  // Load contacts from dataService
+  useEffect(() => {
+    const loadContacts = async () => {
+      try {
+        const allContacts = await unifiedDataService.getContacts();
+        // Ensure we have an array
+        const safeContacts = Array.isArray(allContacts) ? allContacts : [];
+      // Filter for clients only (not leads)
+        const clientContacts = safeContacts.filter(contact => 
+        contact.type === 'Client' || contact.status === 'Converted'
+      );
+      setContacts(clientContacts);
+      } catch (error) {
+        console.error('Error loading contacts:', error);
+        setContacts([]);
+      }
+    };
+
+    loadContacts();
+
+    // Subscribe to data changes
+    const handleContactsChange = (updatedContacts: Contact[]) => {
+      const safeContacts = Array.isArray(updatedContacts) ? updatedContacts : [];
+      const clientContacts = safeContacts.filter(contact => 
+        contact.type === 'Client' || contact.status === 'Converted'
+      );
+      setContacts(clientContacts);
+    };
+
+    unifiedDataService.subscribe('contactsChanged', handleContactsChange);
+
+    return () => {
+      unifiedDataService.unsubscribe('contactsChanged', handleContactsChange);
+    };
+  }, []);
+
+  // Convert Contact to Client format for display
+  const convertToClient = (contact: Contact): Client => {
+    return {
+      id: contact.id,
+      name: `${contact.firstName} ${contact.lastName}`,
+      email: contact.email,
+      phone: contact.phone,
+      avatar: "",
+      type: 'buyer', // Default type
+      status: contact.status === 'Converted' ? 'active' : 'prospect',
+      budget: contact.budget || { min: 0, max: 0 },
       preferences: {
-        propertyTypes: ['apartment', 'condo'],
-        locations: ['Downtown', 'Midtown'],
+        propertyTypes: ['apartment'],
+        locations: ['City'],
         bedrooms: 2,
         bathrooms: 2
       },
-      lastContact: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      joinDate: new Date('2024-01-15'),
+      lastContact: new Date(contact.lastContact),
+      joinDate: new Date(contact.createdAt),
       totalTransactions: 0,
       totalValue: 0,
       agent: {
-        id: '1',
-        name: 'Mike Chen'
+        id: contact.assignedAgent,
+        name: 'Agent'
       },
-      notes: 'Looking for modern apartment with city view. First-time buyer.',
-      tags: ['first-time-buyer', 'pre-approved']
-    },
-    {
-      id: '2',
-      name: 'Robert Williams',
-      email: 'robert.williams@email.com',
-      phone: '+1 (555) 234-5678',
-      avatar: '/api/placeholder/40/40',
-      type: 'seller',
-      status: 'active',
-      budget: {
-        min: 0,
-        max: 0
-      },
-      preferences: {
-        propertyTypes: ['house'],
-        locations: ['Suburbs'],
-        bedrooms: 4,
-        bathrooms: 3
-      },
-      lastContact: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      joinDate: new Date('2023-11-20'),
-      totalTransactions: 2,
-      totalValue: 1200000,
-      agent: {
-        id: '2',
-        name: 'Sarah Johnson'
-      },
-      notes: 'Selling family home, looking to downsize. Excellent client.',
-      tags: ['repeat-client', 'high-value']
-    },
-    {
-      id: '3',
-      name: 'Emily Davis',
-      email: 'emily.davis@email.com',
-      phone: '+1 (555) 345-6789',
-      avatar: '/api/placeholder/40/40',
-      type: 'both',
-      status: 'prospect',
-      budget: {
-        min: 300000,
-        max: 450000
-      },
-      preferences: {
-        propertyTypes: ['townhouse', 'condo'],
-        locations: ['Arts District', 'University Area'],
-        bedrooms: 3,
-        bathrooms: 2
-      },
-      lastContact: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      joinDate: new Date('2024-02-01'),
-      totalTransactions: 0,
-      totalValue: 0,
-      agent: {
-        id: '3',
-        name: 'Emily Davis'
-      },
-      notes: 'Young professional, flexible on timing. Interested in investment properties.',
-      tags: ['investor', 'flexible']
-    }
-  ];
+      notes: contact.notes,
+      tags: []
+    };
+  };
+
+  const clients = contacts.map(convertToClient);
 
   const getTypeColor = (type: string) => {
     const colors = {
@@ -192,7 +179,134 @@ export default function Clients() {
     return `${Math.floor(days / 30)} ${t(appContent.contacts.monthsAgo)}`;
   };
 
-  const filteredClients = mockClients.filter(client => {
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [newClient, setNewClient] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    type: 'buyer' as 'buyer' | 'seller' | 'both',
+    status: 'prospect' as 'active' | 'inactive' | 'prospect',
+    budgetMin: 0,
+    budgetMax: 0,
+    notes: ''
+  });
+
+  // Add new client handler
+  const handleAddClient = () => {
+    const [firstName, ...lastNameParts] = newClient.name.split(' ');
+    const lastName = lastNameParts.join(' ') || '';
+    
+    const contact: Contact = {
+      id: `client-${Date.now()}`,
+      firstName,
+      lastName,
+      email: newClient.email,
+      phone: newClient.phone,
+      type: 'Client',
+      status: newClient.status === 'active' ? 'Converted' : 'Qualified',
+      source: 'Website',
+      assignedAgent: '1',
+      notes: newClient.notes,
+      createdAt: new Date().toISOString(),
+      lastContact: new Date().toISOString(),
+      propertyInterests: [],
+      budget: {
+        min: newClient.budgetMin,
+        max: newClient.budgetMax
+      }
+    };
+    
+    unifiedDataService.addContact(contact);
+    setNewClient({
+      name: '',
+      email: '',
+      phone: '',
+      type: 'buyer',
+      status: 'prospect',
+      budgetMin: 0,
+      budgetMax: 0,
+      notes: ''
+    });
+    setShowAddModal(false);
+  };
+
+  // Update client handler
+  const handleUpdateClient = (updatedClient: Client) => {
+    const [firstName, ...lastNameParts] = updatedClient.name.split(' ');
+    const lastName = lastNameParts.join(' ') || '';
+    
+    const contact: Partial<Contact> = {
+      firstName,
+      lastName,
+      email: updatedClient.email,
+      phone: updatedClient.phone,
+      type: 'Client',
+      status: updatedClient.status === 'active' ? 'Converted' : 'Qualified',
+      notes: updatedClient.notes,
+      budget: updatedClient.budget,
+      lastContact: new Date().toISOString()
+    };
+    
+    unifiedDataService.updateContact(updatedClient.id, contact);
+    setShowDetailsModal(false);
+  };
+
+  // CSV Import functionality
+  const handleImportCSV = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const csvText = e.target?.result as string;
+      const result = importContactsFromCSV(csvText);
+      
+      setImportResult(result);
+      
+      if (result.success && result.data) {
+        // Add imported contacts to dataService
+        result.data.forEach((contact: Contact) => {
+          unifiedDataService.addContact(contact);
+        });
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleDownloadTemplate = () => {
+    downloadCSVTemplate('contacts');
+  };
+
+  // Export clients handler
+  const handleExportClients = () => {
+    const exportData = [
+      ['Name', 'Email', 'Phone', 'Type', 'Status', 'Budget Min', 'Budget Max', 'Total Value', 'Join Date'],
+      ...clients.map(client => [
+        client.name,
+        client.email,
+        client.phone,
+        client.type,
+        client.status,
+        client.budget.min.toString(),
+        client.budget.max.toString(),
+        client.totalValue.toString(),
+        client.joinDate.toLocaleDateString()
+      ])
+    ];
+    
+    const csvContent = exportData.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = window.document.createElement('a');
+    a.href = url;
+    a.download = `clients-export-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const filteredClients = clients.filter(client => {
     const matchesSearch = client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          client.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === 'all' || client.type === filterType;
@@ -200,9 +314,9 @@ export default function Clients() {
     return matchesSearch && matchesType && matchesStatus;
   });
 
-  const totalClients = mockClients.length;
-  const activeClients = mockClients.filter(c => c.status === 'active').length;
-  const totalValue = mockClients.reduce((sum, client) => sum + client.totalValue, 0);
+  const totalClients = clients.length;
+  const activeClients = clients.filter(c => c.status === 'active').length;
+  const totalValue = clients.reduce((sum, client) => sum + client.totalValue, 0);
 
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white">
@@ -214,10 +328,42 @@ export default function Clients() {
             <p className="text-gray-600">{filteredClients.length} of {totalClients} {t(appContent.contacts.clients).toLowerCase()}</p>
           </div>
           
-          <button className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2">
-            <Plus className="w-5 h-5" />
-            <span>{t(appContent.contacts.addContact)}</span>
-          </button>
+          <div className="flex items-center space-x-3">
+            <button 
+              onClick={handleDownloadTemplate}
+              className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white px-4 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2"
+            >
+              <FileText className="w-5 h-5" />
+              <span>Template</span>
+            </button>
+            
+            <label className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-4 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2 cursor-pointer">
+              <Upload className="w-5 h-5" />
+              <span>Import CSV</span>
+              <input
+                type="file"
+                accept=".csv"
+                onChange={handleImportCSV}
+                className="hidden"
+              />
+            </label>
+            
+            <button 
+              onClick={handleExportClients}
+              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2"
+            >
+              <Download className="w-5 h-5" />
+              <span>Export</span>
+            </button>
+            
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2"
+            >
+              <Plus className="w-5 h-5" />
+              <span>{t(appContent.contacts.addContact)}</span>
+            </button>
+          </div>
         </div>
 
         {/* Summary Stats */}
@@ -338,13 +484,34 @@ export default function Clients() {
               </div>
               
               <div className="flex items-center space-x-2">
-                <button className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                <button 
+                  onClick={() => {
+                    // SMS functionality
+                    window.open(`sms:${client.phone}`, '_blank');
+                  }}
+                  className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  title="Send Message"
+                >
                   <MessageCircle className="w-4 h-4" />
                 </button>
-                <button className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                <button 
+                  onClick={() => {
+                    // Call functionality
+                    window.open(`tel:${client.phone}`, '_blank');
+                  }}
+                  className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                  title="Call Client"
+                >
                   <Phone className="w-4 h-4" />
                 </button>
-                <button className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors">
+                <button 
+                  onClick={() => {
+                    setSelectedClient(client);
+                    setShowDetailsModal(true);
+                  }}
+                  className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                  title="Edit Client"
+                >
                   <Edit className="w-4 h-4" />
                 </button>
               </div>
@@ -432,6 +599,273 @@ export default function Clients() {
           <button className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg">
             {t(appContent.contacts.addFirstClient)}
           </button>
+        </div>
+      )}
+
+      {/* Add Contact Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAddModal(false)} />
+            <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Contact</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                  <input 
+                    type="text" 
+                    value={newClient.name}
+                    onChange={(e) => setNewClient({...newClient, name: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <input 
+                    type="email" 
+                    value={newClient.email}
+                    onChange={(e) => setNewClient({...newClient, email: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                  <input 
+                    type="tel" 
+                    value={newClient.phone}
+                    onChange={(e) => setNewClient({...newClient, phone: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                  <select 
+                    value={newClient.type}
+                    onChange={(e) => setNewClient({...newClient, type: e.target.value as 'buyer' | 'seller' | 'both'})}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="buyer">Buyer</option>
+                    <option value="seller">Seller</option>
+                    <option value="both">Both</option>
+                  </select>
+                </div>
+                
+                {newClient.type !== 'seller' && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Budget Range</label>
+                    <div className="flex space-x-2">
+                      <input 
+                        type="number" 
+                        placeholder="Min Budget"
+                        value={newClient.budgetMin || ''}
+                        onChange={(e) => setNewClient({...newClient, budgetMin: parseInt(e.target.value) || 0})}
+                        className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                      />
+                      <input 
+                        type="number" 
+                        placeholder="Max Budget"
+                        value={newClient.budgetMax || ''}
+                        onChange={(e) => setNewClient({...newClient, budgetMax: parseInt(e.target.value) || 0})}
+                        className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                      />
+                    </div>
+                  </div>
+                )}
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                  <textarea 
+                    value={newClient.notes}
+                    onChange={(e) => setNewClient({...newClient, notes: e.target.value})}
+                    rows={3}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Add notes about this client..."
+                  />
+                </div>
+              </div>
+              <div className="flex space-x-3 mt-6">
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleAddClient}
+                  disabled={!newClient.name || !newClient.email || !newClient.phone}
+                  className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white py-3 px-4 rounded-xl font-medium transition-all"
+                >
+                  Add Contact
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Client Details Modal */}
+      {showDetailsModal && selectedClient && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDetailsModal(false)} />
+            <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Client Details - {selectedClient.name}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                  <input 
+                    type="text" 
+                    defaultValue={selectedClient.name} 
+                    onChange={(e) => setSelectedClient({...selectedClient, name: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <input 
+                    type="email" 
+                    defaultValue={selectedClient.email} 
+                    onChange={(e) => setSelectedClient({...selectedClient, email: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                  <input 
+                    type="tel" 
+                    defaultValue={selectedClient.phone} 
+                    onChange={(e) => setSelectedClient({...selectedClient, phone: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                  <select 
+                    defaultValue={selectedClient.type} 
+                    onChange={(e) => setSelectedClient({...selectedClient, type: e.target.value as 'buyer' | 'seller' | 'both'})}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="buyer">Buyer</option>
+                    <option value="seller">Seller</option>
+                    <option value="both">Both</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <select 
+                    defaultValue={selectedClient.status} 
+                    onChange={(e) => setSelectedClient({...selectedClient, status: e.target.value as 'active' | 'inactive' | 'prospect'})}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="active">Active</option>
+                    <option value="prospect">Prospect</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Budget Range</label>
+                  <div className="flex space-x-2">
+                    <input 
+                      type="number" 
+                      defaultValue={selectedClient.budget.min} 
+                      placeholder="Min" 
+                      onChange={(e) => setSelectedClient({
+                        ...selectedClient, 
+                        budget: {...selectedClient.budget, min: parseInt(e.target.value) || 0}
+                      })}
+                      className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                    />
+                    <input 
+                      type="number" 
+                      defaultValue={selectedClient.budget.max} 
+                      placeholder="Max" 
+                      onChange={(e) => setSelectedClient({
+                        ...selectedClient, 
+                        budget: {...selectedClient.budget, max: parseInt(e.target.value) || 0}
+                      })}
+                      className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                    />
+                  </div>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                  <textarea 
+                    defaultValue={selectedClient.notes} 
+                    onChange={(e) => setSelectedClient({...selectedClient, notes: e.target.value})}
+                    rows={3} 
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+              <div className="flex space-x-3 mt-6">
+                <button
+                  onClick={() => setShowDetailsModal(false)}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => handleUpdateClient(selectedClient)}
+                  className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white py-3 px-4 rounded-xl font-medium transition-all"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Import Result Modal */}
+      {importResult && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setImportResult(null)} />
+            <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                CSV Import Results
+              </h3>
+              
+              <div className={`p-4 rounded-xl mb-4 ${
+                importResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
+              }`}>
+                <div className={`flex items-center space-x-2 ${
+                  importResult.success ? 'text-green-800' : 'text-red-800'
+                }`}>
+                  {importResult.success ? (
+                    <CheckCircle className="w-5 h-5" />
+                  ) : (
+                    <AlertCircle className="w-5 h-5" />
+                  )}
+                  <span className="font-medium">{importResult.message}</span>
+                </div>
+                
+                {importResult.success && (
+                  <p className="text-green-700 text-sm mt-2">
+                    Successfully imported {importResult.importedCount} contacts
+                  </p>
+                )}
+              </div>
+
+              {importResult.errors.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-gray-900 mb-2">Errors:</h4>
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 max-h-32 overflow-y-auto">
+                    {importResult.errors.map((error, index) => (
+                      <p key={index} className="text-red-700 text-sm">{error}</p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <button
+                onClick={() => setImportResult(null)}
+                className="w-full bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white py-3 px-4 rounded-xl font-medium transition-all"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

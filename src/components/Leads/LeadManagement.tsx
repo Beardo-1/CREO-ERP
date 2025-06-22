@@ -20,56 +20,7 @@ interface Lead {
   lastContact: string;
 }
 
-const mockLeads: Lead[] = [
-  {
-    id: '1',
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@email.com',
-    phone: '+1 (555) 123-4567',
-    source: 'Website',
-    status: 'new',
-    priority: 'high',
-    budget: '$500K - $750K',
-    location: 'Downtown',
-    propertyType: 'Condo',
-    notes: 'Looking for 2BR condo with city view',
-    assignedAgent: 'Emma Wilson',
-    createdAt: '2024-01-15',
-    lastContact: '2024-01-15'
-  },
-  {
-    id: '2',
-    name: 'Michael Chen',
-    email: 'michael.chen@email.com',
-    phone: '+1 (555) 987-6543',
-    source: 'Referral',
-    status: 'qualified',
-    priority: 'medium',
-    budget: '$300K - $400K',
-    location: 'Suburbs',
-    propertyType: 'House',
-    notes: 'First-time buyer, needs guidance',
-    assignedAgent: 'John Smith',
-    createdAt: '2024-01-10',
-    lastContact: '2024-01-14'
-  },
-  {
-    id: '3',
-    name: 'Lisa Rodriguez',
-    email: 'lisa.rodriguez@email.com',
-    phone: '+1 (555) 456-7890',
-    source: 'Social Media',
-    status: 'contacted',
-    priority: 'high',
-    budget: '$1M+',
-    location: 'Waterfront',
-    propertyType: 'Luxury Home',
-    notes: 'Interested in waterfront properties',
-    assignedAgent: 'Emma Wilson',
-    createdAt: '2024-01-12',
-    lastContact: '2024-01-13'
-  }
-];
+
 
 export function LeadManagement() {
   const { t } = useTranslation();
@@ -160,7 +111,7 @@ export function LeadManagement() {
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
                     <span className="text-white font-semibold text-lg">
-                      {lead.name.split(' ').map(n => n[0]).join('')}
+                      {(lead.name || '').split(' ').map(n => n[0]).join('')}
                     </span>
                   </div>
                   <div>
@@ -215,7 +166,7 @@ export function LeadManagement() {
               <div className="flex items-center space-x-4 mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
                   <span className="text-white font-semibold text-xl">
-                    {selectedLead.name.split(' ').map(n => n[0]).join('')}
+                    {(selectedLead.name || '').split(' ').map(n => n[0]).join('')}
                   </span>
                 </div>
                 <div>

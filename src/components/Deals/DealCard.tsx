@@ -82,10 +82,10 @@ export function DealCard({ deal, onClick }: DealCardProps) {
         {/* Stage and Type Badges */}
         <div className="flex justify-between items-start mb-4">
           <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStageColor(deal.stage)}`}>
-            {t(appContent.deals[deal.stage as keyof typeof appContent.deals]) || deal.stage}
+            {t(appContent.deals[deal.stage.toLowerCase() as keyof typeof appContent.deals] || { en: deal.stage, ar: deal.stage })}
           </span>
           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getTypeColor(deal.type)}`}>
-            {t(appContent.deals[deal.type as keyof typeof appContent.deals]) || deal.type}
+            {t(appContent.deals[deal.type.toLowerCase() as keyof typeof appContent.deals] || { en: deal.type, ar: deal.type })}
           </span>
         </div>
         
