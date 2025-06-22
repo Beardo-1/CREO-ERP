@@ -1617,39 +1617,60 @@ function App() {
           console.log('🔍 KPIBuilder component:', KPIBuilder);
           console.log('🔍 typeof KPIBuilder:', typeof KPIBuilder);
           
-          // TEMPORARY: Simple test component to isolate the issue
-          const TestKPIComponent = () => (
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold mb-4 text-green-600">✅ KPI Management - TEST SUCCESS!</h2>
-              <p className="text-gray-600 mb-4">This is a test component to verify routing works.</p>
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-blue-800 mb-2">Debug Info:</h3>
-                <p className="text-blue-700 text-sm">Route: kpi-manage</p>
-                <p className="text-blue-700 text-sm">Component: KPIBuilder (temporarily replaced)</p>
-                <p className="text-blue-700 text-sm">Status: Route working, testing component loading</p>
-              </div>
-              <button 
-                onClick={() => console.log('Button clicked - component is interactive!')}
-                className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
-              >
-                Test Button
-              </button>
-            </div>
-          );
-          
-          return (
-            <SafeComponent 
-              component={TestKPIComponent} 
-              name="KPIManageTest"
-              fallback={
-                <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h2 className="text-2xl font-bold mb-4 text-red-600">❌ FALLBACK TRIGGERED</h2>
-                  <p className="text-gray-600">Even the test component failed to load.</p>
-                  <p className="text-red-600 text-sm">This indicates a SafeComponent wrapper issue.</p>
+          // DIRECT RENDER TEST - Bypass SafeComponent wrapper
+          try {
+            return (
+              <div className="min-h-screen bg-gray-50 p-6">
+                <div className="max-w-4xl mx-auto">
+                  <div className="bg-white rounded-xl shadow-lg p-8">
+                    <h1 className="text-3xl font-bold mb-6 text-green-600">✅ DIRECT RENDER TEST</h1>
+                    <div className="space-y-4">
+                      <p className="text-lg text-gray-700">If you can see this, the routing works perfectly!</p>
+                      <div className="bg-blue-50 p-4 rounded-lg">
+                        <h3 className="font-semibold text-blue-800 mb-2">Debug Information:</h3>
+                        <ul className="text-blue-700 text-sm space-y-1">
+                          <li>✅ Route: kpi-manage detected</li>
+                          <li>✅ Switch case reached</li>
+                          <li>✅ Direct render (no SafeComponent wrapper)</li>
+                          <li>✅ JSX rendering successfully</li>
+                        </ul>
+                      </div>
+                      <div className="bg-yellow-50 p-4 rounded-lg">
+                        <h3 className="font-semibold text-yellow-800 mb-2">Next Steps:</h3>
+                        <p className="text-yellow-700 text-sm">
+                          Since this works, the issue was likely with the SafeComponent wrapper or the KPIBuilder component itself.
+                        </p>
+                      </div>
+                      <button 
+                        onClick={() => {
+                          console.log('✅ Button clicked - Component is fully interactive!');
+                          alert('Success! The component is working perfectly.');
+                        }}
+                        className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-medium"
+                      >
+                        Test Interactivity
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              }
-            />
-          );
+              </div>
+            );
+          } catch (error) {
+            console.error('❌ Direct render failed:', error);
+            return (
+              <div className="min-h-screen bg-red-50 p-6">
+                <div className="max-w-2xl mx-auto">
+                  <div className="bg-white rounded-xl shadow-lg p-8">
+                    <h1 className="text-3xl font-bold mb-6 text-red-600">❌ DIRECT RENDER FAILED</h1>
+                    <p className="text-gray-700 mb-4">Even direct rendering failed. Check console for errors.</p>
+                    <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
+                      {error instanceof Error ? error.message : String(error)}
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            );
+          }
 
         case 'kpi-templates':
           return (
