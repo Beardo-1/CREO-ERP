@@ -3754,6 +3754,138 @@ export const appContent = {
     }
   },
 
+  // Leads Module
+  leads: {
+    newLeads: {
+      en: "New Leads",
+      ar: "العملاء المحتملون الجدد"
+    },
+    newLeadsToReview: {
+      en: "new leads to review",
+      ar: "عملاء محتملون جدد للمراجعة"
+    },
+    addLead: {
+      en: "Add Lead",
+      ar: "إضافة عميل محتمل"
+    },
+    totalNewLeads: {
+      en: "Total New Leads",
+      ar: "إجمالي العملاء المحتملين الجدد"
+    },
+    highScoreLeads: {
+      en: "High Score Leads",
+      ar: "العملاء المحتملون عالي النقاط"
+    },
+    averageScore: {
+      en: "Average Score",
+      ar: "متوسط النقاط"
+    },
+    conversionRate: {
+      en: "Conversion Rate",
+      ar: "معدل التحويل"
+    },
+    searchLeads: {
+      en: "Search leads...",
+      ar: "البحث في العملاء المحتملين..."
+    },
+    allSources: {
+      en: "All Sources",
+      ar: "جميع المصادر"
+    },
+    website: {
+      en: "Website",
+      ar: "الموقع الإلكتروني"
+    },
+    referral: {
+      en: "Referral",
+      ar: "إحالة"
+    },
+    socialMedia: {
+      en: "Social Media",
+      ar: "وسائل التواصل الاجتماعي"
+    },
+    advertising: {
+      en: "Advertising",
+      ar: "الإعلان"
+    },
+    coldCall: {
+      en: "Cold Call",
+      ar: "مكالمة باردة"
+    },
+    walkIn: {
+      en: "Walk-in",
+      ar: "زيارة مباشرة"
+    },
+    allInterests: {
+      en: "All Interests",
+      ar: "جميع الاهتمامات"
+    },
+    buying: {
+      en: "Buying",
+      ar: "شراء"
+    },
+    selling: {
+      en: "Selling",
+      ar: "بيع"
+    },
+    renting: {
+      en: "Renting",
+      ar: "إيجار"
+    },
+    investing: {
+      en: "Investing",
+      ar: "استثمار"
+    },
+    sortByScore: {
+      en: "Sort by Score",
+      ar: "ترتيب حسب النقاط"
+    },
+    sortByDate: {
+      en: "Sort by Date",
+      ar: "ترتيب حسب التاريخ"
+    },
+    sortByFollowUp: {
+      en: "Sort by Follow-up",
+      ar: "ترتيب حسب المتابعة"
+    },
+    score: {
+      en: "Score",
+      ar: "النقاط"
+    },
+    budgetRange: {
+      en: "Budget Range",
+      ar: "نطاق الميزانية"
+    },
+    interestedIn: {
+      en: "Interested in",
+      ar: "مهتم بـ"
+    },
+    created: {
+      en: "Created",
+      ar: "تم الإنشاء"
+    },
+    followUp: {
+      en: "Follow-up",
+      ar: "المتابعة"
+    },
+    agent: {
+      en: "Agent",
+      ar: "الوكيل"
+    },
+    noLeadsFound: {
+      en: "No leads found",
+      ar: "لم يتم العثور على عملاء محتملين"
+    },
+    adjustSearchCriteria: {
+      en: "Try adjusting your search criteria or add a new lead.",
+      ar: "حاول تعديل معايير البحث أو إضافة عميل محتمل جديد."
+    },
+    addYourFirstLead: {
+      en: "Add Your First Lead",
+      ar: "أضف أول عميل محتمل"
+    }
+  },
+
   // Loading Screen Module
   loading: {
     welcomeTitle: {
