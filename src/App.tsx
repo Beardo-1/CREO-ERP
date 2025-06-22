@@ -1740,20 +1740,7 @@ function App() {
             />
           );
 
-        // Leads Sub-routes
-        case 'leads-qualified':
-          return (
-            <SafeComponent 
-              component={LeadScoring} 
-              name="LeadsQualified"
-              fallback={
-                <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h2 className="text-2xl font-bold mb-4">Qualified Leads</h2>
-                  <p className="text-gray-600">Loading qualified leads...</p>
-                </div>
-              }
-            />
-          );
+        // Leads Sub-routes - DUPLICATE REMOVED
 
         default:
           // For truly unknown tabs, show a proper error message without auto-redirect
