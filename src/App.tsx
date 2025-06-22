@@ -79,6 +79,7 @@ import { DataUploadManager } from './components/Admin/DataUploadManager';
 import { NotificationSystem } from './components/Notifications/NotificationSystem';
 import { SystemStatus } from './components/Admin/SystemStatus';
 import { SystemPerformance } from './components/Admin/SystemPerformance';
+import { Settings } from './components/Admin/Settings';
 
 // Safe Component Wrapper
 const SafeComponent: React.FC<{
@@ -1807,6 +1808,21 @@ function App() {
                 <div className="bg-white rounded-xl shadow-lg p-6">
                   <h2 className="text-2xl font-bold mb-4">System Alerts</h2>
                   <p className="text-gray-600">Loading system alerts...</p>
+                </div>
+              }
+            />
+          );
+
+        // Settings
+        case 'settings':
+          return (
+            <SafeComponent 
+              component={Settings} 
+              name="Settings"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Settings</h2>
+                  <p className="text-gray-600">Loading system settings...</p>
                 </div>
               }
             />
