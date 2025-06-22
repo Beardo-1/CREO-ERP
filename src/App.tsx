@@ -1602,7 +1602,7 @@ function App() {
         case 'kpi-manage':
           return (
             <SafeComponent 
-              component={KPIDisplay} 
+              component={KPIBuilder} 
               name="KPIManage"
               fallback={
                 <div className="bg-white rounded-xl shadow-lg p-6">
