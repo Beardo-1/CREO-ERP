@@ -1613,14 +1613,39 @@ function App() {
           );
 
         case 'kpi-manage':
+          console.log('🚨 KPI-MANAGE CASE REACHED!');
+          console.log('🔍 KPIBuilder component:', KPIBuilder);
+          console.log('🔍 typeof KPIBuilder:', typeof KPIBuilder);
+          
+          // TEMPORARY: Simple test component to isolate the issue
+          const TestKPIComponent = () => (
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-2xl font-bold mb-4 text-green-600">✅ KPI Management - TEST SUCCESS!</h2>
+              <p className="text-gray-600 mb-4">This is a test component to verify routing works.</p>
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h3 className="font-semibold text-blue-800 mb-2">Debug Info:</h3>
+                <p className="text-blue-700 text-sm">Route: kpi-manage</p>
+                <p className="text-blue-700 text-sm">Component: KPIBuilder (temporarily replaced)</p>
+                <p className="text-blue-700 text-sm">Status: Route working, testing component loading</p>
+              </div>
+              <button 
+                onClick={() => console.log('Button clicked - component is interactive!')}
+                className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+              >
+                Test Button
+              </button>
+            </div>
+          );
+          
           return (
             <SafeComponent 
-              component={KPIBuilder} 
-              name="KPIManage"
+              component={TestKPIComponent} 
+              name="KPIManageTest"
               fallback={
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h2 className="text-2xl font-bold mb-4">Manage KPIs</h2>
-                  <p className="text-gray-600">Loading KPI management...</p>
+                  <h2 className="text-2xl font-bold mb-4 text-red-600">❌ FALLBACK TRIGGERED</h2>
+                  <p className="text-gray-600">Even the test component failed to load.</p>
+                  <p className="text-red-600 text-sm">This indicates a SafeComponent wrapper issue.</p>
                 </div>
               }
             />
