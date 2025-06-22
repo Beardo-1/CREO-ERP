@@ -1617,55 +1617,32 @@ function App() {
           console.log('🔍 KPIBuilder component:', KPIBuilder);
           console.log('🔍 typeof KPIBuilder:', typeof KPIBuilder);
           
-          // DIRECT RENDER TEST - Bypass SafeComponent wrapper
+          // Try to render KPIBuilder with detailed error catching
           try {
             return (
               <div className="min-h-screen bg-gray-50 p-6">
-                <div className="max-w-4xl mx-auto">
-                  <div className="bg-white rounded-xl shadow-lg p-8">
-                    <h1 className="text-3xl font-bold mb-6 text-green-600">✅ DIRECT RENDER TEST</h1>
-                    <div className="space-y-4">
-                      <p className="text-lg text-gray-700">If you can see this, the routing works perfectly!</p>
-                      <div className="bg-blue-50 p-4 rounded-lg">
-                        <h3 className="font-semibold text-blue-800 mb-2">Debug Information:</h3>
-                        <ul className="text-blue-700 text-sm space-y-1">
-                          <li>✅ Route: kpi-manage detected</li>
-                          <li>✅ Switch case reached</li>
-                          <li>✅ Direct render (no SafeComponent wrapper)</li>
-                          <li>✅ JSX rendering successfully</li>
-                        </ul>
-                      </div>
-                      <div className="bg-yellow-50 p-4 rounded-lg">
-                        <h3 className="font-semibold text-yellow-800 mb-2">Next Steps:</h3>
-                        <p className="text-yellow-700 text-sm">
-                          Since this works, the issue was likely with the SafeComponent wrapper or the KPIBuilder component itself.
-                        </p>
-                      </div>
-                      <button 
-                        onClick={() => {
-                          console.log('✅ Button clicked - Component is fully interactive!');
-                          alert('Success! The component is working perfectly.');
-                        }}
-                        className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-medium"
-                      >
-                        Test Interactivity
-                      </button>
-                    </div>
-                  </div>
+                <div className="max-w-7xl mx-auto">
+                  <KPIBuilder />
                 </div>
               </div>
             );
           } catch (error) {
-            console.error('❌ Direct render failed:', error);
+            console.error('❌ KPIBuilder failed to render:', error);
             return (
               <div className="min-h-screen bg-red-50 p-6">
                 <div className="max-w-2xl mx-auto">
                   <div className="bg-white rounded-xl shadow-lg p-8">
-                    <h1 className="text-3xl font-bold mb-6 text-red-600">❌ DIRECT RENDER FAILED</h1>
-                    <p className="text-gray-700 mb-4">Even direct rendering failed. Check console for errors.</p>
-                    <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
-                      {error instanceof Error ? error.message : String(error)}
-                    </pre>
+                    <h1 className="text-3xl font-bold mb-6 text-red-600">❌ KPIBuilder Error</h1>
+                    <p className="text-gray-700 mb-4">The KPIBuilder component failed to render.</p>
+                    <div className="bg-gray-100 p-4 rounded text-sm">
+                      <strong>Error:</strong> {error instanceof Error ? error.message : String(error)}
+                    </div>
+                    <button 
+                      onClick={() => window.location.reload()}
+                      className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                    >
+                      Reload Page
+                    </button>
                   </div>
                 </div>
               </div>
