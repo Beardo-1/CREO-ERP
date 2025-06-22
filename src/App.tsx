@@ -1379,6 +1379,20 @@ function App() {
                   />
           );
 
+        case 'leads-new':
+          return (
+            <SafeComponent 
+              component={NewLeads} 
+              name="LeadsNew"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">New Leads</h2>
+                  <p className="text-gray-600">Loading new leads...</p>
+                </div>
+              }
+            />
+          );
+
         default:
           // For truly unknown tabs, show a proper error message without auto-redirect
           return (
