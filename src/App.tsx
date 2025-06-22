@@ -180,7 +180,22 @@ function App() {
   };
 
   const renderContent = () => {
-    console.log('Current activeTab:', activeTab);
+    console.log('🔍 DEBUGGING - Current activeTab:', activeTab, 'Type:', typeof activeTab);
+    
+    // Debug specific problematic routes
+    const problematicRoutes = [
+      'compliance-training', 'compliance-audit', 'compliance-legal',
+      'reports-sales', 'reports-performance', 'reports-custom',
+      'kpi-create', 'kpi-manage', 'kpi-templates',
+      'data-import', 'data-export', 'data-templates',
+      'system-overview', 'system-services', 'system-performance', 'system-alerts',
+      'leads-follow-up'
+    ];
+    
+    if (problematicRoutes.includes(activeTab)) {
+      console.log('🎯 FOUND PROBLEMATIC ROUTE:', activeTab, '- Should be handled!');
+    }
+    
     try {
       switch (activeTab) {
         case 'dashboard':
@@ -1729,12 +1744,17 @@ function App() {
 
         default:
           // For truly unknown tabs, show a proper error message without auto-redirect
+          console.error('❌ ROUTE NOT FOUND:', activeTab, '- Falling to default case');
+          console.error('🔍 All available routes should include:', problematicRoutes);
           return (
             <div className="min-h-screen flex items-center justify-center">
               <div className="text-center max-w-md">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Module Not Found</h2>
                 <p className="text-gray-600 mb-6">
                   The module "{activeTab}" is not available or is still under development.
+                </p>
+                <p className="text-red-600 text-sm mb-4">
+                  DEBUG: Route "{activeTab}" fell through to default case. Check console for details.
                 </p>
                 <div className="space-x-4">
                   <button

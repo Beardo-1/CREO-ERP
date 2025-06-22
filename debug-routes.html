@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREO ERP - Route Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .route-test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .working { background-color: #d4edda; }
+        .broken { background-color: #f8d7da; }
+        button { margin: 5px; padding: 8px 12px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>CREO ERP Route Tester</h1>
+    <p>Click each button to test if the routes are working:</p>
+    
+    <div class="route-test">
+        <h3>Compliance Routes</h3>
+        <button onclick="testRoute('compliance-training')">compliance-training</button>
+        <button onclick="testRoute('compliance-audit')">compliance-audit</button>
+        <button onclick="testRoute('compliance-legal')">compliance-legal</button>
+    </div>
+    
+    <div class="route-test">
+        <h3>Reports Routes</h3>
+        <button onclick="testRoute('reports-sales')">reports-sales</button>
+        <button onclick="testRoute('reports-performance')">reports-performance</button>
+        <button onclick="testRoute('reports-custom')">reports-custom</button>
+    </div>
+    
+    <div class="route-test">
+        <h3>KPI Routes</h3>
+        <button onclick="testRoute('kpi-create')">kpi-create</button>
+        <button onclick="testRoute('kpi-manage')">kpi-manage</button>
+        <button onclick="testRoute('kpi-templates')">kpi-templates</button>
+    </div>
+    
+    <div class="route-test">
+        <h3>Data Routes</h3>
+        <button onclick="testRoute('data-import')">data-import</button>
+        <button onclick="testRoute('data-export')">data-export</button>
+        <button onclick="testRoute('data-templates')">data-templates</button>
+    </div>
+    
+    <div class="route-test">
+        <h3>System Routes</h3>
+        <button onclick="testRoute('system-overview')">system-overview</button>
+        <button onclick="testRoute('system-services')">system-services</button>
+        <button onclick="testRoute('system-performance')">system-performance</button>
+        <button onclick="testRoute('system-alerts')">system-alerts</button>
+    </div>
+    
+    <div class="route-test">
+        <h3>Leads Routes</h3>
+        <button onclick="testRoute('leads-follow-up')">leads-follow-up</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        function testRoute(route) {
+            // Open the main app with the specific route
+            const baseUrl = window.location.origin;
+            const testUrl = `${baseUrl}/#${route}`;
+            window.open(testUrl, '_blank');
+        }
+        
+        // Auto-test function
+        function autoTest() {
+            const routes = [
+                'compliance-training', 'compliance-audit', 'compliance-legal',
+                'reports-sales', 'reports-performance', 'reports-custom',
+                'kpi-create', 'kpi-manage', 'kpi-templates',
+                'data-import', 'data-export', 'data-templates',
+                'system-overview', 'system-services', 'system-performance', 'system-alerts',
+                'leads-follow-up'
+            ];
+            
+            const results = document.getElementById('results');
+            results.innerHTML = '<h3>Auto-Test Results:</h3>';
+            
+            routes.forEach(route => {
+                const div = document.createElement('div');
+                div.innerHTML = `<a href="#${route}" target="_blank">${route}</a> - Click to test`;
+                results.appendChild(div);
+            });
+        }
+        
+        // Run auto-test on load
+        autoTest();
+    </script>
+</body>
+</html> 
