@@ -50,15 +50,16 @@ const SafeIcon: React.FC<{
   icon: React.ComponentType<any> | undefined | null;
   className?: string;
   fallback?: React.ComponentType<any>;
-}> = ({ icon: Icon, className = "", fallback: FallbackIcon = AlertCircle }) => {
+}> = ({ icon: Icon, className = "", fallback: FallbackIcon = Home }) => {
   if (!Icon || typeof Icon !== 'function') {
+    console.warn('SafeIcon: Missing or invalid icon, using fallback');
     return <FallbackIcon className={className} />;
   }
   
   try {
     return <Icon className={className} />;
   } catch (error) {
-    console.error('Error rendering icon:', error);
+    console.error('SafeIcon: Error rendering icon:', error);
     return <FallbackIcon className={className} />;
   }
 };
@@ -907,7 +908,7 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                   Search Results ({filteredItems.length})
                 </h3>
                 {filteredItems.map((item) => {
-          const Icon = item.icon || AlertCircle;
+          const Icon = item.icon;
           const isActive = activeTab === item.id;
           
           return (
@@ -929,9 +930,12 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                       }`}
                       aria-current={isActive ? 'page' : undefined}
                     >
-                      <Icon className={`w-5 h-5 transition-all duration-200 ${
-                        isActive ? 'text-orange-600' : 'text-gray-600 group-hover:text-orange-600 group-focus:text-orange-600'
-                      } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110' : ''}`} />
+                      <SafeIcon 
+                        icon={Icon}
+                        className={`w-5 h-5 transition-all duration-200 ${
+                          isActive ? 'text-orange-600' : 'text-gray-600 group-hover:text-orange-600 group-focus:text-orange-600'
+                        } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110' : ''}`} 
+                      />
                       <span className="font-medium text-sm flex-1">{item.label}</span>
                       {item.priority && (
                         <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(item.priority)}`}>
@@ -990,7 +994,7 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                           isCollapsed ? '' : isExpanded ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0 overflow-hidden'
                         }`}>
                         {category.items.map((item) => {
-                          const Icon = item.icon || AlertCircle;
+                          const Icon = item.icon;
                           const isActive = activeTab === item.id;
                           const hasSubMenu = item.subItems && item.subItems.length > 0;
                           const isSubMenuExpanded = expandedSubMenus.includes(item.id);
@@ -1067,7 +1071,7 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                                   isSubMenuExpanded ? 'opacity-100 max-h-96' : 'opacity-0 max-h-0 overflow-hidden'
                                 }`}>
                                   {item.subItems?.map((subItem) => {
-                                    const SubIcon = subItem.icon || AlertCircle;
+                                    const SubIcon = subItem.icon;
                                     return (
                                       <button
                                         key={subItem.id}

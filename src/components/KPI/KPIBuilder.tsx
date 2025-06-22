@@ -23,19 +23,19 @@ interface SimpleKPI {
 
 export function KPIBuilder() {
   const [kpis, setKpis] = useState<SimpleKPI[]>([
-    {
-      id: '1',
-      name: 'Total Revenue',
+        {
+          id: '1',
+          name: 'Total Revenue',
       description: 'Monthly revenue generated',
       value: 85000,
-      target: 100000,
+          target: 100000,
       category: 'Financial',
       color: '#10b981'
-    },
-    {
-      id: '2',
-      name: 'Active Listings',
-      description: 'Number of active property listings',
+        },
+        {
+          id: '2',
+          name: 'Active Listings',
+          description: 'Number of active property listings',
       value: 24,
       target: 30,
       category: 'Properties',
@@ -105,12 +105,12 @@ export function KPIBuilder() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
               <h1 className="text-3xl font-bold text-gray-900">KPI Management</h1>
               <p className="text-gray-600">Create and manage your key performance indicators</p>
-            </div>
+          </div>
             <button
               onClick={handleAddKPI}
               className="flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -118,7 +118,7 @@ export function KPIBuilder() {
               <Plus className="w-5 h-5" />
               <span>Add KPI</span>
             </button>
-          </div>
+        </div>
 
           {/* Search */}
           <div className="relative max-w-md">
@@ -176,15 +176,15 @@ export function KPIBuilder() {
                       / {kpi.target.toLocaleString()}
                     </span>
                   )}
-                </div>
+              </div>
 
-                {kpi.target && (
+              {kpi.target && (
                   <div>
                     <div className="flex items-center justify-between text-sm mb-1">
                       <span className="text-gray-600">Progress</span>
-                      <span className="font-medium">
+                    <span className="font-medium">
                         {getProgressPercentage(kpi.value, kpi.target).toFixed(1)}%
-                      </span>
+                    </span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
@@ -195,12 +195,12 @@ export function KPIBuilder() {
                         }}
                       />
                     </div>
-                  </div>
-                )}
+                </div>
+              )}
               </div>
             </div>
           ))}
-        </div>
+      </div>
 
         {/* Empty State */}
         {filteredKPIs.length === 0 && (
@@ -224,7 +224,7 @@ export function KPIBuilder() {
 
         {/* Add/Edit Form Modal */}
         {showForm && editingKPI && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl max-w-md w-full p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-900">
@@ -237,51 +237,51 @@ export function KPIBuilder() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">KPI Name</label>
-                  <input
-                    type="text"
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">KPI Name</label>
+                        <input
+                          type="text"
                     value={editingKPI.name}
-                    onChange={(e) => setEditingKPI({ ...editingKPI, name: e.target.value })}
+                          onChange={(e) => setEditingKPI({ ...editingKPI, name: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter KPI name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                  <textarea
+                          placeholder="Enter KPI name"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea
                     value={editingKPI.description}
-                    onChange={(e) => setEditingKPI({ ...editingKPI, description: e.target.value })}
+                          onChange={(e) => setEditingKPI({ ...editingKPI, description: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    rows={3}
-                    placeholder="Describe what this KPI measures"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
+                          rows={3}
+                          placeholder="Describe what this KPI measures"
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Current Value</label>
-                    <input
-                      type="number"
+                        <input
+                          type="number"
                       value={editingKPI.value}
                       onChange={(e) => setEditingKPI({ ...editingKPI, value: parseFloat(e.target.value) || 0 })}
                       className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
                     />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Target (Optional)</label>
-                    <input
-                      type="number"
-                      value={editingKPI.target || ''}
-                      onChange={(e) => setEditingKPI({ ...editingKPI, target: parseFloat(e.target.value) || undefined })}
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Target (Optional)</label>
+                          <input
+                            type="number"
+                            value={editingKPI.target || ''}
+                            onChange={(e) => setEditingKPI({ ...editingKPI, target: parseFloat(e.target.value) || undefined })}
                       className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
+                          />
+                        </div>
+                      </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
@@ -298,26 +298,26 @@ export function KPIBuilder() {
                     <option value="General">General</option>
                   </select>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="color"
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="color"
                       value={editingKPI.color}
-                      onChange={(e) => setEditingKPI({ ...editingKPI, color: e.target.value })}
-                      className="w-12 h-10 border border-gray-200 rounded-lg"
-                    />
-                    <input
-                      type="text"
+                            onChange={(e) => setEditingKPI({ ...editingKPI, color: e.target.value })}
+                            className="w-12 h-10 border border-gray-200 rounded-lg"
+                          />
+                          <input
+                            type="text"
                       value={editingKPI.color}
-                      onChange={(e) => setEditingKPI({ ...editingKPI, color: e.target.value })}
+                            onChange={(e) => setEditingKPI({ ...editingKPI, color: e.target.value })}
                       className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
+                          />
                   </div>
                 </div>
               </div>
-
+              
               <div className="flex items-center justify-end space-x-4 mt-6">
                 <button
                   onClick={() => setShowForm(false)}
@@ -335,8 +335,8 @@ export function KPIBuilder() {
               </div>
             </div>
           </div>
-        )}
-      </div>
+          )}
+        </div>
     </div>
   );
 }
