@@ -1617,14 +1617,62 @@ function App() {
           console.log('🔍 KPIBuilder component:', KPIBuilder);
           console.log('🔍 typeof KPIBuilder:', typeof KPIBuilder);
           
-          // Try to render KPIBuilder with detailed error catching
-          try {
-            return (
-              <div className="min-h-screen bg-gray-50 p-6">
-                <div className="max-w-7xl mx-auto">
-                  <KPIBuilder />
+          // Add error boundary wrapper for KPIBuilder
+          const KPIErrorBoundary = ({ children }: { children: React.ReactNode }) => {
+            const [hasError, setHasError] = React.useState(false);
+            const [error, setError] = React.useState<Error | null>(null);
+            
+            React.useEffect(() => {
+              const handleError = (event: ErrorEvent) => {
+                console.error('🚨 KPIBuilder Error Caught:', event.error);
+                setError(event.error);
+                setHasError(true);
+              };
+              
+              window.addEventListener('error', handleError);
+              return () => window.removeEventListener('error', handleError);
+            }, []);
+            
+            if (hasError) {
+              return (
+                <div className="min-h-screen bg-red-50 p-6">
+                  <div className="max-w-2xl mx-auto">
+                    <div className="bg-white rounded-xl shadow-lg p-8">
+                      <h1 className="text-3xl font-bold mb-6 text-red-600">❌ KPIBuilder Runtime Error</h1>
+                      <p className="text-gray-700 mb-4">The KPIBuilder component crashed during rendering.</p>
+                      <div className="bg-gray-100 p-4 rounded text-sm mb-4">
+                        <strong>Error:</strong> {error?.message || 'Unknown error'}
+                      </div>
+                      <div className="bg-gray-100 p-4 rounded text-sm mb-4">
+                        <strong>Stack:</strong> 
+                        <pre className="mt-2 text-xs overflow-auto">{error?.stack || 'No stack trace'}</pre>
+                      </div>
+                      <button 
+                        onClick={() => window.location.reload()}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                      >
+                        Reload Page
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              );
+            }
+            
+            return <>{children}</>;
+          };
+          
+          // Try to render KPIBuilder with error boundary
+          try {
+            console.log('🔄 Attempting to render KPIBuilder...');
+            return (
+              <KPIErrorBoundary>
+                <div className="min-h-screen bg-gray-50 p-6">
+                  <div className="max-w-7xl mx-auto">
+                    <KPIBuilder />
+                  </div>
+                </div>
+              </KPIErrorBoundary>
             );
           } catch (error) {
             console.error('❌ KPIBuilder failed to render:', error);
