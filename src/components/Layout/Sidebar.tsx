@@ -1015,13 +1015,12 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                                   aria-current={isActive ? 'page' : undefined}
                                   aria-describedby={item.badge ? `badge-${item.id}` : undefined}
                                 >
-                                  {Icon && typeof Icon === 'function' ? (
-                                    <Icon className={`w-5 h-5 transition-all duration-200 ${
+                                  <SafeIcon 
+                                    icon={Icon}
+                                    className={`w-5 h-5 transition-all duration-200 ${
                                       isActive ? 'text-orange-600' : 'text-gray-600 group-hover:text-orange-600'
-                                    } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110 rotate-12' : ''}`} />
-                                  ) : (
-                                    <AlertCircle className={`w-5 h-5 transition-all duration-200 text-gray-400`} />
-                                  )}
+                                    } ${hoveredItem === item.id || focusedItem === item.id ? 'scale-110 rotate-12' : ''}`}
+                                  />
                                   
                                   {!isCollapsed && (
                                     <>
@@ -1078,11 +1077,10 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
                                         }}
                                         className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:text-orange-600 hover:bg-white/20 transition-all duration-200 text-sm"
                                       >
-                                        {SubIcon && typeof SubIcon === 'function' ? (
-                                          <SubIcon className="w-4 h-4" />
-                                        ) : (
-                                          <AlertCircle className="w-4 h-4 text-gray-400" />
-                                        )}
+                                        <SafeIcon 
+                                          icon={SubIcon}
+                                          className="w-4 h-4"
+                                        />
                                         <span className="flex-1">{subItem.label}</span>
                                         {subItem.badge && subItem.badge > 0 && (
                                           <span className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full">
