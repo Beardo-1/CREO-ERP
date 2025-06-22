@@ -78,6 +78,7 @@ import WorkOrderManager from './components/Maintenance/WorkOrderManager';
 import { DataUploadManager } from './components/Admin/DataUploadManager';
 import { NotificationSystem } from './components/Notifications/NotificationSystem';
 import { SystemStatus } from './components/Admin/SystemStatus';
+import { SystemPerformance } from './components/Admin/SystemPerformance';
 
 // Safe Component Wrapper
 const SafeComponent: React.FC<{
@@ -1786,7 +1787,7 @@ function App() {
         case 'system-performance':
           return (
             <SafeComponent 
-              component={AnalyticsDashboard} 
+              component={SystemPerformance} 
               name="SystemPerformance"
               fallback={
                 <div className="bg-white rounded-xl shadow-lg p-6">
