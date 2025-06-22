@@ -1407,6 +1407,326 @@ function App() {
             />
           );
 
+        // Category Routes (redirect to default sub-items)
+        case 'core':
+          setActiveTab('dashboard');
+          return (
+            <SafeComponent 
+              component={Overview} 
+              name="CoreBusiness"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Core Business</h2>
+                  <p className="text-gray-600">Loading core business modules...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'sales':
+          setActiveTab('leads-new');
+          return (
+            <SafeComponent 
+              component={NewLeads} 
+              name="SalesModule"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Sales & Marketing</h2>
+                  <p className="text-gray-600">Loading sales module...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'marketing':
+          setActiveTab('marketing-campaigns');
+          return (
+            <SafeComponent 
+              component={MarketingCampaigns} 
+              name="MarketingModule"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Marketing</h2>
+                  <p className="text-gray-600">Loading marketing module...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'operations':
+          setActiveTab('tasks');
+          return (
+            <SafeComponent 
+              component={TaskManagement} 
+              name="OperationsModule"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Operations</h2>
+                  <p className="text-gray-600">Loading operations module...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'management':
+          setActiveTab('financial');
+          return (
+            <SafeComponent 
+              component={FinancialDashboard} 
+              name="ManagementModule"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Management</h2>
+                  <p className="text-gray-600">Loading management module...</p>
+                </div>
+              }
+            />
+          );
+
+        // Compliance Sub-routes
+        case 'compliance-legal':
+          return (
+            <SafeComponent 
+              component={ComplianceDashboard} 
+              name="ComplianceLegal"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Legal Compliance</h2>
+                  <p className="text-gray-600">Loading legal compliance documentation...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'compliance-audit':
+          return (
+            <SafeComponent 
+              component={AuditTrail} 
+              name="ComplianceAudit"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Audit Trail</h2>
+                  <p className="text-gray-600">Loading audit trail...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'compliance-training':
+          return (
+            <SafeComponent 
+              component={ComplianceDashboard} 
+              name="ComplianceTraining"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Compliance Training</h2>
+                  <p className="text-gray-600">Loading compliance training modules...</p>
+                </div>
+              }
+            />
+          );
+
+        // Reports Sub-routes
+        case 'reports-sales':
+          return (
+            <SafeComponent 
+              component={SalesAnalytics} 
+              name="ReportsSales"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Sales Reports</h2>
+                  <p className="text-gray-600">Loading sales reports...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'reports-performance':
+          return (
+            <SafeComponent 
+              component={AdvancedReports} 
+              name="ReportsPerformance"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Performance Reports</h2>
+                  <p className="text-gray-600">Loading performance reports...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'reports-custom':
+          return (
+            <SafeComponent 
+              component={AdvancedReports} 
+              name="ReportsCustom"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Custom Reports</h2>
+                  <p className="text-gray-600">Loading custom report builder...</p>
+                </div>
+              }
+            />
+          );
+
+        // KPI Sub-routes
+        case 'kpi-create':
+          return (
+            <SafeComponent 
+              component={KPIBuilder} 
+              name="KPICreate"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Create KPI</h2>
+                  <p className="text-gray-600">Loading KPI creation tools...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'kpi-manage':
+          return (
+            <SafeComponent 
+              component={KPIDisplay} 
+              name="KPIManage"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Manage KPIs</h2>
+                  <p className="text-gray-600">Loading KPI management...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'kpi-templates':
+          return (
+            <SafeComponent 
+              component={TemplateLibrary} 
+              name="KPITemplates"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">KPI Templates</h2>
+                  <p className="text-gray-600">Loading KPI templates...</p>
+                </div>
+              }
+            />
+          );
+
+        // Data Manager Sub-routes
+        case 'data-import':
+          return (
+            <SafeComponent 
+              component={DataUploadManager} 
+              name="DataImport"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Data Import</h2>
+                  <p className="text-gray-600">Loading data import tools...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'data-export':
+          return (
+            <SafeComponent 
+              component={DataManager} 
+              name="DataExport"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Data Export</h2>
+                  <p className="text-gray-600">Loading data export tools...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'data-templates':
+          return (
+            <SafeComponent 
+              component={TemplateLibrary} 
+              name="DataTemplates"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Data Templates</h2>
+                  <p className="text-gray-600">Loading data templates...</p>
+                </div>
+              }
+            />
+          );
+
+        // System Status Sub-routes
+        case 'system-overview':
+          return (
+            <SafeComponent 
+              component={SystemStatus} 
+              name="SystemOverview"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">System Overview</h2>
+                  <p className="text-gray-600">Loading system overview...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'system-services':
+          return (
+            <SafeComponent 
+              component={SystemIntegration} 
+              name="SystemServices"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">System Services</h2>
+                  <p className="text-gray-600">Loading system services...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'system-performance':
+          return (
+            <SafeComponent 
+              component={AnalyticsDashboard} 
+              name="SystemPerformance"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">System Performance</h2>
+                  <p className="text-gray-600">Loading system performance metrics...</p>
+                </div>
+              }
+            />
+          );
+
+        case 'system-alerts':
+          return (
+            <SafeComponent 
+              component={NotificationSystem} 
+              name="SystemAlerts"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">System Alerts</h2>
+                  <p className="text-gray-600">Loading system alerts...</p>
+                </div>
+              }
+            />
+          );
+
+        // Leads Sub-routes
+        case 'leads-qualified':
+          return (
+            <SafeComponent 
+              component={LeadScoring} 
+              name="LeadsQualified"
+              fallback={
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">Qualified Leads</h2>
+                  <p className="text-gray-600">Loading qualified leads...</p>
+                </div>
+              }
+            />
+          );
+
         default:
           // For truly unknown tabs, show a proper error message without auto-redirect
           return (
