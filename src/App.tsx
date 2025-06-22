@@ -192,6 +192,15 @@ function App() {
       'leads-follow-up'
     ];
     
+    // SPECIFIC KPI-MANAGE DEBUG
+    if (activeTab === 'kpi-manage') {
+      console.log('🚨 KPI-MANAGE ROUTE DETECTED!');
+      console.log('🔍 activeTab:', activeTab);
+      console.log('🔍 typeof activeTab:', typeof activeTab);
+      console.log('🔍 activeTab === "kpi-manage":', activeTab === 'kpi-manage');
+      console.log('🔍 KPIBuilder component:', KPIBuilder);
+    }
+    
     if (problematicRoutes.includes(activeTab)) {
       console.log('🎯 FOUND PROBLEMATIC ROUTE:', activeTab, '- Should be handled!');
     }
