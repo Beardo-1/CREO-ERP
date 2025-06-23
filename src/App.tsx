@@ -44,6 +44,9 @@ import { KPIDemo } from './components/KPI/KPIDemo';
 import { SystemIntegration } from './components/Integration/SystemIntegration';
 import { unifiedDataService } from './services/unifiedDataService';
 import { Property, Contact, Deal, Agent } from './types';
+import { TranslationProvider } from './contexts/TranslationContext';
+// import { ProductionDataService } from './services/ProductionDataService';
+// import { productionAuthService } from './services/ProductionAuthService';
 
 // Phase 2 Components - Core Business Modules
 import InventoryManager from './components/Inventory/InventoryManager';
@@ -55,7 +58,6 @@ import ActiveListings from './components/Properties/ActiveListings';
 import SoldProperties from './components/Properties/SoldProperties';
 import Clients from './components/Contacts/Clients';
 import ActiveDeals from './components/Deals/ActiveDeals';
-import AnalyticsDashboard from './components/Analytics/AnalyticsDashboard';
 import { PerformanceDashboard } from './components/Analytics/PerformanceDashboard';
 import { MobileApp } from './components/Mobile/MobileApp';
 import NewLeads from './components/Leads/NewLeads';
@@ -105,9 +107,21 @@ const SafeComponent: React.FC<{
 function App() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('dashboard');
+  
+  // Expose tab navigation globally
+  useEffect(() => {
+    // @ts-ignore
+    window.setActiveTab = setActiveTab;
+    return () => {
+      // @ts-ignore
+      delete window.setActiveTab;
+    };
+  }, [setActiveTab]);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [showPropertyModal, setShowPropertyModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  // const [dataService] = useState(() => ProductionDataService.getInstance());
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   
@@ -117,58 +131,36 @@ function App() {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
 
-  // Check authentication status on mount
   useEffect(() => {
-    const checkAuth = () => {
-      const isAuthenticated = localStorage.getItem('creo_authenticated') === 'true';
-      const user = localStorage.getItem('creo_user');
-      
-      if (isAuthenticated && user) {
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
+    // Initialize backend connection - temporarily disabled
+    const initializeApp = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Check authentication status using localStorage for now
+        const isAuthenticated = localStorage.getItem('creo_authenticated') === 'true';
+        const userData = localStorage.getItem('creo_user');
+        
+        if (isAuthenticated && userData) {
+          setUser(JSON.parse(userData));
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+        
+        console.log('App initialized successfully');
+        
+      } catch (error) {
+        console.error('Failed to initialize app:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    checkAuth();
+    initializeApp();
   }, []);
 
-  // Load data on component mount
-  useEffect(() => {
-    const loadData = async () => {
-      if (!isAuthenticated) return;
-      
-      try {
-        // Load properties from unified data service
-        const propertiesData = await unifiedDataService.getProperties();
-        setProperties(propertiesData);
-
-        // Load contacts from unified data service
-        const contactsData = await unifiedDataService.getContacts();
-        setContacts(contactsData);
-
-        // Load deals from unified data service
-        const dealsData = await unifiedDataService.getDeals();
-        setDeals(dealsData);
-
-        // Load agents from unified data service
-        const agentsData = unifiedDataService.getAgents();
-        setAgents(agentsData);
-
-        // Data loaded successfully - no loading screen needed
-      } catch (error) {
-        console.error('Error loading data:', error);
-      }
-    };
-
-    loadData();
-  }, [isAuthenticated]);
-
-  const currentUser = {
-    name: 'Emma Wilson',
-    role: 'Real Estate Agent',
-    earnings: '$156,000'
-  };
+  const currentUser = user || { name: '', role: '', earnings: '' };
 
   const handlePropertyClick = (property: Property) => {
     setSelectedProperty(property);
@@ -418,12 +410,12 @@ function App() {
         case 'analytics':
           return (
             <SafeComponent 
-              component={AnalyticsDashboard} 
-              name="AnalyticsDashboard"
+              component={PerformanceDashboard} 
+              name="PerformanceDashboard"
               fallback={
                 <div className="p-8">
-                  <h2 className="text-2xl font-bold mb-4">Analytics Dashboard</h2>
-                  <p className="text-gray-600">Loading analytics...</p>
+                  <h2 className="text-2xl font-bold mb-4">Performance Dashboard</h2>
+                  <p className="text-gray-600">Loading performance analytics...</p>
                 </div>
               }
             />
@@ -1023,12 +1015,12 @@ function App() {
         case 'dashboard-analytics':
           return (
             <SafeComponent 
-              component={AnalyticsDashboard} 
+              component={PerformanceDashboard} 
               name="DashboardAnalytics"
               fallback={
                 <div className="p-8">
-                  <h2 className="text-2xl font-bold mb-4">Analytics Dashboard</h2>
-                  <p className="text-gray-600">Ready - Analytics dashboard loaded successfully</p>
+                  <h2 className="text-2xl font-bold mb-4">Performance Dashboard</h2>
+                  <p className="text-gray-600">Ready - Performance dashboard loaded successfully</p>
                 </div>
               }
             />
