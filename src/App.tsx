@@ -252,15 +252,10 @@ function App() {
                   />
                 </div>
                 <div className="lg:w-80 space-y-6">
-                  <SafeComponent 
-                    component={ProfileCard} 
-                    props={{ user: currentUser }}
-                    name="ProfileCard"
-                    fallback={
-                      <div className="bg-white rounded-xl shadow-lg p-6">
-                        <p className="text-gray-600">Loading profile...</p>
-                      </div>
-                    }
+                  <ProfileCard
+                    name={currentUser?.name || ''}
+                    role={currentUser?.role || ''}
+                    earnings={currentUser?.earnings || '--'}
                   />
                   <SafeComponent 
                     component={CalendarWidget} 
@@ -1928,6 +1923,11 @@ function App() {
     );
   }
 
+  // Show loading screen after login
+  if (isAuthenticated && isLoading) {
+    return <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />;
+  }
+
   // Show main app after authentication and loading
   return (
     <div className="min-h-screen gradient-bg-professional">
@@ -1957,7 +1957,7 @@ function App() {
             component={Header} 
             props={{
               activeTab,
-              userName: currentUser.name,
+              userName: currentUser?.name || '',
               onMobileMenuToggle: () => setIsMobileSidebarOpen(!isMobileSidebarOpen),
               onTabChange: setActiveTab
             }}
