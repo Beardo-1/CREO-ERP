@@ -230,8 +230,29 @@ const PropertyInventory: React.FC = () => {
   };
 
   const handleMaintenanceAlert = (itemId: string, alertType: string, priority: string, notes: string) => {
-        setShowMaintenanceAlertModal(false);
-    setSelectedItem(null);
+    // Handle maintenance alert creation
+    console.log('Creating maintenance alert for item:', itemId);
+  };
+
+  // Delete inventory item handler
+  const handleDeleteItem = (itemId: string) => {
+    if (window.confirm('Are you sure you want to delete this inventory item? This action cannot be undone.')) {
+      // In a real app, this would delete from database
+      console.log('Deleting inventory item:', itemId);
+      // Success notification could be added here
+    }
+  };
+
+  // Edit inventory item handler
+  const handleEditItem = (itemId: string) => {
+    // In a real app, this would open an edit modal
+    console.log('Editing inventory item:', itemId);
+  };
+
+  // View inventory item details
+  const handleViewItem = (itemId: string) => {
+    // In a real app, this would show item details
+    console.log('Viewing inventory item details:', itemId);
   };
 
   const getStatusColor = (status: string) => {
@@ -544,13 +565,22 @@ const PropertyInventory: React.FC = () => {
                   <td className="px-6 py-4 text-sm text-gray-900">{item.location}</td>
                   <td className="px-6 py-4">
                     <div className="flex space-x-2">
-                      <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                      <button 
+                        onClick={() => handleViewItem(item.id)}
+                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      >
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button className="text-amber-600 hover:text-amber-800 text-sm font-medium">
+                      <button 
+                        onClick={() => handleEditItem(item.id)}
+                        className="text-amber-600 hover:text-amber-800 text-sm font-medium"
+                      >
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button className="text-red-600 hover:text-red-800 text-sm font-medium">
+                      <button 
+                        onClick={() => handleDeleteItem(item.id)}
+                        className="text-red-600 hover:text-red-800 text-sm font-medium"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>

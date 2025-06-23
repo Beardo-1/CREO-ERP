@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Building,
   MapPin,
@@ -14,10 +14,15 @@ import {
   Download,
   BarChart3,
   Target,
-  Star
+  Star,
+  Eye,
+  Edit,
+  Trash2,
+  Plus
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
+import { unifiedDataService } from '../../services/unifiedDataService';
 
 interface SoldProperty {
   id: string;
@@ -50,59 +55,124 @@ export default function SoldProperties() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateRange, setDateRange] = useState<'30d' | '90d' | '1y' | 'all'>('90d');
   const [sortBy, setSortBy] = useState<'soldDate' | 'soldPrice' | 'daysOnMarket'>('soldDate');
+  const [soldProperties, setSoldProperties] = useState<SoldProperty[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<SoldProperty | null>(null);
 
-  const mockSoldProperties: SoldProperty[] = [
-    {
-      id: '1',
-      title: 'Modern Downtown Condo',
-      address: '123 Main Street, Downtown',
-      listPrice: 650000,
-      soldPrice: 675000,
-      bedrooms: 2,
-      bathrooms: 2,
-      squareFootage: 1200,
-      propertyType: 'condo',
-      listingDate: new Date('2024-01-15'),
-      soldDate: new Date('2024-02-28'),
-      daysOnMarket: 44,
-      agent: {
-        id: '1',
-        name: 'Sarah Johnson',
-        avatar: ""
-      },
-      buyer: {
-        name: 'Smith Family',
-        type: 'individual'
-      },
-      commission: 40500,
-      images: [""]
-    },
-    {
-      id: '2',
-      title: 'Luxury Family Home',
-      address: '456 Pine Avenue, Suburbs',
-      listPrice: 750000,
-      soldPrice: 735000,
-      bedrooms: 4,
-      bathrooms: 3,
-      squareFootage: 2800,
-      propertyType: 'house',
-      listingDate: new Date('2024-01-01'),
-      soldDate: new Date('2024-02-15'),
-      daysOnMarket: 45,
-      agent: {
-        id: '2',
-        name: 'Mike Chen',
-        avatar: ""
-      },
-      buyer: {
-        name: 'Johnson Family',
-        type: 'individual'
-      },
-      commission: 44100,
-      images: [""]
+  // Load sold properties on component mount
+  useEffect(() => {
+    loadSoldProperties();
+  }, []);
+
+  const loadSoldProperties = async () => {
+    try {
+      setLoading(true);
+      // In a real app, this would fetch from API
+      const mockData: SoldProperty[] = [
+        {
+          id: '1',
+          title: 'Modern Downtown Condo',
+          address: '123 Main Street, Downtown',
+          listPrice: 650000,
+          soldPrice: 675000,
+          bedrooms: 2,
+          bathrooms: 2,
+          squareFootage: 1200,
+          propertyType: 'condo',
+          listingDate: new Date('2024-01-15'),
+          soldDate: new Date('2024-02-28'),
+          daysOnMarket: 44,
+          agent: {
+            id: '1',
+            name: 'Sarah Johnson',
+            avatar: ""
+          },
+          buyer: {
+            name: 'Smith Family',
+            type: 'individual'
+          },
+          commission: 40500,
+          images: [""]
+        },
+        {
+          id: '2',
+          title: 'Luxury Family Home',
+          address: '456 Pine Avenue, Suburbs',
+          listPrice: 750000,
+          soldPrice: 735000,
+          bedrooms: 4,
+          bathrooms: 3,
+          squareFootage: 2800,
+          propertyType: 'house',
+          listingDate: new Date('2024-01-01'),
+          soldDate: new Date('2024-02-15'),
+          daysOnMarket: 45,
+          agent: {
+            id: '2',
+            name: 'Mike Chen',
+            avatar: ""
+          },
+          buyer: {
+            name: 'Johnson Family',
+            type: 'individual'
+          },
+          commission: 44100,
+          images: [""]
+        }
+      ];
+      setSoldProperties(mockData);
+    } catch (error) {
+      console.error('Error loading sold properties:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  // CRUD Operations
+  const handleDeleteProperty = (propertyId: string) => {
+    if (window.confirm('Are you sure you want to delete this sold property record? This action cannot be undone.')) {
+      setSoldProperties(prev => prev.filter(property => property.id !== propertyId));
+      setShowDetailsModal(false);
+      setSelectedProperty(null);
+    }
+  };
+
+  const handleViewDetails = (property: SoldProperty) => {
+    setSelectedProperty(property);
+    setShowDetailsModal(true);
+  };
+
+  const handleExportReport = () => {
+    const csvData = soldProperties.map(property => ({
+      Title: property.title,
+      Address: property.address,
+      'List Price': property.listPrice,
+      'Sold Price': property.soldPrice,
+      'Bedrooms': property.bedrooms,
+      'Bathrooms': property.bathrooms,
+      'Square Footage': property.squareFootage,
+      'Property Type': property.propertyType,
+      'Days on Market': property.daysOnMarket,
+      'Agent': property.agent.name,
+      'Buyer': property.buyer.name,
+      'Commission': property.commission,
+      'Sold Date': property.soldDate.toLocaleDateString()
+    }));
+    
+    const csvContent = [
+      Object.keys(csvData[0]).join(','),
+      ...csvData.map(row => Object.values(row).join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sold-properties-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -121,11 +191,22 @@ export default function SoldProperties() {
     };
   };
 
-  const totalSales = mockSoldProperties.reduce((sum, property) => sum + property.soldPrice, 0);
-  const totalCommission = mockSoldProperties.reduce((sum, property) => sum + property.commission, 0);
+  const totalSales = soldProperties.reduce((sum, property) => sum + property.soldPrice, 0);
+  const totalCommission = soldProperties.reduce((sum, property) => sum + property.commission, 0);
   const averageDaysOnMarket = Math.round(
-    mockSoldProperties.reduce((sum, property) => sum + property.daysOnMarket, 0) / mockSoldProperties.length
+    soldProperties.reduce((sum, property) => sum + property.daysOnMarket, 0) / soldProperties.length
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading sold properties...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white">
@@ -134,40 +215,11 @@ export default function SoldProperties() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">{t(appContent.soldProperties.soldProperties)}</h1>
-            <p className="text-gray-600">{mockSoldProperties.length} {t(appContent.soldProperties.propertiesSold)}</p>
+            <p className="text-gray-600">{soldProperties.length} {t(appContent.soldProperties.propertiesSold)}</p>
           </div>
           
           <button 
-            onClick={() => {
-              const csvData = mockSoldProperties.map(property => ({
-                Title: property.title,
-                Address: property.address,
-                'List Price': property.listPrice,
-                'Sold Price': property.soldPrice,
-                'Bedrooms': property.bedrooms,
-                'Bathrooms': property.bathrooms,
-                'Square Footage': property.squareFootage,
-                'Property Type': property.propertyType,
-                'Days on Market': property.daysOnMarket,
-                'Agent': property.agent.name,
-                'Buyer': property.buyer.name,
-                'Commission': property.commission,
-                'Sold Date': property.soldDate.toLocaleDateString()
-              }));
-              
-              const csvContent = [
-                Object.keys(csvData[0]).join(','),
-                ...csvData.map(row => Object.values(row).join(','))
-              ].join('\n');
-              
-              const blob = new Blob([csvContent], { type: 'text/csv' });
-              const url = window.URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = `sold-properties-${new Date().toISOString().split('T')[0]}.csv`;
-              a.click();
-              window.URL.revokeObjectURL(url);
-            }}
+            onClick={handleExportReport}
             className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2"
           >
             <Download className="w-5 h-5" />
@@ -258,7 +310,7 @@ export default function SoldProperties() {
 
       {/* Sold Properties List */}
       <div className="space-y-6">
-        {mockSoldProperties.map((property) => {
+        {soldProperties.map((property) => {
           const priceChange = calculatePriceChange(property.listPrice, property.soldPrice);
           
           return (
@@ -350,7 +402,7 @@ export default function SoldProperties() {
                         />
                         <div>
                           <div className="text-sm font-medium text-gray-900">{property.agent.name}</div>
-                          <div className="text-xs text-gray-600">{t(appContent.soldProperties.listingAgent)}</div>
+                          <div className="text-xs text-gray-600">Listing Agent</div>
                         </div>
                       </div>
                       
@@ -358,19 +410,36 @@ export default function SoldProperties() {
                         <Users className="w-4 h-4 text-gray-400" />
                         <div>
                           <div className="text-sm font-medium text-gray-900">{property.buyer.name}</div>
-                          <div className="text-xs text-gray-600">{t(appContent.soldProperties[property.buyer.type as keyof typeof appContent.soldProperties] || { en: property.buyer.type, ar: property.buyer.type })}</div>
+                          <div className="text-xs text-gray-600">{property.buyer.type}</div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-4 text-sm text-gray-600">
-                      <div className="flex items-center">
-                        <Clock className="w-4 h-4 mr-1" />
-                        <span>{property.daysOnMarket} {t(appContent.soldProperties.daysOnMarket)}</span>
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-4 text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <Clock className="w-4 h-4 mr-1" />
+                          <span>{property.daysOnMarket} days on market</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Calendar className="w-4 h-4 mr-1" />
+                          <span>Listed {property.listingDate.toLocaleDateString()}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-1" />
-                        <span>{t(appContent.soldProperties.listed)} {property.listingDate.toLocaleDateString()}</span>
+                      
+                      <div className="flex items-center space-x-2">
+                        <button 
+                          onClick={() => handleViewDetails(property)}
+                          className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteProperty(property.id)}
+                          className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     </div>
                   </div>

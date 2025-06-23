@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { componentSizes, textResponsive } from '../../utils/responsive';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
@@ -10,24 +10,61 @@ interface ProfileCardProps {
   profileImage?: string;
 }
 
-export function ProfileCard({ name, role, earnings, profileImage }: ProfileCardProps) {
+export function ProfileCard({ name: initialName, role: initialRole, earnings, profileImage: initialProfileImage }: ProfileCardProps) {
   const { t } = useTranslation();
+  const [currentName, setCurrentName] = useState(initialName);
+  const [currentRole, setCurrentRole] = useState(initialRole);
+  const [currentProfileImage, setCurrentProfileImage] = useState(initialProfileImage);
+  
+  // Listen for profile updates
+  useEffect(() => {
+    const handleProfileUpdate = (event: CustomEvent) => {
+      const profileData = event.detail;
+      if (profileData) {
+        setCurrentName(profileData.name || initialName);
+        setCurrentRole(profileData.role || initialRole);
+        setCurrentProfileImage(profileData.profileImage || initialProfileImage);
+      }
+    };
+
+    // Load profile data from localStorage on mount
+    const loadProfileData = () => {
+      try {
+        const savedProfile = localStorage.getItem('creo_user_profile');
+        if (savedProfile) {
+          const profileData = JSON.parse(savedProfile);
+          setCurrentName(profileData.name || initialName);
+          setCurrentRole(profileData.role || initialRole);
+          setCurrentProfileImage(profileData.profileImage || initialProfileImage);
+        }
+      } catch (error) {
+        console.error('Error loading profile data:', error);
+      }
+    };
+
+    loadProfileData();
+    window.addEventListener('profileUpdated', handleProfileUpdate as EventListener);
+    
+    return () => {
+      window.removeEventListener('profileUpdated', handleProfileUpdate as EventListener);
+    };
+  }, [initialName, initialRole, initialProfileImage]);
   
   return (
     <div className={`card-gradient rounded-3xl ${componentSizes.card.medium} shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105`}>
       <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-6">
         <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-3xl overflow-hidden bg-gradient-to-br from-amber-400 to-orange-500 flex-shrink-0">
-          {profileImage ? (
-            <img src={profileImage} alt={name} className="w-full h-full object-cover" />
+          {currentProfileImage ? (
+            <img src={currentProfileImage} alt={currentName} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-white text-sm sm:text-base lg:text-lg font-bold">
-              {(name || '').split(' ').map(n => n[0]).join('')}
+              {(currentName || '').split(' ').map(n => n[0]).join('')}
             </div>
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className={`${textResponsive.heading.h4} font-bold text-gray-900 truncate`}>{name}</h3>
-          <p className={`${textResponsive.body.small} text-gray-600 truncate`}>{role}</p>
+          <h3 className={`${textResponsive.heading.h4} font-bold text-gray-900 truncate`}>{currentName}</h3>
+          <p className={`${textResponsive.body.small} text-gray-600 truncate`}>{currentRole}</p>
           <div className="mt-2 bg-amber-100 text-amber-800 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium inline-block">
             {earnings}
           </div>

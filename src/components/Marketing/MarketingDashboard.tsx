@@ -37,28 +37,7 @@ import {
   Star
 } from 'lucide-react';
 import { unifiedDataService } from '../../services/unifiedDataService';
-
-interface Campaign {
-  id: string;
-  name: string;
-  type: 'email' | 'social' | 'ppc' | 'content' | 'display' | 'seo';
-  status: 'draft' | 'active' | 'paused' | 'completed' | 'cancelled';
-  budget: number;
-  spent: number;
-  startDate: string;
-  endDate: string;
-  impressions: number;
-  clicks: number;
-  conversions: number;
-  leads: number;
-  ctr: number;
-  cpc: number;
-  cpl: number;
-  roi: number;
-  targetAudience: string;
-  description: string;
-  channels: string[];
-}
+import { realDataService, Campaign } from '../../services/realDataService';
 
 interface MarketingMetrics {
   totalCampaigns: number;

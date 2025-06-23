@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Settings, User, Menu, Bell, Globe } from 'lucide-react';
 import { NotificationSystem } from '../Notifications/NotificationSystem';
 import { headerContent } from './Header.content';
@@ -12,9 +12,43 @@ interface HeaderProps {
   onTabChange?: (tab: string) => void;
 }
 
-export function Header({ activeTab, userName, onMobileMenuToggle, onTabChange }: HeaderProps) {
+export function Header({ activeTab, userName: initialUserName, onMobileMenuToggle, onTabChange }: HeaderProps) {
   const { currentLanguage, toggleLanguage, t } = useTranslation();
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [currentUserName, setCurrentUserName] = useState(initialUserName);
+  const [currentUserRole, setCurrentUserRole] = useState('Real Estate Agent');
+
+  // Listen for profile updates
+  useEffect(() => {
+    const handleProfileUpdate = (event: CustomEvent) => {
+      const profileData = event.detail;
+      if (profileData) {
+        setCurrentUserName(profileData.name || initialUserName);
+        setCurrentUserRole(profileData.role || 'Real Estate Agent');
+      }
+    };
+
+    // Load profile data from localStorage on mount
+    const loadProfileData = () => {
+      try {
+        const savedProfile = localStorage.getItem('creo_user_profile');
+        if (savedProfile) {
+          const profileData = JSON.parse(savedProfile);
+          setCurrentUserName(profileData.name || initialUserName);
+          setCurrentUserRole(profileData.role || 'Real Estate Agent');
+        }
+      } catch (error) {
+        console.error('Error loading profile data:', error);
+      }
+    };
+
+    loadProfileData();
+    window.addEventListener('profileUpdated', handleProfileUpdate as EventListener);
+    
+    return () => {
+      window.removeEventListener('profileUpdated', handleProfileUpdate as EventListener);
+    };
+  }, [initialUserName]);
 
   const getPageTitle = (tab: string) => {
     const titles = headerContent.pageTitles as Record<string, { en: string; ar: string }>;
@@ -50,7 +84,7 @@ export function Header({ activeTab, userName, onMobileMenuToggle, onTabChange }:
               </h1>
               {/* Greeting on larger screens */}
               <span className="hidden xl:block text-lg text-gray-600">
-                {t(headerContent.greeting)}
+            {t(headerContent.greeting)}
               </span>
             </div>
             <p className="text-xs text-gray-600 hidden md:block truncate max-w-md">
@@ -70,7 +104,7 @@ export function Header({ activeTab, userName, onMobileMenuToggle, onTabChange }:
               aria-label="Search"
             />
           </div>
-        </div>
+          </div>
           
         {/* Right Section - Actions */}
         <div className="flex items-center space-x-2 sm:space-x-3">
@@ -85,7 +119,7 @@ export function Header({ activeTab, userName, onMobileMenuToggle, onTabChange }:
           
           {/* Notifications */}
           <div className="relative">
-            <NotificationSystem />
+          <NotificationSystem />
           </div>
           
           {/* Language Switcher */}
@@ -114,17 +148,17 @@ export function Header({ activeTab, userName, onMobileMenuToggle, onTabChange }:
           <button 
             onClick={() => onTabChange && onTabChange('profile')}
             className="flex items-center space-x-2 bg-white/50 backdrop-blur-sm rounded-xl px-2 py-1.5 hover:bg-white/70 transition-all duration-300 cursor-pointer group border border-white/20 h-8 sm:h-10 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
-            aria-label={`User profile: ${userName}`}
+            aria-label={`User profile: ${currentUserName}`}
           >
             <div className="w-6 h-6 sm:w-7 sm:h-7 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform duration-200 shadow-lg">
               <User className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             </div>
             <div className="hidden xl:flex xl:flex-col xl:justify-center">
               <p className="text-xs font-semibold text-gray-900 leading-tight truncate max-w-24">
-                {userName}
+                {currentUserName}
               </p>
               <p className="text-xs text-gray-500 leading-tight">
-                {t(headerContent.userRole)}
+                {currentUserRole}
               </p>
             </div>
           </button>

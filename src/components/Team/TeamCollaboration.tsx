@@ -260,7 +260,7 @@ export function TeamCollaboration() {
         const initialChannels = generateInitialChannels(generatedTeamMembers);
         setChannels(initialChannels);
 
-        // Generate sample messages
+        // Generate initial messages
         const initialMessages = generateInitialMessages(generatedTeamMembers);
         setMessages(initialMessages);
 
@@ -433,6 +433,28 @@ export function TeamCollaboration() {
 
   // Generate initial messages
   const generateInitialMessages = (teamMembers: TeamMember[]): ChatMessage[] => {
+    const sampleMessages = [
+      {
+        content: "Good morning team! Ready for another productive day?",
+        type: 'text' as const
+      },
+      {
+        content: "The new property listing on Oak Street is getting great interest!",
+        type: 'text' as const
+      },
+      {
+        content: "Client meeting at 2 PM today - luxury condo downtown",
+        type: 'text' as const
+      },
+      {
+        content: "Great job on closing the Henderson deal! 🎉",
+        type: 'text' as const
+      },
+      {
+        content: "Don't forget about the team training session tomorrow",
+        type: 'text' as const
+      }
+    ];
     
     return sampleMessages.map((msg, index) => ({
       id: `msg-${index + 1}`,

@@ -16,7 +16,8 @@ import {
   Award,
   CheckCircle,
   AlertTriangle,
-  Calendar
+  Calendar,
+  Trash2
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
@@ -51,6 +52,22 @@ export default function Vendors() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [availabilityFilter, setAvailabilityFilter] = useState('all');
   const [sortBy, setSortBy] = useState('rating');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
+  const [newVendor, setNewVendor] = useState({
+    name: '',
+    company: '',
+    email: '',
+    phone: '',
+    address: '',
+    category: 'contractor' as Vendor['category'],
+    specialties: [] as string[],
+    hourlyRate: 0,
+    projectRate: 0,
+    notes: '',
+    certifications: [] as string[]
+  });
 
   const vendors: Vendor[] = [
     {
@@ -186,6 +203,80 @@ export default function Vendors() {
   const avgRating = filteredVendors.reduce((sum, v) => sum + v.rating, 0) / filteredVendors.length;
   const availableVendors = filteredVendors.filter(v => v.availability === 'available').length;
 
+  // Delete vendor handler
+  const handleDeleteVendor = (vendorId: string) => {
+    if (window.confirm('Are you sure you want to delete this vendor? This action cannot be undone.')) {
+      // In a real app, this would delete from database
+      console.log('Deleting vendor:', vendorId);
+      // Success notification could be added here
+    }
+  };
+
+  // Edit vendor handler
+  const handleEditVendor = (vendor: Vendor) => {
+    setSelectedVendor(vendor);
+    setNewVendor({
+      name: vendor.name,
+      company: vendor.company,
+      email: vendor.email,
+      phone: vendor.phone,
+      address: vendor.address,
+      category: vendor.category,
+      specialties: vendor.specialties,
+      hourlyRate: vendor.hourlyRate || 0,
+      projectRate: vendor.projectRate || 0,
+      notes: vendor.notes,
+      certifications: vendor.certifications
+    });
+    setShowAddModal(true);
+  };
+
+  // View vendor details
+  const handleViewVendor = (vendor: Vendor) => {
+    setSelectedVendor(vendor);
+    setShowDetailsModal(true);
+  };
+
+  // Contact vendor handler
+  const handleContactVendor = (vendor: Vendor) => {
+    window.location.href = `mailto:${vendor.email}`;
+  };
+
+  // Add new vendor handler
+  const handleAddVendor = () => {
+    const vendor: Vendor = {
+      id: `VEN-${Date.now()}`,
+      ...newVendor,
+      rating: 0,
+      reviewCount: 0,
+      status: 'pending',
+      availability: 'available',
+      lastWorked: new Date().toISOString().split('T')[0],
+      totalJobs: 0,
+      insurance: true,
+      addedDate: new Date().toISOString().split('T')[0]
+    };
+
+    // In a real app, this would save to database
+    console.log('Adding vendor:', vendor);
+    
+    // Reset form
+    setNewVendor({
+      name: '',
+      company: '',
+      email: '',
+      phone: '',
+      address: '',
+      category: 'contractor',
+      specialties: [],
+      hourlyRate: 0,
+      projectRate: 0,
+      notes: '',
+      certifications: []
+    });
+    setShowAddModal(false);
+  };
+
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto">
@@ -196,7 +287,10 @@ export default function Vendors() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{t(appContent.vendors.vendors)}</h1>
               <p className="text-gray-600">{totalVendors} {t(appContent.vendors.trustedServiceProviders)}</p>
             </div>
-            <button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2">
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2"
+            >
               <Plus className="w-5 h-5" />
               <span>{t(appContent.vendors.addVendor)}</span>
             </button>
@@ -451,17 +545,40 @@ export default function Vendors() {
               {/* Actions */}
               <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                 <div className="flex space-x-2">
-                  <button className="flex items-center space-x-1 px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors">
+                  <button 
+                    onClick={() => window.open(`tel:${vendor.phone}`, '_blank')}
+                    className="flex items-center space-x-1 px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                  >
                     <Phone className="w-4 h-4" />
                     <span>{t(appContent.vendors.call)}</span>
                   </button>
-                  <button className="flex items-center space-x-1 px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg text-sm font-medium transition-colors">
+                  <button 
+                    onClick={() => handleContactVendor(vendor)}
+                    className="flex items-center space-x-1 px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg text-sm font-medium transition-colors"
+                  >
                     <Mail className="w-4 h-4" />
                     <span>{t(appContent.vendors.email)}</span>
                   </button>
-                  <button className="flex items-center space-x-1 px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg text-sm font-medium transition-colors">
+                  <button 
+                    onClick={() => handleViewVendor(vendor)}
+                    className="flex items-center space-x-1 px-3 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>View</span>
+                  </button>
+                  <button 
+                    onClick={() => handleEditVendor(vendor)}
+                    className="flex items-center space-x-1 px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg text-sm font-medium transition-colors"
+                  >
                     <Edit className="w-4 h-4" />
                     <span>{t(appContent.vendors.edit)}</span>
+                  </button>
+                  <button 
+                    onClick={() => handleDeleteVendor(vendor.id)}
+                    className="flex items-center space-x-1 px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>Delete</span>
                   </button>
                 </div>
                 <div className="text-sm text-gray-500">

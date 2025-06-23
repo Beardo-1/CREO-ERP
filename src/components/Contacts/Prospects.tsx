@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   User,
   Phone,
@@ -16,10 +16,14 @@ import {
   DollarSign,
   MessageCircle,
   Target,
-  Award
+  Award,
+  Trash2,
+  Save,
+  X
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
+import { unifiedDataService } from '../../services/unifiedDataService';
 
 interface Prospect {
   id: string;
@@ -49,82 +53,233 @@ export default function Prospects() {
   const [sourceFilter, setSourceFilter] = useState('all');
   const [agentFilter, setAgentFilter] = useState('all');
   const [sortBy, setSortBy] = useState('score');
+  const [prospects, setProspects] = useState<Prospect[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedProspect, setSelectedProspect] = useState<Prospect | null>(null);
+  const [newProspect, setNewProspect] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    source: 'Website Form',
+    status: 'new' as Prospect['status'],
+    score: 50,
+    budgetMin: 0,
+    budgetMax: 0,
+    propertyTypes: [] as string[],
+    preferredAreas: [] as string[],
+    timeline: '3-6 months',
+    notes: '',
+    assignedAgent: 'Sarah Johnson'
+  });
   const { t } = useTranslation();
 
-  const prospects: Prospect[] = [
-    {
-      id: 'PROS-001',
-      name: 'Alex Thompson',
-      email: 'alex.thompson@email.com',
-      phone: '(555) 123-4567',
-      source: 'Website Form',
-      status: 'qualified',
-      score: 85,
-      budget: { min: 400000, max: 600000 },
-      propertyType: ['House', 'Townhouse'],
-      preferredAreas: ['Downtown', 'Midtown'],
-      timeline: '3-6 months',
-      lastContact: '2024-01-26',
-      nextFollowUp: '2024-01-30',
-      notes: 'Pre-approved for mortgage, looking for move-in ready homes',
-      assignedAgent: 'Sarah Johnson',
-      createdDate: '2024-01-15'
-    },
-    {
-      id: 'PROS-002',
-      name: 'Maria Rodriguez',
-      email: 'maria.r@email.com',
-      phone: '(555) 234-5678',
-      source: 'Facebook Ad',
-      status: 'interested',
-      score: 72,
-      budget: { min: 250000, max: 400000 },
-      propertyType: ['Apartment', 'Condo'],
-      preferredAreas: ['Arts District', 'University Area'],
-      timeline: '6-12 months',
-      lastContact: '2024-01-24',
-      nextFollowUp: '2024-01-31',
-      notes: 'First-time buyer, needs education on the process',
-      assignedAgent: 'Mike Chen',
-      createdDate: '2024-01-12'
-    },
-    {
-      id: 'PROS-003',
-      name: 'David Kim',
-      email: 'david.kim@email.com',
-      phone: '(555) 345-6789',
-      source: 'Referral',
-      status: 'contacted',
-      score: 68,
-      budget: { min: 500000, max: 800000 },
-      propertyType: ['House'],
-      preferredAreas: ['Suburbs', 'Family District'],
-      timeline: '1-3 months',
-      lastContact: '2024-01-25',
-      nextFollowUp: '2024-01-29',
-      notes: 'Looking for family home with good schools nearby',
-      assignedAgent: 'Emily Davis',
-      createdDate: '2024-01-18'
-    },
-    {
-      id: 'PROS-004',
-      name: 'Jennifer Lee',
-      email: 'jennifer.lee@email.com',
-      phone: '(555) 456-7890',
-      source: 'Google Ads',
-      status: 'new',
-      score: 45,
-      budget: { min: 300000, max: 450000 },
-      propertyType: ['Condo', 'Apartment'],
-      preferredAreas: ['Downtown'],
-      timeline: '12+ months',
-      lastContact: '2024-01-27',
-      nextFollowUp: '2024-02-03',
-      notes: 'Still exploring options, not urgent',
-      assignedAgent: 'Sarah Johnson',
-      createdDate: '2024-01-27'
+  // Load prospects on component mount
+  useEffect(() => {
+    loadProspects();
+  }, []);
+
+  const loadProspects = async () => {
+    try {
+      setLoading(true);
+      // In a real app, this would fetch from API
+      const mockData: Prospect[] = [
+        {
+          id: 'PROS-001',
+          name: 'Alex Thompson',
+          email: 'alex.thompson@email.com',
+          phone: '(555) 123-4567',
+          source: 'Website Form',
+          status: 'qualified',
+          score: 85,
+          budget: { min: 400000, max: 600000 },
+          propertyType: ['House', 'Townhouse'],
+          preferredAreas: ['Downtown', 'Midtown'],
+          timeline: '3-6 months',
+          lastContact: '2024-01-26',
+          nextFollowUp: '2024-01-30',
+          notes: 'Pre-approved for mortgage, looking for move-in ready homes',
+          assignedAgent: 'Sarah Johnson',
+          createdDate: '2024-01-15'
+        },
+        {
+          id: 'PROS-002',
+          name: 'Maria Rodriguez',
+          email: 'maria.r@email.com',
+          phone: '(555) 234-5678',
+          source: 'Facebook Ad',
+          status: 'interested',
+          score: 72,
+          budget: { min: 250000, max: 400000 },
+          propertyType: ['Apartment', 'Condo'],
+          preferredAreas: ['Arts District', 'University Area'],
+          timeline: '6-12 months',
+          lastContact: '2024-01-24',
+          nextFollowUp: '2024-01-31',
+          notes: 'First-time buyer, needs education on the process',
+          assignedAgent: 'Mike Chen',
+          createdDate: '2024-01-12'
+        },
+        {
+          id: 'PROS-003',
+          name: 'David Kim',
+          email: 'david.kim@email.com',
+          phone: '(555) 345-6789',
+          source: 'Referral',
+          status: 'contacted',
+          score: 68,
+          budget: { min: 500000, max: 800000 },
+          propertyType: ['House'],
+          preferredAreas: ['Suburbs', 'Family District'],
+          timeline: '1-3 months',
+          lastContact: '2024-01-25',
+          nextFollowUp: '2024-01-29',
+          notes: 'Looking for family home with good schools nearby',
+          assignedAgent: 'Emily Davis',
+          createdDate: '2024-01-18'
+        },
+        {
+          id: 'PROS-004',
+          name: 'Jennifer Lee',
+          email: 'jennifer.lee@email.com',
+          phone: '(555) 456-7890',
+          source: 'Google Ads',
+          status: 'new',
+          score: 45,
+          budget: { min: 300000, max: 450000 },
+          propertyType: ['Condo', 'Apartment'],
+          preferredAreas: ['Downtown'],
+          timeline: '12+ months',
+          lastContact: '2024-01-27',
+          nextFollowUp: '2024-02-03',
+          notes: 'Still exploring options, not urgent',
+          assignedAgent: 'Sarah Johnson',
+          createdDate: '2024-01-27'
+        }
+      ];
+      setProspects(mockData);
+    } catch (error) {
+      console.error('Error loading prospects:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  // CRUD Operations
+  const handleAddProspect = () => {
+    if (newProspect.name && newProspect.email && newProspect.phone) {
+      const prospectData: Prospect = {
+        id: `PROS-${Date.now()}`,
+        name: newProspect.name,
+        email: newProspect.email,
+        phone: newProspect.phone,
+        source: newProspect.source,
+        status: newProspect.status,
+        score: newProspect.score,
+        budget: { min: newProspect.budgetMin, max: newProspect.budgetMax },
+        propertyType: newProspect.propertyTypes,
+        preferredAreas: newProspect.preferredAreas,
+        timeline: newProspect.timeline,
+        lastContact: new Date().toISOString().split('T')[0],
+        nextFollowUp: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        notes: newProspect.notes,
+        assignedAgent: newProspect.assignedAgent,
+        createdDate: new Date().toISOString().split('T')[0]
+      };
+
+      setProspects(prev => [...prev, prospectData]);
+      
+      // Reset form
+      setNewProspect({
+        name: '',
+        email: '',
+        phone: '',
+        source: 'Website Form',
+        status: 'new',
+        score: 50,
+        budgetMin: 0,
+        budgetMax: 0,
+        propertyTypes: [],
+        preferredAreas: [],
+        timeline: '3-6 months',
+        notes: '',
+        assignedAgent: 'Sarah Johnson'
+      });
+      setShowAddModal(false);
+    }
+  };
+
+  const handleEditProspect = (prospect: Prospect) => {
+    setSelectedProspect(prospect);
+    setNewProspect({
+      name: prospect.name,
+      email: prospect.email,
+      phone: prospect.phone,
+      source: prospect.source,
+      status: prospect.status,
+      score: prospect.score,
+      budgetMin: prospect.budget.min,
+      budgetMax: prospect.budget.max,
+      propertyTypes: prospect.propertyType,
+      preferredAreas: prospect.preferredAreas,
+      timeline: prospect.timeline,
+      notes: prospect.notes,
+      assignedAgent: prospect.assignedAgent
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdateProspect = () => {
+    if (selectedProspect && newProspect.name && newProspect.email && newProspect.phone) {
+      const updatedProspect: Prospect = {
+        ...selectedProspect,
+        name: newProspect.name,
+        email: newProspect.email,
+        phone: newProspect.phone,
+        source: newProspect.source,
+        status: newProspect.status,
+        score: newProspect.score,
+        budget: { min: newProspect.budgetMin, max: newProspect.budgetMax },
+        propertyType: newProspect.propertyTypes,
+        preferredAreas: newProspect.preferredAreas,
+        timeline: newProspect.timeline,
+        notes: newProspect.notes,
+        assignedAgent: newProspect.assignedAgent
+      };
+
+      setProspects(prev => prev.map(prospect => prospect.id === selectedProspect.id ? updatedProspect : prospect));
+      setShowEditModal(false);
+      setSelectedProspect(null);
+    }
+  };
+
+  const handleDeleteProspect = (prospectId: string) => {
+    if (window.confirm('Are you sure you want to delete this prospect? This action cannot be undone.')) {
+      setProspects(prev => prev.filter(prospect => prospect.id !== prospectId));
+      setShowDetailsModal(false);
+      setSelectedProspect(null);
+    }
+  };
+
+  const handleViewDetails = (prospect: Prospect) => {
+    setSelectedProspect(prospect);
+    setShowDetailsModal(true);
+  };
+
+  const handleCall = (phone: string) => {
+    window.open(`tel:${phone}`, '_self');
+  };
+
+  const handleEmail = (email: string) => {
+    window.open(`mailto:${email}`, '_self');
+  };
+
+  const handleSchedule = (prospect: Prospect) => {
+    // In a real app, this would open a calendar scheduling modal
+    console.log('Scheduling meeting with:', prospect.name);
+  };
 
   const getStatusColor = (status: string) => {
     const colors = {
@@ -158,6 +313,17 @@ export default function Prospects() {
   const avgScore = Math.round(filteredProspects.reduce((sum, p) => sum + p.score, 0) / filteredProspects.length);
   const totalBudget = filteredProspects.reduce((sum, p) => sum + p.budget.max, 0);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading prospects...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto">
@@ -168,7 +334,10 @@ export default function Prospects() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{t(appContent.prospects.prospects)}</h1>
               <p className="text-gray-600">{totalProspects} {t(appContent.prospects.potentialClients)}</p>
             </div>
-            <button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2">
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg flex items-center space-x-2"
+            >
               <Plus className="w-5 h-5" />
               <span>{t(appContent.prospects.addProspect)}</span>
             </button>
@@ -395,21 +564,40 @@ export default function Prospects() {
               {/* Actions */}
               <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                 <div className="flex space-x-2">
-                  <button className="flex items-center space-x-1 px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors">
+                  <button 
+                    onClick={() => handleCall(prospect.phone)}
+                    className="flex items-center space-x-1 px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                  >
                     <Phone className="w-4 h-4" />
                     <span>{t(appContent.prospects.call)}</span>
                   </button>
-                  <button className="flex items-center space-x-1 px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg text-sm font-medium transition-colors">
+                  <button 
+                    onClick={() => handleEmail(prospect.email)}
+                    className="flex items-center space-x-1 px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg text-sm font-medium transition-colors"
+                  >
                     <Mail className="w-4 h-4" />
                     <span>{t(appContent.prospects.email)}</span>
                   </button>
-                  <button className="flex items-center space-x-1 px-3 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg text-sm font-medium transition-colors">
+                  <button 
+                    onClick={() => handleSchedule(prospect)}
+                    className="flex items-center space-x-1 px-3 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg text-sm font-medium transition-colors"
+                  >
                     <Calendar className="w-4 h-4" />
                     <span>{t(appContent.prospects.schedule)}</span>
                   </button>
-                  <button className="flex items-center space-x-1 px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg text-sm font-medium transition-colors">
+                  <button 
+                    onClick={() => handleEditProspect(prospect)}
+                    className="flex items-center space-x-1 px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-lg text-sm font-medium transition-colors"
+                  >
                     <Edit className="w-4 h-4" />
                     <span>{t(appContent.prospects.edit)}</span>
+                  </button>
+                  <button 
+                    onClick={() => handleDeleteProspect(prospect.id)}
+                    className="flex items-center space-x-1 px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>Delete</span>
                   </button>
                 </div>
                 <div className="text-sm text-gray-500">

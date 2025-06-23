@@ -54,10 +54,34 @@ export function PropertyCard({ property, onClick }: PropertyCardProps) {
         
         {/* Action Buttons */}
         <div className="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors duration-200">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              // Add to favorites functionality
+              console.log('Adding property to favorites:', property.id);
+            }}
+            className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors duration-200"
+          >
             <Heart className="w-4 h-4 text-gray-600 hover:text-red-500" />
           </button>
-          <button className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors duration-200">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              // Share property functionality
+              if (navigator.share) {
+                navigator.share({
+                  title: property.title,
+                  text: `Check out this property: ${property.title}`,
+                  url: window.location.href
+                });
+              } else {
+                // Fallback to clipboard
+                navigator.clipboard.writeText(window.location.href);
+                console.log('Property link copied to clipboard');
+              }
+            }}
+            className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors duration-200"
+          >
             <Share2 className="w-4 h-4 text-gray-600 hover:text-blue-500" />
           </button>
         </div>

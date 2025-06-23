@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Clock,
   User,
@@ -19,10 +19,12 @@ import {
   DollarSign,
   Target,
   Users,
-  Award
+  Award,
+  X
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
+import { realDataService, Lead } from '../../services/realDataService';
 
 interface FollowUpLead {
   id: string;
@@ -58,95 +60,96 @@ export default function FollowUpLeads() {
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [agentFilter, setAgentFilter] = useState('all');
   const [sortBy, setSortBy] = useState('next-followup');
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const followUpLeads: FollowUpLead[] = [
+  // Load real leads data
+  useEffect(() => {
+    const loadLeads = () => {
+      try {
+        setLoading(true);
+        // Get leads that need follow-up (qualified leads)
+        const leadsData = realDataService.getLeadsByStatus('qualified');
+        setLeads(leadsData);
+      } catch (error) {
+        console.error('Error loading follow-up leads:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadLeads();
+  }, []);
+
+  // Sample follow-up leads for initial data (if no real data exists)
+  const sampleFollowUpLeads: Omit<Lead, 'id' | 'createdDate'>[] = [
     {
-      id: 'FL-001',
       name: 'Michael Thompson',
       email: 'michael.t@email.com',
       phone: '(555) 123-4567',
-      source: 'Website Form',
-      status: 'overdue',
-      priority: 'high',
-      lastContact: '2024-01-20',
-      nextFollowUp: '2024-01-25',
-      daysOverdue: 3,
-      leadScore: 85,
-      interests: ['Single Family Home', 'Condo'],
+      source: 'website',
+      status: 'qualified',
+      score: 85,
+      interest: 'buying',
       budget: { min: 400000, max: 600000 },
-      preferredAreas: ['Downtown', 'Midtown'],
+      location: 'Downtown',
+      propertyType: ['house', 'condo'],
       notes: 'Very interested buyer, pre-approved for mortgage. Looking to move quickly.',
-      contactHistory: [
-        { date: '2024-01-20', type: 'call', outcome: 'Discussed budget and preferences' },
-        { date: '2024-01-18', type: 'email', outcome: 'Sent property listings' },
-        { date: '2024-01-15', type: 'meeting', outcome: 'Initial consultation completed' }
-      ],
-      assignedAgent: 'Sarah Johnson'
+      lastContact: new Date('2024-01-20'),
+      nextFollowUp: new Date('2024-01-25'),
+      agent: { id: '1', name: 'Sarah Johnson' },
+      tags: ['high-priority', 'pre-approved']
     },
     {
-      id: 'FL-002',
       name: 'Jennifer Martinez',
       email: 'jennifer.m@email.com',
       phone: '(555) 234-5678',
-      source: 'Facebook Ad',
-      status: 'due-today',
-      priority: 'high',
-      lastContact: '2024-01-26',
-      nextFollowUp: '2024-01-28',
-      leadScore: 78,
-      interests: ['Townhouse', 'Single Family Home'],
+      source: 'social',
+      status: 'qualified',
+      score: 78,
+      interest: 'buying',
       budget: { min: 350000, max: 500000 },
-      preferredAreas: ['Suburbs', 'Family District'],
+      location: 'Suburbs',
+      propertyType: ['townhouse', 'house'],
       notes: 'First-time buyer, needs guidance through the process. Has good credit.',
-      contactHistory: [
-        { date: '2024-01-26', type: 'email', outcome: 'Sent first-time buyer guide' },
-        { date: '2024-01-24', type: 'call', outcome: 'Discussed financing options' },
-        { date: '2024-01-22', type: 'text', outcome: 'Confirmed appointment' }
-      ],
-      assignedAgent: 'Mike Chen'
+      lastContact: new Date('2024-01-26'),
+      nextFollowUp: new Date('2024-01-28'),
+      agent: { id: '2', name: 'Mike Chen' },
+      tags: ['first-time-buyer', 'good-credit']
     },
     {
-      id: 'FL-003',
       name: 'Robert Wilson',
       email: 'robert.w@email.com',
       phone: '(555) 345-6789',
-      source: 'Referral',
-      status: 'due-soon',
-      priority: 'medium',
-      lastContact: '2024-01-25',
-      nextFollowUp: '2024-01-30',
-      leadScore: 65,
-      interests: ['Investment Property', 'Condo'],
+      source: 'referral',
+      status: 'qualified',
+      score: 65,
+      interest: 'investing',
       budget: { min: 200000, max: 400000 },
-      preferredAreas: ['Arts District', 'University Area'],
+      location: 'Arts District',
+      propertyType: ['apartment', 'condo'],
       notes: 'Looking for rental investment properties. Experienced investor.',
-      contactHistory: [
-        { date: '2024-01-25', type: 'meeting', outcome: 'Viewed 3 properties' },
-        { date: '2024-01-23', type: 'call', outcome: 'Discussed investment strategy' },
-        { date: '2024-01-21', type: 'email', outcome: 'Sent market analysis' }
-      ],
-      assignedAgent: 'Emily Davis'
+      lastContact: new Date('2024-01-25'),
+      nextFollowUp: new Date('2024-01-30'),
+      agent: { id: '3', name: 'Emily Davis' },
+      tags: ['investor', 'experienced']
     },
     {
-      id: 'FL-004',
       name: 'Lisa Anderson',
       email: 'lisa.a@email.com',
       phone: '(555) 456-7890',
-      source: 'Google Ads',
-      status: 'scheduled',
-      priority: 'low',
-      lastContact: '2024-01-27',
-      nextFollowUp: '2024-02-02',
-      leadScore: 45,
-      interests: ['Apartment', 'Condo'],
+      source: 'advertising',
+      status: 'qualified',
+      score: 45,
+      interest: 'buying',
       budget: { min: 250000, max: 350000 },
-      preferredAreas: ['Downtown'],
+      location: 'Downtown',
+      propertyType: ['apartment', 'condo'],
       notes: 'Still exploring options, not in a rush to buy.',
-      contactHistory: [
-        { date: '2024-01-27', type: 'email', outcome: 'Sent neighborhood information' },
-        { date: '2024-01-24', type: 'call', outcome: 'Initial inquiry call' }
-      ],
-      assignedAgent: 'Sarah Johnson'
+      lastContact: new Date('2024-01-27'),
+      nextFollowUp: new Date('2024-02-02'),
+      agent: { id: '1', name: 'Sarah Johnson' },
+      tags: ['exploring', 'no-rush']
     }
   ];
 
@@ -175,20 +178,45 @@ export default function FollowUpLeads() {
     return 'text-red-600 bg-red-50';
   };
 
-  const filteredLeads = followUpLeads.filter(lead => {
+  // Initialize with sample data if no real data exists
+  useEffect(() => {
+    if (leads.length === 0 && !loading) {
+      sampleFollowUpLeads.forEach(lead => {
+        realDataService.addLead(lead);
+      });
+      // Reload leads after adding sample data
+      const leadsData = realDataService.getLeadsByStatus('qualified');
+      setLeads(leadsData);
+    }
+  }, [leads.length, loading]);
+
+  const filteredLeads = leads.filter((lead: Lead) => {
     const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lead.phone.includes(searchTerm);
     const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
-    const matchesPriority = priorityFilter === 'all' || lead.priority === priorityFilter;
-    const matchesAgent = agentFilter === 'all' || lead.assignedAgent === agentFilter;
-    return matchesSearch && matchesStatus && matchesPriority && matchesAgent;
+    const matchesAgent = agentFilter === 'all' || lead.agent.name === agentFilter;
+    return matchesSearch && matchesStatus && matchesAgent;
   });
 
-  const overdueCount = filteredLeads.filter(l => l.status === 'overdue').length;
-  const dueTodayCount = filteredLeads.filter(l => l.status === 'due-today').length;
-  const dueSoonCount = filteredLeads.filter(l => l.status === 'due-soon').length;
-  const avgScore = Math.round(filteredLeads.reduce((sum, lead) => sum + lead.leadScore, 0) / filteredLeads.length);
+  // Calculate follow-up metrics based on real data
+  const today = new Date();
+  const overdueCount = filteredLeads.filter((l: Lead) => {
+    const followUpDate = new Date(l.nextFollowUp);
+    return followUpDate instanceof Date && !isNaN(followUpDate.getTime()) && followUpDate < today;
+  }).length;
+  const dueTodayCount = filteredLeads.filter((l: Lead) => {
+    const followUpDate = new Date(l.nextFollowUp);
+    return followUpDate instanceof Date && !isNaN(followUpDate.getTime()) && 
+           followUpDate.toDateString() === today.toDateString();
+  }).length;
+  const dueSoonCount = filteredLeads.filter((l: Lead) => {
+    const followUpDate = new Date(l.nextFollowUp);
+    if (!(followUpDate instanceof Date) || isNaN(followUpDate.getTime())) return false;
+    const daysDiff = Math.ceil((followUpDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    return daysDiff > 0 && daysDiff <= 3;
+  }).length;
+  const avgScore = filteredLeads.length > 0 ? Math.round(filteredLeads.reduce((sum: number, lead: Lead) => sum + lead.score, 0) / filteredLeads.length) : 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">

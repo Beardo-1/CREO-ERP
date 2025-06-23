@@ -198,27 +198,24 @@ export default function Clients() {
     const [firstName, ...lastNameParts] = newClient.name.split(' ');
     const lastName = lastNameParts.join(' ') || '';
     
-    const contact: Contact = {
-      id: `client-${Date.now()}`,
+    const newContact: Omit<Contact, 'id'> = {
       firstName,
       lastName,
       email: newClient.email,
       phone: newClient.phone,
       type: 'Client',
-      status: newClient.status === 'active' ? 'Converted' : 'Qualified',
+      status: 'Converted',
       source: 'Website',
-      assignedAgent: '1',
-      notes: newClient.notes,
-      createdAt: new Date().toISOString(),
+      budget: { min: newClient.budgetMin, max: newClient.budgetMax },
+      assignedAgent: 'current-agent',
       lastContact: new Date().toISOString(),
-      propertyInterests: [],
-      budget: {
-        min: newClient.budgetMin,
-        max: newClient.budgetMax
-      }
+      createdAt: new Date().toISOString(),
+      notes: newClient.notes
     };
+
+    unifiedDataService.addContact(newContact as Contact);
     
-    unifiedDataService.addContact(contact);
+    // Reset form
     setNewClient({
       name: '',
       email: '',
@@ -232,25 +229,64 @@ export default function Clients() {
     setShowAddModal(false);
   };
 
+  // Delete client handler
+  const handleDeleteClient = async (clientId: string) => {
+    if (window.confirm('Are you sure you want to delete this client? This action cannot be undone.')) {
+      try {
+        await unifiedDataService.deleteContact(clientId);
+        // Success notification could be added here
+      } catch (error) {
+        console.error('Error deleting client:', error);
+        // Error notification could be added here
+      }
+    }
+  };
+
+  // Edit client handler
+  const handleEditClient = (client: Client) => {
+    setSelectedClient(client);
+    setNewClient({
+      name: client.name,
+      email: client.email,
+      phone: client.phone,
+      type: client.type,
+      status: client.status,
+      budgetMin: client.budget.min,
+      budgetMax: client.budget.max,
+      notes: client.notes
+    });
+    setShowAddModal(true);
+  };
+
   // Update client handler
   const handleUpdateClient = (updatedClient: Client) => {
     const [firstName, ...lastNameParts] = updatedClient.name.split(' ');
     const lastName = lastNameParts.join(' ') || '';
     
-    const contact: Partial<Contact> = {
+    const updatedContact: Partial<Contact> = {
       firstName,
       lastName,
       email: updatedClient.email,
       phone: updatedClient.phone,
-      type: 'Client',
-      status: updatedClient.status === 'active' ? 'Converted' : 'Qualified',
-      notes: updatedClient.notes,
       budget: updatedClient.budget,
-      lastContact: new Date().toISOString()
+      notes: updatedClient.notes
     };
-    
-    unifiedDataService.updateContact(updatedClient.id, contact);
-    setShowDetailsModal(false);
+
+    unifiedDataService.updateContact(updatedClient.id, updatedContact);
+    setSelectedClient(null);
+    setShowAddModal(false);
+  };
+
+  // Contact client handler
+  const handleContactClient = (client: Client) => {
+    // This could open an email client or phone dialer
+    window.location.href = `mailto:${client.email}`;
+  };
+
+  // View client details
+  const handleViewClient = (client: Client) => {
+    setSelectedClient(client);
+    setShowDetailsModal(true);
   };
 
   // CSV Import functionality
@@ -485,30 +521,21 @@ export default function Clients() {
               
               <div className="flex items-center space-x-2">
                 <button 
-                  onClick={() => {
-                    // SMS functionality
-                    window.open(`sms:${client.phone}`, '_blank');
-                  }}
+                  onClick={() => handleContactClient(client)}
                   className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  title="Send Message"
+                  title="Contact Client"
                 >
                   <MessageCircle className="w-4 h-4" />
                 </button>
                 <button 
-                  onClick={() => {
-                    // Call functionality
-                    window.open(`tel:${client.phone}`, '_blank');
-                  }}
-                  className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                  title="Call Client"
+                  onClick={() => handleViewClient(client)}
+                  className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                  title="View Client Details"
                 >
-                  <Phone className="w-4 h-4" />
+                  <Eye className="w-4 h-4" />
                 </button>
                 <button 
-                  onClick={() => {
-                    setSelectedClient(client);
-                    setShowDetailsModal(true);
-                  }}
+                  onClick={() => handleEditClient(client)}
                   className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
                   title="Edit Client"
                 >

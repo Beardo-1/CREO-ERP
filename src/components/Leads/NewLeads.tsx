@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Users,
   Phone,
@@ -19,36 +19,12 @@ import {
   AlertCircle,
   User,
   Building,
-  DollarSign
+  DollarSign,
+  X
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
-
-interface Lead {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  source: 'website' | 'referral' | 'social' | 'advertising' | 'cold-call' | 'walk-in';
-  status: 'new' | 'contacted' | 'qualified' | 'unqualified' | 'converted';
-  score: number;
-  interest: 'buying' | 'selling' | 'renting' | 'investing';
-  budget: {
-    min: number;
-    max: number;
-  };
-  location: string;
-  propertyType: string[];
-  notes: string;
-  createdDate: Date;
-  lastContact: Date;
-  nextFollowUp: Date;
-  agent: {
-    id: string;
-    name: string;
-  };
-  tags: string[];
-}
+import { realDataService, Lead } from '../../services/realDataService';
 
 export default function NewLeads() {
   const { t } = useTranslation();
@@ -56,8 +32,29 @@ export default function NewLeads() {
   const [filterSource, setFilterSource] = useState<string>('all');
   const [filterInterest, setFilterInterest] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'score' | 'date' | 'followUp'>('score');
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
 
-  const mockLeads: Lead[] = [
+  // Load real leads data
+  useEffect(() => {
+    const loadLeads = () => {
+      try {
+        setLoading(true);
+        const leadsData = realDataService.getLeadsByStatus('new');
+        setLeads(leadsData);
+      } catch (error) {
+        console.error('Error loading leads:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadLeads();
+  }, []);
+
+  // Sample leads for initial data (if no real data exists)
+  const sampleLeads: Lead[] = [
     {
       id: '1',
       name: 'Emma Rodriguez',
@@ -173,18 +170,53 @@ export default function NewLeads() {
     }).format(price);
   };
 
-  const formatTime = (date: Date) => {
+  const formatTime = (date: Date | string | undefined) => {
+    if (!date) return 'Unknown';
+    
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+      return 'Invalid date';
+    }
+    
     const now = new Date();
-    const diff = now.getTime() - date.getTime();
+    const diff = now.getTime() - dateObj.getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));
     
-    if (hours < 1) return t(appContent.leads.justNow);
-    if (hours === 1) return `1 ${t(appContent.leads.hourAgo)}`;
-    if (hours < 24) return `${hours} ${t(appContent.leads.hoursAgo)}`;
-    return `${Math.floor(hours / 24)} ${t(appContent.leads.daysAgo)}`;
+    if (hours < 1) return 'Just now';
+    if (hours === 1) return '1 hour ago';
+    if (hours < 24) return `${hours} hours ago`;
+    return `${Math.floor(hours / 24)} days ago`;
   };
 
-  const filteredLeads = mockLeads.filter(lead => {
+  // Initialize with sample data if no real data exists
+  useEffect(() => {
+    if (leads.length === 0 && !loading) {
+      sampleLeads.forEach(lead => {
+        realDataService.addLead({
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          source: lead.source,
+          status: lead.status,
+          score: lead.score,
+          interest: lead.interest,
+          budget: lead.budget,
+          location: lead.location,
+          propertyType: lead.propertyType,
+          notes: lead.notes,
+          lastContact: lead.lastContact,
+          nextFollowUp: lead.nextFollowUp,
+          agent: lead.agent,
+          tags: lead.tags
+        });
+      });
+      // Reload leads after adding sample data
+      const leadsData = realDataService.getLeadsByStatus('new');
+      setLeads(leadsData);
+    }
+  }, [leads.length, loading]);
+
+  const filteredLeads = leads.filter((lead: Lead) => {
     const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lead.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSource = filterSource === 'all' || lead.source === filterSource;
@@ -192,9 +224,67 @@ export default function NewLeads() {
     return matchesSearch && matchesSource && matchesInterest;
   });
 
-  const totalLeads = mockLeads.length;
-  const highScoreLeads = mockLeads.filter(l => l.score >= 80).length;
-  const averageScore = Math.round(mockLeads.reduce((sum, lead) => sum + lead.score, 0) / mockLeads.length);
+  const totalLeads = leads.length;
+  const highScoreLeads = leads.filter((l: Lead) => l.score >= 80).length;
+  const averageScore = leads.length > 0 ? Math.round(leads.reduce((sum: number, lead: Lead) => sum + lead.score, 0) / leads.length) : 0;
+
+  // Lead operations
+  const handleAddLead = (leadData: Omit<Lead, 'id' | 'createdDate'>) => {
+    try {
+      const newLead = realDataService.addLead(leadData);
+      setLeads(prev => [...prev, newLead]);
+      setShowAddModal(false);
+    } catch (error) {
+      console.error('Error adding lead:', error);
+    }
+  };
+
+  const handleUpdateLead = (id: string, updates: Partial<Lead>) => {
+    try {
+      const updatedLead = realDataService.updateLead(id, updates);
+      if (updatedLead) {
+        setLeads(prev => prev.map(l => l.id === id ? updatedLead : l));
+      }
+    } catch (error) {
+      console.error('Error updating lead:', error);
+    }
+  };
+
+  const handleDeleteLead = (id: string) => {
+    try {
+      const success = realDataService.deleteLead(id);
+      if (success) {
+        setLeads(prev => prev.filter(l => l.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting lead:', error);
+    }
+  };
+
+  const handleConvertLead = (leadId: string) => {
+    try {
+      const deal = realDataService.convertLeadToDeal(leadId, {});
+      if (deal) {
+        // Update lead status to converted
+        handleUpdateLead(leadId, { status: 'converted' });
+        // Remove from new leads list
+        setLeads(prev => prev.filter(l => l.id !== leadId));
+      }
+    } catch (error) {
+      console.error('Error converting lead:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading leads...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white">
@@ -389,7 +479,7 @@ export default function NewLeads() {
               </div>
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 mr-1" />
-                <span>{t(appContent.leads.followUp)}: {lead.nextFollowUp.toLocaleDateString()}</span>
+                <span>{t(appContent.leads.followUp)}: {formatTime(lead.nextFollowUp)}</span>
               </div>
             </div>
 
@@ -400,14 +490,26 @@ export default function NewLeads() {
               </div>
               
               <div className="flex items-center space-x-2">
-                <button className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                  <MessageCircle className="w-4 h-4" />
+                <button 
+                  onClick={() => handleConvertLead(lead.id)}
+                  className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                  title="Convert to Deal"
+                >
+                  <CheckCircle className="w-4 h-4" />
                 </button>
-                <button className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                <button 
+                  onClick={() => handleUpdateLead(lead.id, { status: 'contacted', lastContact: new Date() })}
+                  className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  title="Mark as Contacted"
+                >
                   <Phone className="w-4 h-4" />
                 </button>
-                <button className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors">
-                  <Edit className="w-4 h-4" />
+                <button 
+                  onClick={() => handleDeleteLead(lead.id)}
+                  className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  title="Delete Lead"
+                >
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -421,7 +523,10 @@ export default function NewLeads() {
           <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">{t(appContent.leads.noLeadsFound)}</h3>
           <p className="text-gray-600 mb-6">{t(appContent.leads.adjustSearchCriteria)}</p>
-          <button className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg">
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg"
+          >
             {t(appContent.leads.addYourFirstLead)}
           </button>
         </div>

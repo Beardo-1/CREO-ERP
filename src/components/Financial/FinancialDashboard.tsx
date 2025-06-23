@@ -30,21 +30,7 @@ import {
   Calculator
 } from 'lucide-react';
 import { unifiedDataService } from '../../services/unifiedDataService';
-
-interface Transaction {
-  id: string;
-  type: 'income' | 'expense';
-  category: string;
-  amount: number;
-  description: string;
-  date: string;
-  status: 'completed' | 'pending' | 'cancelled';
-  clientId?: string;
-  propertyId?: string;
-  invoiceNumber?: string;
-  paymentMethod: 'cash' | 'card' | 'bank_transfer' | 'check' | 'other';
-  tags: string[];
-}
+import { realDataService, Transaction } from '../../services/realDataService';
 
 interface FinancialMetrics {
   totalRevenue: number;
@@ -144,29 +130,38 @@ export function FinancialDashboard() {
     transactionCount: 0
   });
 
-  // Load real data and generate financial transactions
+  // Load real data and transactions
   useEffect(() => {
-    const loadData = () => {
+    const loadData = async () => {
       try {
         setLoading(true);
-        const dealsData = unifiedDataService.getDeals();
-        const propertiesData = unifiedDataService.getProperties();
-        const contactsData = unifiedDataService.getContacts();
+        
+        // Load real data
+        const dealsData = await unifiedDataService.getDeals();
+        const propertiesData = await unifiedDataService.getProperties();
+        const contactsData = await unifiedDataService.getContacts();
 
         setDeals(dealsData);
         setProperties(propertiesData);
         setContacts(contactsData);
 
-        // Generate transactions from real data
-        const generatedTransactions = generateTransactionsFromData(dealsData, propertiesData, contactsData);
-        setTransactions(generatedTransactions);
+        // Load real transactions
+        const realTransactions = realDataService.getTransactions();
+        
+        // If no transactions exist, generate some from deals data
+        if (realTransactions.length === 0) {
+          generateInitialTransactions(dealsData);
+        } else {
+          setTransactions(realTransactions);
+        }
 
         // Calculate metrics
-        const calculatedMetrics = calculateMetrics(generatedTransactions);
+        const currentTransactions = realTransactions.length > 0 ? realTransactions : realDataService.getTransactions();
+        const calculatedMetrics = calculateMetrics(currentTransactions);
         setMetrics(calculatedMetrics);
 
         // Update budget spending based on transactions
-        updateBudgetSpending(generatedTransactions);
+        updateBudgetSpending(currentTransactions);
       } catch (error) {
         console.error('Error loading financial data:', error);
       } finally {
