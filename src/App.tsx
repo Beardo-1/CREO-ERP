@@ -56,6 +56,7 @@ import SoldProperties from './components/Properties/SoldProperties';
 import Clients from './components/Contacts/Clients';
 import ActiveDeals from './components/Deals/ActiveDeals';
 import AnalyticsDashboard from './components/Analytics/AnalyticsDashboard';
+import { PerformanceDashboard } from './components/Analytics/PerformanceDashboard';
 import { MobileApp } from './components/Mobile/MobileApp';
 import NewLeads from './components/Leads/NewLeads';
 import { ContractManager } from './components/Documents/ContractManager';
@@ -423,6 +424,20 @@ function App() {
                 <div className="p-8">
                   <h2 className="text-2xl font-bold mb-4">Analytics Dashboard</h2>
                   <p className="text-gray-600">Loading analytics...</p>
+                </div>
+              }
+            />
+          );
+        
+        case 'performance-dashboard':
+          return (
+            <SafeComponent 
+              component={PerformanceDashboard} 
+              name="PerformanceDashboard"
+              fallback={
+                <div className="p-8">
+                  <h2 className="text-2xl font-bold mb-4">Performance Dashboard</h2>
+                  <p className="text-gray-600">Loading performance analytics...</p>
                 </div>
               }
             />

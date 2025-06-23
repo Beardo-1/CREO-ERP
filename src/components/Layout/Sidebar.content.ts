@@ -265,6 +265,16 @@ export const sidebarContent = {
       ar: "تحليل السوق",
     },
 
+    // Analytics Sub Items
+    'analytics-dashboard': {
+      en: "Analytics Dashboard",
+      ar: "لوحة التحليلات",
+    },
+    'performance-dashboard': {
+      en: "Performance Dashboard",
+      ar: "لوحة الأداء",
+    },
+
     // Team Sub Items
     'agents-performance': {
       en: "Agent Performance",

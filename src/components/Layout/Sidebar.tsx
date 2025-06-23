@@ -292,6 +292,17 @@ const menuCategories = [
         ]
       },
       { 
+        id: 'analytics', 
+        label: 'Analytics', 
+        icon: BarChart3, 
+        category: 'management',
+        priority: 'high' as const,
+        subItems: [
+          { id: 'analytics-dashboard', label: 'Analytics Dashboard', icon: BarChart3 },
+          { id: 'performance-dashboard', label: 'Performance Dashboard', icon: TrendingUp }
+        ]
+      },
+      { 
         id: 'reports', 
         label: 'Reports', 
         icon: BarChart3, 
@@ -555,6 +566,17 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen: externalMobileOp
             { id: 'compliance-legal', label: t(appContent.sidebar.legalDocs), icon: FileText },
             { id: 'compliance-audit', label: t(appContent.sidebar.auditTrail), icon: CheckSquare },
             { id: 'compliance-training', label: t(appContent.sidebar.training), icon: Users }
+          ]
+        },
+        { 
+          id: 'analytics', 
+          label: 'Analytics', 
+          icon: BarChart3, 
+          category: 'management',
+          priority: 'high' as const,
+          subItems: [
+            { id: 'analytics-dashboard', label: 'Analytics Dashboard', icon: BarChart3 },
+            { id: 'performance-dashboard', label: 'Performance Dashboard', icon: TrendingUp }
           ]
         },
         { 
