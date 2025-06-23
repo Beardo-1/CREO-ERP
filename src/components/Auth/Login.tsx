@@ -78,26 +78,33 @@ export function Login({ onLoginSuccess }: LoginProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
     try {
-      // Use simple authentication service for reliable login
-      const { simpleAuthService } = await import('../../services/SimpleAuthService');
-      
-      const result = await simpleAuthService.login({
-        email: formData.email,
-        password: formData.password
-      });
-      
-      if (result.success && result.user) {
-        // Store user session
-        localStorage.setItem('creo_user', JSON.stringify(result.user));
-        localStorage.setItem('creo_authenticated', 'true');
-        
-        if (onLoginSuccess) {
-          onLoginSuccess();
+      let result;
+      if (import.meta.env.PROD) {
+        // Use Supabase production auth in production
+        const { productionAuthService } = await import('../../services/ProductionAuthService');
+        result = await productionAuthService.signIn(formData.email, formData.password);
+        if (result.success && result.user) {
+          localStorage.setItem('creo_user', JSON.stringify(result.user));
+          localStorage.setItem('creo_authenticated', 'true');
+          if (onLoginSuccess) onLoginSuccess();
+        } else {
+          alert(result.message || 'Invalid email or password. Please check your credentials.');
         }
       } else {
-        alert(result.message || 'Invalid email or password. Please check your credentials.');
+        // Use simple authentication service for development
+        const { simpleAuthService } = await import('../../services/SimpleAuthService');
+        result = await simpleAuthService.login({
+          email: formData.email,
+          password: formData.password
+        });
+        if (result.success && result.user) {
+          localStorage.setItem('creo_user', JSON.stringify(result.user));
+          localStorage.setItem('creo_authenticated', 'true');
+          if (onLoginSuccess) onLoginSuccess();
+        } else {
+          alert(result.message || 'Invalid email or password. Please check your credentials.');
+        }
       }
     } catch (error) {
       console.error('Login error:', error);
