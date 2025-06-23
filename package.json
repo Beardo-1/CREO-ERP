@@ -4,11 +4,15 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Comprehensive Real Estate ERP System",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "type-check": "tsc --noEmit",
     "intlayer:build": "npx intlayer build",
     "intlayer:push": "npx intlayer push"
   },
