@@ -1951,7 +1951,8 @@ function App() {
             props={{
               activeTab,
               userName: currentUser.name,
-              onMobileMenuToggle: () => setIsMobileSidebarOpen(!isMobileSidebarOpen)
+              onMobileMenuToggle: () => setIsMobileSidebarOpen(!isMobileSidebarOpen),
+              onTabChange: setActiveTab
             }}
             name="Header"
             fallback={
