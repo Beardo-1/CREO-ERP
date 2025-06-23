@@ -21,10 +21,12 @@ export function Header({ activeTab, userName: initialUserName, onMobileMenuToggl
   // Listen for profile updates
   useEffect(() => {
     const handleProfileUpdate = (event: CustomEvent) => {
+      console.log('🎯 Header received profileUpdated event:', event.detail);
       const profileData = event.detail;
       if (profileData) {
         setCurrentUserName(profileData.name || initialUserName);
         setCurrentUserRole(profileData.role || 'Real Estate Agent');
+        console.log('✅ Header updated with:', { name: profileData.name, role: profileData.role });
       }
     };
 
@@ -36,6 +38,7 @@ export function Header({ activeTab, userName: initialUserName, onMobileMenuToggl
           const profileData = JSON.parse(savedProfile);
           setCurrentUserName(profileData.name || initialUserName);
           setCurrentUserRole(profileData.role || 'Real Estate Agent');
+          console.log('🔄 Header loaded profile from localStorage:', { name: profileData.name, role: profileData.role });
         }
       } catch (error) {
         console.error('Error loading profile data:', error);
@@ -44,6 +47,7 @@ export function Header({ activeTab, userName: initialUserName, onMobileMenuToggl
 
     loadProfileData();
     window.addEventListener('profileUpdated', handleProfileUpdate as EventListener);
+    console.log('👂 Header listening for profileUpdated events');
     
     return () => {
       window.removeEventListener('profileUpdated', handleProfileUpdate as EventListener);

@@ -19,11 +19,13 @@ export function ProfileCard({ name: initialName, role: initialRole, earnings, pr
   // Listen for profile updates
   useEffect(() => {
     const handleProfileUpdate = (event: CustomEvent) => {
+      console.log('🎯 ProfileCard received profileUpdated event:', event.detail);
       const profileData = event.detail;
       if (profileData) {
         setCurrentName(profileData.name || initialName);
         setCurrentRole(profileData.role || initialRole);
         setCurrentProfileImage(profileData.profileImage || initialProfileImage);
+        console.log('✅ ProfileCard updated with:', { name: profileData.name, role: profileData.role });
       }
     };
 
@@ -36,6 +38,7 @@ export function ProfileCard({ name: initialName, role: initialRole, earnings, pr
           setCurrentName(profileData.name || initialName);
           setCurrentRole(profileData.role || initialRole);
           setCurrentProfileImage(profileData.profileImage || initialProfileImage);
+          console.log('🔄 ProfileCard loaded profile from localStorage:', { name: profileData.name, role: profileData.role });
         }
       } catch (error) {
         console.error('Error loading profile data:', error);
@@ -44,6 +47,7 @@ export function ProfileCard({ name: initialName, role: initialRole, earnings, pr
 
     loadProfileData();
     window.addEventListener('profileUpdated', handleProfileUpdate as EventListener);
+    console.log('👂 ProfileCard listening for profileUpdated events');
     
     return () => {
       window.removeEventListener('profileUpdated', handleProfileUpdate as EventListener);

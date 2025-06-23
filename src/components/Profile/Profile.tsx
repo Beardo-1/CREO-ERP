@@ -110,6 +110,7 @@ export function Profile({ onProfileUpdate }: ProfileProps) {
     try {
       // Save to localStorage for immediate UI updates
       localStorage.setItem('creo_user_profile', JSON.stringify(profileData));
+      console.log('🔄 Profile saved to localStorage:', profileData);
       
       // Notify parent component about profile update
       if (onProfileUpdate) {
@@ -117,9 +118,11 @@ export function Profile({ onProfileUpdate }: ProfileProps) {
       }
 
       // Trigger a custom event to update header and dashboard
-      window.dispatchEvent(new CustomEvent('profileUpdated', { 
+      const event = new CustomEvent('profileUpdated', { 
         detail: profileData 
-      }));
+      });
+      window.dispatchEvent(event);
+      console.log('🚀 profileUpdated event dispatched:', profileData);
 
       setSaveMessage({ type: 'success', text: 'Profile updated successfully!' });
       setIsEditing(false);
