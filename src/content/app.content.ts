@@ -390,10 +390,6 @@ export const appContent = {
       en: "Properties",
       ar: "العقارات",
     },
-    activeListings: {
-      en: "Active Listings",
-      ar: "القوائم النشطة",
-    },
     pendingSales: {
       en: "Pending Sales",
       ar: "المبيعات المعلقة",
@@ -405,10 +401,6 @@ export const appContent = {
     propertyDetails: {
       en: "Property Details",
       ar: "تفاصيل العقار",
-    },
-    addProperty: {
-      en: "Add Property",
-      ar: "إضافة عقار",
     },
     editProperty: {
       en: "Edit Property",
@@ -466,20 +458,6 @@ export const appContent = {
       en: "Office",
       ar: "مكتب",
     },
-    commercial: {
-      en: "Commercial",
-      ar: "تجاري",
-    },
-    
-    // Status
-    available: {
-      en: "Available",
-      ar: "متاح",
-    },
-    sold: {
-      en: "Sold",
-      ar: "مباع",
-    },
     pending: {
       en: "Pending",
       ar: "معلق",
@@ -508,10 +486,6 @@ export const appContent = {
     vendors: {
       en: "Vendors",
       ar: "الموردون",
-    },
-    addContact: {
-      en: "Add Contact",
-      ar: "إضافة جهة اتصال",
     },
     editContact: {
       en: "Edit Contact",
@@ -569,10 +543,6 @@ export const appContent = {
       en: "Landlord",
       ar: "مالك",
     },
-    agent: {
-      en: "Agent",
-      ar: "وكيل",
-    },
     contractor: {
       en: "Contractor",
       ar: "مقاول",
@@ -614,10 +584,6 @@ export const appContent = {
     both: {
       en: "Both",
       ar: "كلاهما",
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات",
     },
     active: {
       en: "Active",
@@ -737,14 +703,6 @@ export const appContent = {
       en: "Deals",
       ar: "الصفقات"
     },
-    activeDeals: {
-      en: "Active Deals",
-      ar: "الصفقات النشطة"
-    },
-    closedDeals: {
-      en: "Closed Deals",
-      ar: "الصفقات المغلقة"
-    },
     dealsPipeline: {
       en: "Deals Pipeline",
       ar: "خط أنابيب الصفقات"
@@ -785,25 +743,9 @@ export const appContent = {
       en: "Expected Close",
       ar: "الإغلاق المتوقع"
     },
-    lead: {
-      en: "Lead",
-      ar: "عميل محتمل"
-    },
-    qualified: {
-      en: "Qualified",
-      ar: "مؤهل"
-    },
-    proposal: {
-      en: "Proposal",
-      ar: "اقتراح"
-    },
     negotiation: {
       en: "Negotiation",
       ar: "تفاوض"
-    },
-    contract: {
-      en: "Contract",
-      ar: "عقد"
     },
     closed: {
       en: "Closed",
@@ -821,10 +763,6 @@ export const appContent = {
       en: "New Deal",
       ar: "صفقة جديدة"
     },
-    dealsInProgress: {
-      en: "Deals in Progress",
-      ar: "صفقات قيد التنفيذ"
-    },
     totalPipelineValue: {
       en: "Total Pipeline Value",
       ar: "إجمالي قيمة خط الأنابيب"
@@ -840,10 +778,6 @@ export const appContent = {
     searchDeals: {
       en: "Search deals...",
       ar: "البحث عن الصفقات..."
-    },
-    allStages: {
-      en: "All Stages",
-      ar: "جميع المراحل"
     },
     allPriorities: {
       en: "All Priorities",
@@ -906,18 +840,6 @@ export const appContent = {
       en: "List Price",
       ar: "سعر الإدراج"
     },
-    buyer: {
-      en: "Buyer",
-      ar: "المشتري"
-    },
-    seller: {
-      en: "Seller",
-      ar: "البائع"
-    },
-    agent: {
-      en: "Agent",
-      ar: "الوكيل"
-    },
     closingDate: {
       en: "Closing Date",
       ar: "تاريخ الإغلاق"
@@ -951,10 +873,6 @@ export const appContent = {
       en: "House",
       ar: "منزل"
     },
-    apartment: {
-      en: "Apartment",
-      ar: "شقة"
-    },
     condo: {
       en: "Condo",
       ar: "شقة تمليك"
@@ -962,10 +880,6 @@ export const appContent = {
     townhouse: {
       en: "Townhouse",
       ar: "منزل مدرج"
-    },
-    commercial: {
-      en: "Commercial",
-      ar: "تجاري"
     },
     // Buyer Types
     "first-time": {
@@ -1049,11 +963,6 @@ export const appContent = {
       en: "Commission Rate",
       ar: "معدل العمولة"
     },
-    // Missing ActiveDeals translations
-    sortByValue: {
-      en: "Sort by Value",
-      ar: "ترتيب حسب القيمة"
-    },
     commissionText: {
       en: "Commission:",
       ar: "العمولة:"
@@ -1081,10 +990,6 @@ export const appContent = {
     noDealsFound: {
       en: "No deals found",
       ar: "لم يتم العثور على صفقات"
-    },
-    adjustSearchCriteria: {
-      en: "Try adjusting your search criteria or create a new deal.",
-      ar: "حاول تعديل معايير البحث أو إنشاء صفقة جديدة."
     },
     createFirstDeal: {
       en: "Create Your First Deal",
@@ -1115,25 +1020,9 @@ export const appContent = {
       en: "Overdue",
       ar: "متأخر"
     },
-    today: {
-      en: "Today",
-      ar: "اليوم"
-    },
     daysLabel: {
       en: "days",
       ar: "أيام"
-    },
-    sale: {
-      en: "Sale",
-      ar: "بيع"
-    },
-    purchase: {
-      en: "Purchase",
-      ar: "شراء"
-    },
-    rental: {
-      en: "Rental",
-      ar: "إيجار"
     },
 
     // Property Valuations Module
@@ -1148,14 +1037,6 @@ export const appContent = {
     searchProperties: {
       en: "Search properties...",
       ar: "البحث في العقارات..."
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    pending: {
-      en: "Pending",
-      ar: "قيد الانتظار"
     },
     completed: {
       en: "Completed",
@@ -1177,10 +1058,6 @@ export const appContent = {
       en: "Avg. Value",
       ar: "متوسط القيمة"
     },
-    totalValue: {
-      en: "Total Value",
-      ar: "إجمالي القيمة"
-    },
     estimatedValue: {
       en: "Estimated Value",
       ar: "القيمة المقدرة"
@@ -1192,22 +1069,6 @@ export const appContent = {
     rentEstimate: {
       en: "Rent Estimate",
       ar: "تقدير الإيجار"
-    },
-    propertyDetails: {
-      en: "Property Details",
-      ar: "تفاصيل العقار"
-    },
-    propertyType: {
-      en: "Property Type:",
-      ar: "نوع العقار:"
-    },
-    bedrooms: {
-      en: "Bedrooms:",
-      ar: "غرف النوم:"
-    },
-    bathrooms: {
-      en: "Bathrooms:",
-      ar: "الحمامات:"
     },
     squareFeet: {
       en: "Square Feet:",
@@ -1221,14 +1082,6 @@ export const appContent = {
       en: "Year Built:",
       ar: "سنة البناء:"
     },
-    bed: {
-      en: "bed",
-      ar: "غرفة نوم"
-    },
-    bath: {
-      en: "bath",
-      ar: "حمام"
-    },
     sqft: {
       en: "sqft",
       ar: "قدم مربع"
@@ -1236,10 +1089,6 @@ export const appContent = {
     built: {
       en: "Built",
       ar: "بني في"
-    },
-    downloadReport: {
-      en: "Download Report",
-      ar: "تحميل التقرير"
     },
     selectValuation: {
       en: "Select a Valuation",
@@ -1257,10 +1106,6 @@ export const appContent = {
       en: "Task",
       ar: "المهمة"
     },
-    status: {
-      en: "Status",
-      ar: "الحالة"
-    },
     priority: {
       en: "Priority",
       ar: "الأولوية"
@@ -1273,17 +1118,9 @@ export const appContent = {
       en: "Due Date",
       ar: "تاريخ الاستحقاق"
     },
-    progress: {
-      en: "Progress",
-      ar: "التقدم"
-    },
     actions: {
       en: "Actions",
       ar: "الإجراءات"
-    },
-    overdue: {
-      en: "Overdue",
-      ar: "متأخر"
     },
     noSubtasks: {
       en: "No subtasks",
@@ -1311,18 +1148,6 @@ export const appContent = {
       en: "View all",
       ar: "عرض الكل"
     },
-    high: {
-      en: "High",
-      ar: "عالي"
-    },
-    medium: {
-      en: "Medium",
-      ar: "متوسط"
-    },
-    low: {
-      en: "Low",
-      ar: "منخفض"
-    },
 
     // Notifications Module
     notifications: {
@@ -1349,10 +1174,6 @@ export const appContent = {
       en: "h ago",
       ar: "س مضت"
     },
-    daysAgo: {
-      en: "d ago",
-      ar: "ي مضت"
-    },
 
     // Admin/Data Manager Module
     dataManagementCenter: {
@@ -1363,25 +1184,9 @@ export const appContent = {
       en: "Upload, manage, and export your real estate data",
       ar: "تحميل وإدارة وتصدير بيانات العقارات الخاصة بك"
     },
-    properties: {
-      en: "Properties",
-      ar: "العقارات"
-    },
-    contacts: {
-      en: "Contacts",
-      ar: "جهات الاتصال"
-    },
-    deals: {
-      en: "Deals",
-      ar: "الصفقات"
-    },
     agents: {
       en: "Agents",
       ar: "الوكلاء"
-    },
-    overview: {
-      en: "Overview",
-      ar: "نظرة عامة"
     },
     importData: {
       en: "Import Data",
@@ -1390,10 +1195,6 @@ export const appContent = {
     exportData: {
       en: "Export Data",
       ar: "تصدير البيانات"
-    },
-    quickActions: {
-      en: "Quick Actions",
-      ar: "الإجراءات السريعة"
     },
     importNewData: {
       en: "Import New Data",
@@ -1424,48 +1225,6 @@ export const appContent = {
       ar: "تحميل الملف"
     },
 
-    // Deal Stages and Types
-    lead: {
-      en: "Lead",
-      ar: "عميل محتمل"
-    },
-    qualified: {
-      en: "Qualified",
-      ar: "مؤهل"
-    },
-    proposal: {
-      en: "Proposal",
-      ar: "عرض"
-    },
-    negotiation: {
-      en: "Negotiation",
-      ar: "تفاوض"
-    },
-    contract: {
-      en: "Contract",
-      ar: "عقد"
-    },
-    closing: {
-      en: "Closing",
-      ar: "إنهاء"
-    },
-    closed: {
-      en: "Closed",
-      ar: "مغلق"
-    },
-    sale: {
-      en: "Sale",
-      ar: "بيع"
-    },
-    purchase: {
-      en: "Purchase",
-      ar: "شراء"
-    },
-    rental: {
-      en: "Rental",
-      ar: "إيجار"
-    },
-
     // Social Media Module
     socialMediaTitle: {
       en: "Social Media",
@@ -1480,10 +1239,6 @@ export const appContent = {
     posts: {
       en: "Posts",
       ar: "المنشورات"
-    },
-    analytics: {
-      en: "Analytics",
-      ar: "التحليلات"
     },
     accounts: {
       en: "Accounts",
@@ -1516,10 +1271,6 @@ export const appContent = {
     allPlatforms: {
       en: "All Platforms",
       ar: "جميع المنصات"
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
     },
     
     // Post Status
@@ -1637,14 +1388,6 @@ export const appContent = {
       en: "Connect",
       ar: "اتصال"
     },
-    active: {
-      en: "Active",
-      ar: "نشط"
-    },
-    inactive: {
-      en: "Inactive",
-      ar: "غير نشط"
-    },
     disconnected: {
       en: "Disconnected",
       ar: "غير متصل"
@@ -1713,17 +1456,9 @@ export const appContent = {
       en: "Maintenance Schedule",
       ar: "جدول الصيانة"
     },
-    analytics: {
-      en: "Analytics",
-      ar: "التحليلات"
-    },
     totalEquipment: {
       en: "Total Equipment",
       ar: "إجمالي المعدات"
-    },
-    totalValue: {
-      en: "Total Value",
-      ar: "القيمة الإجمالية"
     },
     needsMaintenance: {
       en: "Needs Maintenance",
@@ -1736,10 +1471,6 @@ export const appContent = {
     searchEquipment: {
       en: "Search equipment...",
       ar: "البحث في المعدات..."
-    },
-    allTypes: {
-      en: "All Types",
-      ar: "جميع الأنواع"
     },
     camera: {
       en: "Camera",
@@ -1764,14 +1495,6 @@ export const appContent = {
     vehicle: {
       en: "Vehicle",
       ar: "مركبة"
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    active: {
-      en: "Active",
-      ar: "نشط"
     },
     maintenance: {
       en: "Maintenance",
@@ -1825,29 +1548,13 @@ export const appContent = {
       en: "Next Maintenance",
       ar: "الصيانة التالية"
     },
-    viewDetails: {
-      en: "View Details",
-      ar: "عرض التفاصيل"
-    },
     scheduleMaintenance: {
       en: "Schedule Maintenance",
       ar: "جدولة الصيانة"
     },
-    scheduled: {
-      en: "Scheduled",
-      ar: "مجدولة"
-    },
     inProgress: {
       en: "In Progress",
       ar: "قيد التنفيذ"
-    },
-    overdue: {
-      en: "Overdue",
-      ar: "متأخرة"
-    },
-    completed: {
-      en: "Completed",
-      ar: "مكتملة"
     },
     equipment: {
       en: "Equipment",
@@ -1868,10 +1575,6 @@ export const appContent = {
     cost: {
       en: "Cost",
       ar: "التكلفة"
-    },
-    actions: {
-      en: "Actions",
-      ar: "الإجراءات"
     },
     edit: {
       en: "Edit",
@@ -2079,21 +1782,9 @@ export const appContent = {
       en: "Deal ID",
       ar: "معرف الصفقة"
     }
-  },
-
-  // Prospects Module
-  prospects: {
-    prospects: {
-      en: "Prospects",
-      ar: "العملاء المحتملون"
-    },
     totalProspects: {
       en: "Total Prospects",
       ar: "إجمالي العملاء المحتملين"
-    },
-    qualified: {
-      en: "Qualified",
-      ar: "مؤهل"
     },
     avgScore: {
       en: "Avg Score",
@@ -2110,18 +1801,6 @@ export const appContent = {
     searchProspects: {
       en: "Search prospects...",
       ar: "البحث عن العملاء المحتملين..."
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    new: {
-      en: "New",
-      ar: "جديد"
-    },
-    contacted: {
-      en: "Contacted",
-      ar: "تم التواصل"
     },
     interested: {
       en: "Interested",
@@ -2199,10 +1878,6 @@ export const appContent = {
       en: "Contact Timeline",
       ar: "جدول التواصل"
     },
-    lastContact: {
-      en: "Last Contact",
-      ar: "آخر تواصل"
-    },
     nextFollowUp: {
       en: "Next Follow-up",
       ar: "المتابعة التالية"
@@ -2211,17 +1886,9 @@ export const appContent = {
       en: "Call",
       ar: "اتصال"
     },
-    email: {
-      en: "Email",
-      ar: "بريد إلكتروني"
-    },
     schedule: {
       en: "Schedule",
       ar: "جدولة"
-    },
-    edit: {
-      en: "Edit",
-      ar: "تعديل"
     },
     created: {
       en: "Created",
@@ -2255,26 +1922,6 @@ export const appContent = {
       en: "Property Details",
       ar: "تفاصيل العقار"
     },
-    bedrooms: {
-      en: "Bedrooms",
-      ar: "غرف النوم"
-    },
-    bathrooms: {
-      en: "Bathrooms",
-      ar: "الحمامات"
-    },
-    squareFeet: {
-      en: "Square Feet",
-      ar: "قدم مربع"
-    },
-    yearBuilt: {
-      en: "Year Built",
-      ar: "سنة البناء"
-    },
-    lotSize: {
-      en: "Lot Size",
-      ar: "حجم القطعة"
-    },
     featuresAmenities: {
       en: "Features & Amenities",
       ar: "المميزات والخدمات"
@@ -2290,10 +1937,6 @@ export const appContent = {
     pricePerSqFt: {
       en: "Price per Sq Ft",
       ar: "السعر لكل قدم مربع"
-    },
-    description: {
-      en: "Description",
-      ar: "الوصف"
     },
     scheduleViewing: {
       en: "Schedule Viewing",
@@ -2311,29 +1954,9 @@ export const appContent = {
       en: "sq ft",
       ar: "قدم مربع"
     }
-  },
-
-  // Action Buttons
-  actions: {
-    addProperty: {
-      en: "Add Property",
-      ar: "إضافة عقار",
-    },
-    addContact: {
-      en: "Add Contact",
-      ar: "إضافة جهة اتصال",
-    },
-    addDeal: {
-      en: "Add Deal",
-      ar: "إضافة صفقة",
-    },
     addAgent: {
       en: "Add Agent",
       ar: "إضافة وكيل",
-    },
-    viewAll: {
-      en: "View All",
-      ar: "عرض الكل",
     },
     export: {
       en: "Export",
@@ -2346,34 +1969,6 @@ export const appContent = {
     refresh: {
       en: "Refresh",
       ar: "تحديث",
-    },
-  },
-
-  // Status Labels
-  status: {
-    active: {
-      en: "Active",
-      ar: "نشط",
-    },
-    inactive: {
-      en: "Inactive",
-      ar: "غير نشط",
-    },
-    pending: {
-      en: "Pending",
-      ar: "معلق",
-    },
-    completed: {
-      en: "Completed",
-      ar: "مكتمل",
-    },
-    cancelled: {
-      en: "Cancelled",
-      ar: "ملغي",
-    },
-    draft: {
-      en: "Draft",
-      ar: "مسودة",
     },
   },
 
@@ -2403,10 +1998,6 @@ export const appContent = {
       en: "Cancel",
       ar: "إلغاء",
     },
-    edit: {
-      en: "Edit",
-      ar: "تعديل",
-    },
     delete: {
       en: "Delete",
       ar: "حذف",
@@ -2414,10 +2005,6 @@ export const appContent = {
     confirm: {
       en: "Confirm",
       ar: "تأكيد",
-    },
-    close: {
-      en: "Close",
-      ar: "إغلاق",
     },
   },
 
@@ -2440,77 +2027,13 @@ export const appContent = {
       en: "Management",
       ar: "الإدارة"
     },
-
-    // Core Business Items
-    dashboard: {
-      en: "Dashboard",
-      ar: "لوحة التحكم"
-    },
-    overview: {
-      en: "Overview",
-      ar: "نظرة عامة"
-    },
-    analytics: {
-      en: "Analytics",
-      ar: "التحليلات"
-    },
     quickReports: {
       en: "Quick Reports",
       ar: "التقارير السريعة"
     },
-    
-    // Properties
-    properties: {
-      en: "Properties",
-      ar: "العقارات"
-    },
-    activeListings: {
-      en: "Active Listings",
-      ar: "القوائم النشطة"
-    },
-    soldProperties: {
-      en: "Sold Properties",
-      ar: "العقارات المباعة"
-    },
-    pendingSales: {
-      en: "Pending Sales",
-      ar: "المبيعات المعلقة"
-    },
-    
-    // Contacts
-    contacts: {
-      en: "Contacts",
-      ar: "جهات الاتصال"
-    },
-    clients: {
-      en: "Clients",
-      ar: "العملاء"
-    },
-    prospects: {
-      en: "Prospects",
-      ar: "العملاء المحتملون"
-    },
-    vendors: {
-      en: "Vendors",
-      ar: "الموردون"
-    },
-    
-    // Deals
-    deals: {
-      en: "Deals",
-      ar: "الصفقات"
-    },
-    activeDeals: {
-      en: "Active Deals",
-      ar: "الصفقات النشطة"
-    },
     pipeline: {
       en: "Pipeline",
       ar: "خط الأنابيب"
-    },
-    closedDeals: {
-      en: "Closed Deals",
-      ar: "الصفقات المغلقة"
     },
 
     // Sales & Marketing Items
@@ -2521,10 +2044,6 @@ export const appContent = {
     newLeads: {
       en: "New Leads",
       ar: "العملاء المحتملون الجدد"
-    },
-    qualified: {
-      en: "Qualified",
-      ar: "مؤهل"
     },
     followUp: {
       en: "Follow-up",
@@ -2566,23 +2085,6 @@ export const appContent = {
       en: "Upcoming",
       ar: "القادمة"
     },
-    completed: {
-      en: "Completed",
-      ar: "مكتملة"
-    },
-    
-    calendar: {
-      en: "Calendar",
-      ar: "التقويم"
-    },
-    today: {
-      en: "Today",
-      ar: "اليوم"
-    },
-    thisWeek: {
-      en: "This Week",
-      ar: "هذا الأسبوع"
-    },
     showings: {
       en: "Showings",
       ar: "العروض"
@@ -2595,10 +2097,6 @@ export const appContent = {
     propertyInventory: {
       en: "Property Inventory",
       ar: "مخزون العقارات"
-    },
-    equipment: {
-      en: "Equipment",
-      ar: "المعدات"
     },
     supplies: {
       en: "Supplies",
@@ -2657,10 +2155,6 @@ export const appContent = {
       en: "Legal Docs",
       ar: "المستندات القانونية"
     },
-    auditTrail: {
-      en: "Audit Trail",
-      ar: "مسار التدقيق"
-    },
     training: {
       en: "Training",
       ar: "التدريب"
@@ -2696,1390 +2190,17 @@ export const appContent = {
       en: "Data Manager",
       ar: "مدير البيانات"
     },
-    importData: {
-      en: "Import Data",
-      ar: "استيراد البيانات"
-    },
-    exportData: {
-      en: "Export Data",
-      ar: "تصدير البيانات"
-    },
-
-    // Search and Filter
-    searchMenu: {
-      en: "Search menu...",
-      ar: "البحث في القائمة..."
-    },
-    filterByPriority: {
-      en: "Filter by priority",
-      ar: "تصفية حسب الأولوية"
-    },
-    all: {
-      en: "All",
-      ar: "الكل"
-    },
-    high: {
-      en: "High",
-      ar: "عالي"
-    },
-    medium: {
-      en: "Medium",
-      ar: "متوسط"
-    },
-    low: {
-      en: "Low",
-      ar: "منخفض"
-    }
-  },
-
-  // Pending Sales Module
-  pendingSales: {
-    pendingSales: {
-      en: "Pending Sales",
-      ar: "المبيعات المعلقة"
-    },
-    propertiesInPipeline: {
-      en: "properties in the pipeline",
-      ar: "عقارات في خط الأنابيب"
-    },
-    addPendingSale: {
-      en: "Add Pending Sale",
-      ar: "إضافة بيع معلق"
-    },
-    totalValue: {
-      en: "Total Value",
-      ar: "القيمة الإجمالية"
-    },
-    avgDaysToClose: {
-      en: "Avg Days to Close",
-      ar: "متوسط أيام الإغلاق"
-    },
-    highRisk: {
-      en: "High Risk",
-      ar: "مخاطر عالية"
-    },
-    readyToClose: {
-      en: "Ready to Close",
-      ar: "جاهز للإغلاق"
-    },
-    searchPlaceholder: {
-      en: "Search by address, buyer, or seller...",
-      ar: "البحث بالعنوان أو المشتري أو البائع..."
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    underContract: {
-      en: "Under Contract",
-      ar: "تحت العقد"
-    },
-    pendingInspection: {
-      en: "Pending Inspection",
-      ar: "في انتظار التفتيش"
-    },
-    pendingAppraisal: {
-      en: "Pending Appraisal",
-      ar: "في انتظار التقييم"
-    },
-    pendingFinancing: {
-      en: "Pending Financing",
-      ar: "في انتظار التمويل"
-    },
-    finalWalkthrough: {
-      en: "Final Walkthrough",
-      ar: "الجولة النهائية"
-    },
-    allRiskLevels: {
-      en: "All Risk Levels",
-      ar: "جميع مستويات المخاطر"
-    },
-    lowRisk: {
-      en: "Low Risk",
-      ar: "مخاطر منخفضة"
-    },
-    mediumRisk: {
-      en: "Medium Risk",
-      ar: "مخاطر متوسطة"
-    },
-    export: {
-      en: "Export",
-      ar: "تصدير"
-    },
-    risk: {
-      en: "RISK",
-      ar: "مخاطر"
-    },
-    salePrice: {
-      en: "Sale Price",
-      ar: "سعر البيع"
-    },
-    daysToClose: {
-      en: "Days to Close",
-      ar: "أيام للإغلاق"
-    },
-    documentProgress: {
-      en: "Document Progress",
-      ar: "تقدم المستندات"
-    },
-    complete: {
-      en: "Complete",
-      ar: "مكتمل"
-    },
-    buyer: {
-      en: "Buyer",
-      ar: "المشتري"
-    },
-    seller: {
-      en: "Seller",
-      ar: "البائع"
-    },
-    activeContingencies: {
-      en: "Active Contingencies",
-      ar: "الشروط النشطة"
-    },
-    notes: {
-      en: "Notes",
-      ar: "الملاحظات"
-    },
-    expectedClose: {
-      en: "Expected Close",
-      ar: "الإغلاق المتوقع"
-    },
-    noPendingSalesFound: {
-      en: "No Pending Sales Found",
-      ar: "لم يتم العثور على مبيعات معلقة"
-    },
-    noSalesMatchFilters: {
-      en: "No sales match your current filters. Try adjusting your search criteria.",
-      ar: "لا توجد مبيعات تطابق المرشحات الحالية. جرب تعديل معايير البحث."
-    },
-    clearFilters: {
-      en: "Clear Filters",
-      ar: "مسح المرشحات"
-    },
-    // Document types
-    contract: {
-      en: "Contract",
-      ar: "العقد"
-    },
-    inspection: {
-      en: "Inspection",
-      ar: "التفتيش"
-    },
-    appraisal: {
-      en: "Appraisal",
-      ar: "التقييم"
-    },
-    financing: {
-      en: "Financing",
-      ar: "التمويل"
-    },
-    insurance: {
-      en: "Insurance",
-      ar: "التأمين"
-    },
-    title: {
-      en: "Title",
-      ar: "سند الملكية"
-    }
-  },
-
-  // Sold Properties Module
-  soldProperties: {
-    soldProperties: {
-      en: "Sold Properties",
-      ar: "العقارات المباعة"
-    },
-    propertiesSold: {
-      en: "properties sold",
-      ar: "عقارات مباعة"
-    },
-    exportReport: {
-      en: "Export Report",
-      ar: "تصدير التقرير"
-    },
-    totalSalesVolume: {
-      en: "Total Sales Volume",
-      ar: "إجمالي حجم المبيعات"
-    },
-    totalCommission: {
-      en: "Total Commission",
-      ar: "إجمالي العمولة"
-    },
-    avgDaysOnMarket: {
-      en: "Avg. Days on Market",
-      ar: "متوسط الأيام في السوق"
-    },
-    saleSuccessRate: {
-      en: "Sale Success Rate",
-      ar: "معدل نجاح البيع"
-    },
-    searchSoldProperties: {
-      en: "Search sold properties...",
-      ar: "البحث في العقارات المباعة..."
-    },
-    last30Days: {
-      en: "Last 30 days",
-      ar: "آخر 30 يوم"
-    },
-    last90Days: {
-      en: "Last 90 days",
-      ar: "آخر 90 يوم"
-    },
-    lastYear: {
-      en: "Last year",
-      ar: "العام الماضي"
-    },
-    allTime: {
-      en: "All time",
-      ar: "كل الأوقات"
-    },
-    sortBySoldDate: {
-      en: "Sort by Sold Date",
-      ar: "ترتيب حسب تاريخ البيع"
-    },
-    sortByPrice: {
-      en: "Sort by Price",
-      ar: "ترتيب حسب السعر"
-    },
-    sortByDaysOnMarket: {
-      en: "Sort by Days on Market",
-      ar: "ترتيب حسب الأيام في السوق"
-    },
-    beds: {
-      en: "beds",
-      ar: "غرف نوم"
-    },
-    baths: {
-      en: "baths",
-      ar: "حمامات"
-    },
-    sqFt: {
-      en: "sq ft",
-      ar: "قدم مربع"
-    },
-    sold: {
-      en: "SOLD",
-      ar: "مباع"
-    },
-    soldOn: {
-      en: "Sold on",
-      ar: "تم البيع في"
-    },
-    listPrice: {
-      en: "List Price",
-      ar: "سعر الإدراج"
-    },
-    soldPrice: {
-      en: "Sold Price",
-      ar: "سعر البيع"
-    },
-    priceChange: {
-      en: "Price Change",
-      ar: "تغيير السعر"
-    },
-    commission: {
-      en: "Commission",
-      ar: "العمولة"
-    },
-    listingAgent: {
-      en: "Listing Agent",
-      ar: "وكيل الإدراج"
-    },
-    daysOnMarket: {
-      en: "days on market",
-      ar: "أيام في السوق"
-    },
-    listed: {
-      en: "Listed",
-      ar: "مدرج"
-    },
-    salesPerformance: {
-      en: "Sales Performance",
-      ar: "أداء المبيعات"
-    },
-    salesPerformanceChart: {
-      en: "Sales performance chart",
-      ar: "مخطط أداء المبيعات"
-    },
-    chartIntegrationNeeded: {
-      en: "Chart component integration needed",
-      ar: "مطلوب دمج مكون المخطط"
-    },
-    // Buyer types
-    individual: {
-      en: "individual",
-      ar: "فرد"
-    },
-    investor: {
-      en: "investor",
-      ar: "مستثمر"
-    },
-    company: {
-      en: "company",
-      ar: "شركة"
-    }
-  },
-
-  // Vendors Module
-  vendors: {
-    vendors: {
-      en: "Vendors",
-      ar: "الموردون"
-    },
-    trustedServiceProviders: {
-      en: "trusted service providers",
-      ar: "مقدمو خدمات موثوقون"
-    },
-    addVendor: {
-      en: "Add Vendor",
-      ar: "إضافة مورد"
-    },
-    totalVendors: {
-      en: "Total Vendors",
-      ar: "إجمالي الموردين"
-    },
-    active: {
-      en: "Active",
-      ar: "نشط"
-    },
-    avgRating: {
-      en: "Avg Rating",
-      ar: "متوسط التقييم"
-    },
-    available: {
-      en: "Available",
-      ar: "متاح"
-    },
-    searchVendors: {
-      en: "Search vendors...",
-      ar: "البحث في الموردين..."
-    },
-    allCategories: {
-      en: "All Categories",
-      ar: "جميع الفئات"
-    },
-    contractor: {
-      en: "Contractor",
-      ar: "مقاول"
-    },
-    inspector: {
-      en: "Inspector",
-      ar: "مفتش"
-    },
-    cleaner: {
-      en: "Cleaner",
-      ar: "منظف"
-    },
-    landscaper: {
-      en: "Landscaper",
-      ar: "منسق حدائق"
-    },
-    photographer: {
-      en: "Photographer",
-      ar: "مصور"
-    },
-    stager: {
-      en: "Stager",
-      ar: "منسق ديكور"
-    },
-    lawyer: {
-      en: "Lawyer",
-      ar: "محامي"
-    },
-    other: {
-      en: "Other",
-      ar: "أخرى"
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    inactive: {
-      en: "Inactive",
-      ar: "غير نشط"
-    },
-    pending: {
-      en: "Pending",
-      ar: "معلق"
-    },
-    allAvailability: {
-      en: "All Availability",
-      ar: "جميع حالات التوفر"
-    },
-    busy: {
-      en: "Busy",
-      ar: "مشغول"
-    },
-    unavailable: {
-      en: "Unavailable",
-      ar: "غير متاح"
-    },
-    sortByRating: {
-      en: "Sort by Rating",
-      ar: "ترتيب حسب التقييم"
-    },
-    sortByName: {
-      en: "Sort by Name",
-      ar: "ترتيب حسب الاسم"
-    },
-    sortByTotalJobs: {
-      en: "Sort by Total Jobs",
-      ar: "ترتيب حسب إجمالي الوظائف"
-    },
-    sortByLastWorked: {
-      en: "Sort by Last Worked",
-      ar: "ترتيب حسب آخر عمل"
-    },
-    reviews: {
-      en: "reviews",
-      ar: "مراجعات"
-    },
-    insured: {
-      en: "Insured",
-      ar: "مؤمن"
-    },
-    specialties: {
-      en: "Specialties",
-      ar: "التخصصات"
-    },
-    more: {
-      en: "more",
-      ar: "المزيد"
-    },
-    rate: {
-      en: "Rate",
-      ar: "السعر"
-    },
-    hr: {
-      en: "hr",
-      ar: "ساعة"
-    },
-    project: {
-      en: "project",
-      ar: "مشروع"
-    },
-    contactForQuote: {
-      en: "Contact for quote",
-      ar: "اتصل للحصول على عرض سعر"
-    },
-    totalJobs: {
-      en: "Total Jobs",
-      ar: "إجمالي الوظائف"
-    },
-    certifications: {
-      en: "Certifications",
-      ar: "الشهادات"
-    },
-    notes: {
-      en: "Notes",
-      ar: "الملاحظات"
-    },
-    lastWorked: {
-      en: "Last worked:",
-      ar: "آخر عمل:"
-    },
-    added: {
-      en: "Added:",
-      ar: "تمت الإضافة:"
-    },
-    call: {
-      en: "Call",
-      ar: "اتصال"
-    },
-    email: {
-      en: "Email",
-      ar: "بريد إلكتروني"
-    },
-    edit: {
-      en: "Edit",
-      ar: "تعديل"
-    }
-  },
-
-  // Analytics Module
-  analytics: {
-    analyticsDashboard: {
-      en: "Analytics Dashboard",
-      ar: "لوحة التحليلات"
-    },
-    comprehensiveInsights: {
-      en: "Comprehensive insights and performance metrics",
-      ar: "رؤى شاملة ومقاييس الأداء"
-    },
-    totalSales: {
-      en: "Total Sales",
-      ar: "إجمالي المبيعات"
-    },
-    activeDeals: {
-      en: "Active Deals",
-      ar: "الصفقات النشطة"
-    },
-    conversionRate: {
-      en: "Conversion Rate",
-      ar: "معدل التحويل"
-    },
-    avgDealSize: {
-      en: "Avg. Deal Size",
-      ar: "متوسط حجم الصفقة"
-    },
-    revenueVsTarget: {
-      en: "Revenue vs Target",
-      ar: "الإيرادات مقابل الهدف"
-    },
-    propertyDistribution: {
-      en: "Property Distribution",
-      ar: "توزيع العقارات"
-    },
-    topPerformers: {
-      en: "Top Performers",
-      ar: "أفضل الأداء"
-    },
-    deals: {
-      en: "deals",
-      ar: "صفقات"
-    },
-    marketInsights: {
-      en: "Market Insights",
-      ar: "رؤى السوق"
-    },
-    hotMarketAreas: {
-      en: "Hot Market Areas",
-      ar: "المناطق الساخنة في السوق"
-    },
-    downtownDistrict: {
-      en: "Downtown District",
-      ar: "منطقة وسط المدينة"
-    },
-    waterfront: {
-      en: "Waterfront",
-      ar: "الواجهة البحرية"
-    },
-    techHub: {
-      en: "Tech Hub",
-      ar: "مركز التكنولوجيا"
-    },
-    priceTrends: {
-      en: "Price Trends",
-      ar: "اتجاهات الأسعار"
-    },
-    luxury: {
-      en: "Luxury",
-      ar: "فاخر"
-    },
-    midRange: {
-      en: "Mid-range",
-      ar: "متوسط المدى"
-    },
-    entryLevel: {
-      en: "Entry-level",
-      ar: "مستوى المبتدئين"
-    },
-    yoy: {
-      en: "YoY",
-      ar: "سنوياً"
-    },
-    demandIndicators: {
-      en: "Demand Indicators",
-      ar: "مؤشرات الطلب"
-    },
-    daysOnMarket: {
-      en: "Days on Market",
-      ar: "أيام في السوق"
-    },
-    viewingRequests: {
-      en: "Viewing Requests",
-      ar: "طلبات المشاهدة"
-    },
-    offerRate: {
-      en: "Offer Rate",
-      ar: "معدل العروض"
-    },
-    // Property types for chart
-    residential: {
-      en: "Residential",
-      ar: "سكني"
-    },
-    commercial: {
-      en: "Commercial",
-      ar: "تجاري"
-    },
-    investment: {
-      en: "Investment",
-      ar: "استثماري"
-    }
-  },
-
-  // Marketing Module
-  marketing: {
-    marketingCampaigns: {
-      en: "Marketing Campaigns",
-      ar: "الحملات التسويقية"
-    },
-    activeCampaigns: {
-      en: "active campaigns",
-      ar: "حملات نشطة"
-    },
-    gridView: {
-      en: "Grid View",
-      ar: "عرض الشبكة"
-    },
-    listView: {
-      en: "List View",
-      ar: "عرض القائمة"
-    },
-    createCampaign: {
-      en: "Create Campaign",
-      ar: "إنشاء حملة"
-    },
-    totalBudget: {
-      en: "Total Budget",
-      ar: "إجمالي الميزانية"
-    },
-    totalSpent: {
-      en: "Total Spent",
-      ar: "إجمالي المصروف"
-    },
-    totalLeads: {
-      en: "Total Leads",
-      ar: "إجمالي العملاء المحتملين"
-    },
-    avgROI: {
-      en: "Avg ROI",
-      ar: "متوسط العائد على الاستثمار"
-    },
-    searchCampaigns: {
-      en: "Search campaigns...",
-      ar: "البحث في الحملات..."
-    },
-    allTypes: {
-      en: "All Types",
-      ar: "جميع الأنواع"
-    },
-    email: {
-      en: "Email",
-      ar: "البريد الإلكتروني"
-    },
-    socialMedia: {
-      en: "Social Media",
-      ar: "وسائل التواصل الاجتماعي"
-    },
-    ppc: {
-      en: "PPC",
-      ar: "الدفع مقابل النقرة"
-    },
-    sms: {
-      en: "SMS",
-      ar: "الرسائل النصية"
-    },
-    directMail: {
-      en: "Direct Mail",
-      ar: "البريد المباشر"
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    draft: {
-      en: "Draft",
-      ar: "مسودة"
-    },
-    active: {
-      en: "Active",
-      ar: "نشط"
-    },
-    paused: {
-      en: "Paused",
-      ar: "متوقف"
-    },
-    completed: {
-      en: "Completed",
-      ar: "مكتمل"
-    },
-    scheduled: {
-      en: "Scheduled",
-      ar: "مجدول"
-    },
-    budget: {
-      en: "Budget",
-      ar: "الميزانية"
-    },
-    spent: {
-      en: "Spent",
-      ar: "المصروف"
-    },
-    roi: {
-      en: "ROI",
-      ar: "العائد على الاستثمار"
-    },
-    performanceMetrics: {
-      en: "Performance Metrics",
-      ar: "مقاييس الأداء"
-    },
-    impressions: {
-      en: "Impressions",
-      ar: "مرات الظهور"
-    },
-    clicks: {
-      en: "Clicks",
-      ar: "النقرات"
-    },
-    conversions: {
-      en: "Conversions",
-      ar: "التحويلات"
-    },
-    leads: {
-      en: "Leads",
-      ar: "العملاء المحتملون"
-    },
-    costPerLead: {
-      en: "Cost per Lead",
-      ar: "التكلفة لكل عميل محتمل"
-    },
-    clickRate: {
-      en: "Click Rate",
-      ar: "معدل النقر"
-    },
-    targetAudience: {
-      en: "Target Audience",
-      ar: "الجمهور المستهدف"
-    },
-    objectives: {
-      en: "Objectives",
-      ar: "الأهداف"
-    },
-    channels: {
-      en: "Channels",
-      ar: "القنوات"
-    },
-    createdBy: {
-      en: "Created by",
-      ar: "أنشأ بواسطة"
-    },
-    lastModified: {
-      en: "Last modified",
-      ar: "آخر تعديل"
-    },
-    noCampaignsFound: {
-      en: "No Campaigns Found",
-      ar: "لم يتم العثور على حملات"
-    },
-    noCampaignsMatch: {
-      en: "No campaigns match your current filters. Try adjusting your search criteria.",
-      ar: "لا توجد حملات تطابق المرشحات الحالية. حاول تعديل معايير البحث."
-    },
-    clearFilters: {
-      en: "Clear Filters",
-      ar: "مسح المرشحات"
-    }
-  },
-
-  // Reports Module
-  reports: {
-    advancedReports: {
-      en: "Advanced Reports",
-      ar: "التقارير المتقدمة"
-    },
-    generateReports: {
-      en: "Generate comprehensive reports and analytics for data-driven decisions",
-      ar: "إنشاء تقارير وتحليلات شاملة لاتخاذ قرارات مدروسة"
-    },
-    totalReports: {
-      en: "Total Reports",
-      ar: "إجمالي التقارير"
-    },
-    activeReports: {
-      en: "Active Reports",
-      ar: "التقارير النشطة"
-    },
-    scheduled: {
-      en: "Scheduled",
-      ar: "مجدولة"
-    },
-    customReports: {
-      en: "Custom Reports",
-      ar: "التقارير المخصصة"
-    },
-    allReports: {
-      en: "All Reports",
-      ar: "جميع التقارير"
-    },
-    reportBuilder: {
-      en: "Report Builder",
-      ar: "منشئ التقارير"
-    },
-    scheduledReports: {
-      en: "Scheduled Reports",
-      ar: "التقارير المجدولة"
-    },
-    templates: {
-      en: "Templates",
-      ar: "القوالب"
-    },
-    searchReports: {
-      en: "Search reports...",
-      ar: "البحث في التقارير..."
-    },
-    allCategories: {
-      en: "All Categories",
-      ar: "جميع الفئات"
-    },
-    sales: {
-      en: "Sales",
-      ar: "المبيعات"
-    },
-    financial: {
-      en: "Financial",
-      ar: "مالي"
-    },
-    performance: {
-      en: "Performance",
-      ar: "الأداء"
-    },
-    marketing: {
-      en: "Marketing",
-      ar: "التسويق"
-    },
-    operational: {
-      en: "Operational",
-      ar: "تشغيلي"
-    },
-    compliance: {
-      en: "Compliance",
-      ar: "الامتثال"
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    active: {
-      en: "Active",
-      ar: "نشط"
-    },
-    draft: {
-      en: "Draft",
-      ar: "مسودة"
-    },
-    archived: {
-      en: "Archived",
-      ar: "مؤرشف"
-    },
-    frequency: {
-      en: "Frequency",
-      ar: "التكرار"
-    },
-    lastGenerated: {
-      en: "Last Generated",
-      ar: "آخر إنشاء"
-    },
-    view: {
-      en: "View",
-      ar: "عرض"
-    },
-    export: {
-      en: "Export",
-      ar: "تصدير"
-    },
-    report: {
-      en: "Report",
-      ar: "التقرير"
-    },
-    category: {
-      en: "Category",
-      ar: "الفئة"
-    },
-    status: {
-      en: "Status",
-      ar: "الحالة"
-    },
-    actions: {
-      en: "Actions",
-      ar: "الإجراءات"
-    },
-    exportPDF: {
-      en: "Export PDF",
-      ar: "تصدير PDF"
-    },
-    email: {
-      en: "Email",
-      ar: "البريد الإلكتروني"
-    },
-    close: {
-      en: "Close",
-      ar: "إغلاق"
-    },
-    // Frequencies
-    daily: {
-      en: "Daily",
-      ar: "يومي"
-    },
-    weekly: {
-      en: "Weekly",
-      ar: "أسبوعي"
-    },
-    monthly: {
-      en: "Monthly",
-      ar: "شهري"
-    },
-    quarterly: {
-      en: "Quarterly",
-      ar: "ربع سنوي"
-    },
-    yearly: {
-      en: "Yearly",
-      ar: "سنوي"
-    },
-    custom: {
-      en: "Custom",
-      ar: "مخصص"
-    }
-  },
-
-  // Leads Module
-  leads: {
-    newLeads: {
-      en: "New Leads",
-      ar: "العملاء المحتملون الجدد"
-    },
-    newLeadsToReview: {
-      en: "new leads to review",
-      ar: "عملاء محتملون جدد للمراجعة"
-    },
-    addLead: {
-      en: "Add Lead",
-      ar: "إضافة عميل محتمل"
-    },
-    totalNewLeads: {
-      en: "Total New Leads",
-      ar: "إجمالي العملاء المحتملين الجدد"
-    },
-    highScoreLeads: {
-      en: "High Score Leads",
-      ar: "العملاء المحتملون عالي النقاط"
-    },
-    averageScore: {
-      en: "Average Score",
-      ar: "متوسط النقاط"
-    },
-    conversionRate: {
-      en: "Conversion Rate",
-      ar: "معدل التحويل"
-    },
-    searchLeads: {
-      en: "Search leads...",
-      ar: "البحث في العملاء المحتملين..."
-    },
-    allSources: {
-      en: "All Sources",
-      ar: "جميع المصادر"
-    },
-    website: {
-      en: "Website",
-      ar: "الموقع الإلكتروني"
-    },
-    referral: {
-      en: "Referral",
-      ar: "إحالة"
-    },
-    socialMedia: {
-      en: "Social Media",
-      ar: "وسائل التواصل الاجتماعي"
-    },
-    advertising: {
-      en: "Advertising",
-      ar: "الإعلان"
-    },
-    coldCall: {
-      en: "Cold Call",
-      ar: "مكالمة باردة"
-    },
-    walkIn: {
-      en: "Walk-in",
-      ar: "زيارة مباشرة"
-    },
-    allInterests: {
-      en: "All Interests",
-      ar: "جميع الاهتمامات"
-    },
-    buying: {
-      en: "Buying",
-      ar: "شراء"
-    },
-    selling: {
-      en: "Selling",
-      ar: "بيع"
-    },
-    renting: {
-      en: "Renting",
-      ar: "إيجار"
-    },
-    investing: {
-      en: "Investing",
-      ar: "استثمار"
-    },
-    sortByScore: {
-      en: "Sort by Score",
-      ar: "ترتيب حسب النقاط"
-    },
-    sortByDate: {
-      en: "Sort by Date",
-      ar: "ترتيب حسب التاريخ"
-    },
-    sortByFollowUp: {
-      en: "Sort by Follow-up",
-      ar: "ترتيب حسب المتابعة"
-    },
-    score: {
-      en: "Score",
-      ar: "النقاط"
-    },
-    budgetRange: {
-      en: "Budget Range",
-      ar: "نطاق الميزانية"
-    },
-    interestedIn: {
-      en: "Interested in",
-      ar: "مهتم بـ"
-    },
-    created: {
-      en: "Created",
-      ar: "تم الإنشاء"
-    },
-    followUp: {
-      en: "Follow-up",
-      ar: "المتابعة"
-    },
-    agent: {
-      en: "Agent",
-      ar: "الوكيل"
-    },
-    noLeadsFound: {
-      en: "No leads found",
-      ar: "لم يتم العثور على عملاء محتملين"
-    },
-    adjustSearchCriteria: {
-      en: "Try adjusting your search criteria or add a new lead.",
-      ar: "حاول تعديل معايير البحث أو إضافة عميل محتمل جديد."
-    },
-    addYourFirstLead: {
-      en: "Add Your First Lead",
-      ar: "أضف أول عميل محتمل"
-    },
-    // Time formatting
-    justNow: {
-      en: "Just now",
-      ar: "الآن"
-    },
-    hourAgo: {
-      en: "hour ago",
-      ar: "منذ ساعة"
-    },
-    hoursAgo: {
-      en: "hours ago",
-      ar: "منذ ساعات"
-    },
-    daysAgo: {
-      en: "days ago",
-      ar: "منذ أيام"
-    },
-    // Lead Management unique keys
-    leadMgmtTitle: {
-      en: "Lead Management",
-      ar: "إدارة العملاء المحتملين"
-    },
-    leadMgmtFound: {
-      en: "leads found",
-      ar: "عميل محتمل تم العثور عليه"
-    },
-    leadMgmtAllStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    leadMgmtNew: {
-      en: "New",
-      ar: "جديد"
-    },
-    leadMgmtContacted: {
-      en: "Contacted",
-      ar: "تم الاتصال"
-    },
-    leadMgmtQualified: {
-      en: "Qualified",
-      ar: "مؤهل"
-    },
-    leadMgmtConverted: {
-      en: "Converted",
-      ar: "تم التحويل"
-    },
-    leadMgmtLost: {
-      en: "Lost",
-      ar: "مفقود"
-    },
-    leadMgmtBudget: {
-      en: "Budget",
-      ar: "الميزانية"
-    },
-    leadMgmtType: {
-      en: "Type",
-      ar: "النوع"
-    },
-    leadMgmtStatus: {
-      en: "Status",
-      ar: "الحالة"
-    },
-    leadMgmtPriority: {
-      en: "Priority",
-      ar: "الأولوية"
-    },
-    leadMgmtPhone: {
-      en: "Phone",
-      ar: "الهاتف"
-    },
-    leadMgmtLocation: {
-      en: "Location",
-      ar: "الموقع"
-    },
-    leadMgmtPropertyType: {
-      en: "Property Type",
-      ar: "نوع العقار"
-    },
-    leadMgmtSource: {
-      en: "Source",
-      ar: "المصدر"
-    },
-    leadMgmtAgent: {
-      en: "Assigned Agent",
-      ar: "الوكيل المعين"
-    },
-    leadMgmtNotes: {
-      en: "Notes",
-      ar: "الملاحظات"
-    },
-    leadMgmtCall: {
-      en: "Call Lead",
-      ar: "اتصل بالعميل المحتمل"
-    },
-    leadMgmtEmail: {
-      en: "Send Email",
-      ar: "إرسال بريد إلكتروني"
-    },
-    leadMgmtMeeting: {
-      en: "Schedule Meeting",
-      ar: "جدولة اجتماع"
-    },
-    leadMgmtSelect: {
-      en: "Select a Lead",
-      ar: "اختر عميل محتمل"
-    },
-    leadMgmtSelectMsg: {
-      en: "Choose a lead from the list to view details and take actions.",
-      ar: "اختر عميل محتمل من القائمة لعرض التفاصيل واتخاذ الإجراءات."
-    }
-  },
-
-  // Marketing Module
-  marketing: {
-    marketingCampaigns: {
-      en: "Marketing Campaigns",
-      ar: "الحملات التسويقية"
-    },
-    activeCampaigns: {
-      en: "active campaigns",
-      ar: "حملات نشطة"
-    },
-    gridView: {
-      en: "Grid",
-      ar: "شبكة"
-    },
-    listView: {
-      en: "List",
-      ar: "قائمة"
-    },
-    createCampaign: {
-      en: "Create Campaign",
-      ar: "إنشاء حملة"
-    },
-    totalBudget: {
-      en: "Total Budget",
-      ar: "إجمالي الميزانية"
-    },
-    totalSpent: {
-      en: "Total Spent",
-      ar: "إجمالي المصروف"
-    },
-    totalLeads: {
-      en: "Total Leads",
-      ar: "إجمالي العملاء المحتملين"
-    },
-    avgROI: {
-      en: "Avg ROI",
-      ar: "متوسط العائد على الاستثمار"
-    },
-    searchCampaigns: {
-      en: "Search campaigns...",
-      ar: "البحث في الحملات..."
-    },
-    allTypes: {
-      en: "All Types",
-      ar: "جميع الأنواع"
-    },
-    campaignEmail: {
-      en: "Email",
-      ar: "البريد الإلكتروني"
-    },
-    campaignSocialMedia: {
-      en: "Social Media",
-      ar: "وسائل التواصل الاجتماعي"
-    },
-    campaignPPC: {
-      en: "PPC",
-      ar: "الدفع مقابل النقرة"
-    },
-    campaignSMS: {
-      en: "SMS",
-      ar: "الرسائل النصية"
-    },
-    campaignDirectMail: {
-      en: "Direct Mail",
-      ar: "البريد المباشر"
-    },
-    allCampaignStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    campaignDraft: {
-      en: "Draft",
-      ar: "مسودة"
-    },
-    campaignActive: {
-      en: "Active",
-      ar: "نشط"
-    },
-    campaignPaused: {
-      en: "Paused",
-      ar: "متوقف"
-    },
-    campaignCompleted: {
-      en: "Completed",
-      ar: "مكتمل"
-    },
-    campaignScheduled: {
-      en: "Scheduled",
-      ar: "مجدول"
-    },
-    campaignBudget: {
-      en: "Budget",
-      ar: "الميزانية"
-    },
-    campaignSpent: {
-      en: "Spent",
-      ar: "المصروف"
-    },
-    campaignROI: {
-      en: "ROI",
-      ar: "العائد على الاستثمار"
-    },
-    performanceMetrics: {
-      en: "Performance Metrics",
-      ar: "مقاييس الأداء"
-    },
-    impressions: {
-      en: "Impressions",
-      ar: "مرات الظهور"
-    },
-    clicks: {
-      en: "Clicks",
-      ar: "النقرات"
-    },
-    conversions: {
-      en: "Conversions",
-      ar: "التحويلات"
-    },
-    leads: {
-      en: "Leads",
-      ar: "العملاء المحتملون"
-    },
-    costPerLead: {
-      en: "Cost per Lead",
-      ar: "التكلفة لكل عميل محتمل"
-    },
-    clickRate: {
-      en: "Click Rate",
-      ar: "معدل النقر"
-    },
-    targetAudience: {
-      en: "Target Audience",
-      ar: "الجمهور المستهدف"
-    },
-    objectives: {
-      en: "Objectives",
-      ar: "الأهداف"
-    },
-    channels: {
-      en: "Channels",
-      ar: "القنوات"
-    },
-    createdBy: {
-      en: "Created by",
-      ar: "تم الإنشاء بواسطة"
-    },
-    lastModified: {
-      en: "Last modified",
-      ar: "آخر تعديل"
-    },
-    noCampaignsFound: {
-      en: "No campaigns found",
-      ar: "لم يتم العثور على حملات"
-    },
-    noCampaignsMatch: {
-      en: "No campaigns match your current filters.",
-      ar: "لا توجد حملات تطابق المرشحات الحالية."
-    },
-    clearCampaignFilters: {
-      en: "Clear Filters",
-      ar: "مسح المرشحات"
-    },
-    // Social Media
-    socialMedia: {
-      en: "Social Media",
-      ar: "وسائل التواصل الاجتماعي"
-    },
-    posts: {
-      en: "Posts",
-      ar: "المنشورات"
-    },
-    analytics: {
-      en: "Analytics",
-      ar: "التحليلات"
-    },
-    accounts: {
-      en: "Accounts",
-      ar: "الحسابات"
-    },
-    allPlatforms: {
-      en: "All Platforms",
-      ar: "جميع المنصات"
-    },
-    facebook: {
-      en: "Facebook",
-      ar: "فيسبوك"
-    },
-    instagram: {
-      en: "Instagram",
-      ar: "إنستغرام"
-    },
-    twitter: {
-      en: "Twitter",
-      ar: "تويتر"
-    },
-    linkedin: {
-      en: "LinkedIn",
-      ar: "لينكد إن"
-    },
-    youtube: {
-      en: "YouTube",
-      ar: "يوتيوب"
+    systemStatus: {
+      en: "System Status",
+      ar: "حالة النظام"
+    },
+    services: {
+      en: "Services",
+      ar: "الخدمات"
+    },
+    alerts: {
+      en: "Alerts",
+      ar: "التنبيهات"
     },
     socialAllStatus: {
       en: "All Status",
@@ -4101,57 +2222,13 @@ export const appContent = {
       en: "Failed",
       ar: "فشل"
     },
-    createPost: {
-      en: "Create Post",
-      ar: "إنشاء منشور"
-    },
-    published: {
-      en: "Published",
-      ar: "منشور"
-    },
-    scheduledFor: {
-      en: "Scheduled for",
-      ar: "مجدول لـ"
-    },
     socialDraftStatus: {
       en: "Draft",
       ar: "مسودة"
     },
-    imageAttached: {
-      en: "attached",
-      ar: "مرفق"
-    },
-    videoAttached: {
-      en: "attached",
-      ar: "مرفق"
-    },
-    engagement: {
-      en: "Engagement",
-      ar: "التفاعل"
-    },
-    likes: {
-      en: "Likes",
-      ar: "الإعجابات"
-    },
-    comments: {
-      en: "Comments",
-      ar: "التعليقات"
-    },
-    shares: {
-      en: "Shares",
-      ar: "المشاركات"
-    },
-    views: {
-      en: "Views",
-      ar: "المشاهدات"
-    },
     socialCreatedBy: {
       en: "Created by",
       ar: "تم الإنشاء بواسطة"
-    },
-    totalFollowers: {
-      en: "Total Followers",
-      ar: "إجمالي المتابعين"
     },
     totalSocialPosts: {
       en: "Total Posts",
@@ -4165,37 +2242,9 @@ export const appContent = {
       en: "Connected Accounts",
       ar: "الحسابات المتصلة"
     },
-    followers: {
-      en: "Followers",
-      ar: "المتابعون"
-    },
-    following: {
-      en: "Following",
-      ar: "يتابع"
-    },
     socialPosts: {
       en: "Posts",
       ar: "المنشورات"
-    },
-    engagementRate: {
-      en: "Engagement Rate",
-      ar: "معدل التفاعل"
-    },
-    connected: {
-      en: "Connected",
-      ar: "متصل"
-    },
-    disconnected: {
-      en: "Disconnected",
-      ar: "غير متصل"
-    },
-    connect: {
-      en: "Connect",
-      ar: "اتصال"
-    },
-    disconnect: {
-      en: "Disconnect",
-      ar: "قطع الاتصال"
     },
     noPostsFound: {
       en: "No posts found",
@@ -4204,14 +2253,20 @@ export const appContent = {
     noPostsMatch: {
       en: "No posts match your current filters.",
       ar: "لا توجد منشورات تطابق المرشحات الحالية."
-    }
-  },
+    },
 
-  // Maintenance Module
-  maintenance: {
-    maintenanceScheduler: {
-      en: "Maintenance Scheduler",
-      ar: "جدولة الصيانة"
+    // Search and Filter UI
+    searchMenu: {
+      en: "Search menu...",
+      ar: "البحث في القائمة..."
+    },
+    filterByPriority: {
+      en: "Filter by priority",
+      ar: "تصفية حسب الأولوية"
+    },
+    all: {
+      en: "All",
+      ar: "الكل"
     },
     managePropertyTasks: {
       en: "Manage property maintenance tasks, vendors, and schedules",
@@ -4221,41 +2276,17 @@ export const appContent = {
       en: "Scheduled",
       ar: "مجدولة"
     },
-    inProgress: {
-      en: "In Progress",
-      ar: "قيد التنفيذ"
-    },
     maintenanceCompleted: {
       en: "Completed",
       ar: "مكتملة"
-    },
-    urgent: {
-      en: "Urgent",
-      ar: "عاجلة"
     },
     maintenanceTasks: {
       en: "Maintenance Tasks",
       ar: "مهام الصيانة"
     },
-    calendarView: {
-      en: "Calendar View",
-      ar: "عرض التقويم"
-    },
-    vendors: {
-      en: "Vendors",
-      ar: "البائعون"
-    },
-    reports: {
-      en: "Reports",
-      ar: "التقارير"
-    },
     searchTasks: {
       en: "Search tasks...",
       ar: "البحث في المهام..."
-    },
-    allTypes: {
-      en: "All Types",
-      ar: "جميع الأنواع"
     },
     plumbing: {
       en: "Plumbing",
@@ -4277,21 +2308,9 @@ export const appContent = {
       en: "Landscaping",
       ar: "تنسيق الحدائق"
     },
-    security: {
-      en: "Security",
-      ar: "الأمن"
-    },
     cleaning: {
       en: "Cleaning",
       ar: "التنظيف"
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    overdue: {
-      en: "Overdue",
-      ar: "متأخرة"
     },
     maintenanceCancelled: {
       en: "Cancelled",
@@ -4305,17 +2324,9 @@ export const appContent = {
       en: "Property",
       ar: "العقار"
     },
-    scheduledDate: {
-      en: "Scheduled Date",
-      ar: "التاريخ المجدول"
-    },
     duration: {
       en: "Duration",
       ar: "المدة"
-    },
-    cost: {
-      en: "Cost",
-      ar: "التكلفة"
     },
     tbd: {
       en: "TBD",
@@ -4361,10 +2372,6 @@ export const appContent = {
       en: "Last used",
       ar: "آخر استخدام"
     },
-    call: {
-      en: "Call",
-      ar: "اتصال"
-    },
     maintenanceEmail: {
       en: "Email",
       ar: "بريد إلكتروني"
@@ -4393,30 +2400,6 @@ export const appContent = {
       en: "Track and manage maintenance requests",
       ar: "تتبع وإدارة طلبات الصيانة"
     },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    allPriorities: {
-      en: "All Priorities",
-      ar: "جميع الأولويات"
-    },
-    low: {
-      en: "low",
-      ar: "منخفضة"
-    },
-    medium: {
-      en: "medium",
-      ar: "متوسطة"
-    },
-    high: {
-      en: "high",
-      ar: "عالية"
-    },
-    urgent: {
-      en: "urgent",
-      ar: "عاجلة"
-    },
     createWorkOrder: {
       en: "Create Work Order",
       ar: "إنشاء أمر عمل"
@@ -4429,29 +2412,9 @@ export const appContent = {
       en: "Urgent Tasks",
       ar: "المهام العاجلة"
     },
-    propertyDetails: {
-      en: "Property Details",
-      ar: "تفاصيل العقار"
-    },
-    address: {
-      en: "Address",
-      ar: "العنوان"
-    },
-    type: {
-      en: "Type",
-      ar: "النوع"
-    },
     vendorInformation: {
       en: "Vendor Information",
       ar: "معلومات البائع"
-    },
-    name: {
-      en: "Name",
-      ar: "الاسم"
-    },
-    phone: {
-      en: "Phone",
-      ar: "الهاتف"
     },
     workOrderEmail: {
       en: "Email",
@@ -4461,10 +2424,6 @@ export const appContent = {
       en: "Rating",
       ar: "التقييم"
     },
-    schedule: {
-      en: "Schedule",
-      ar: "الجدولة"
-    },
     date: {
       en: "Date",
       ar: "التاريخ"
@@ -4472,10 +2431,6 @@ export const appContent = {
     time: {
       en: "Time",
       ar: "الوقت"
-    },
-    cost: {
-      en: "Cost",
-      ar: "التكلفة"
     },
     estimated: {
       en: "Estimated",
@@ -4485,17 +2440,9 @@ export const appContent = {
       en: "Actual",
       ar: "الفعلي"
     },
-    notes: {
-      en: "Notes",
-      ar: "الملاحظات"
-    },
     reschedule: {
       en: "Reschedule",
       ar: "إعادة جدولة"
-    },
-    cancel: {
-      en: "Cancel",
-      ar: "إلغاء"
     },
     updateStatus: {
       en: "Update Status",
@@ -4505,10 +2452,6 @@ export const appContent = {
       en: "scheduled",
       ar: "مجدولة"
     },
-    inProgress: {
-      en: "in-progress",
-      ar: "قيد التنفيذ"
-    },
     workOrderCompleted: {
       en: "completed",
       ar: "مكتملة"
@@ -4517,14 +2460,6 @@ export const appContent = {
       en: "cancelled",
       ar: "ملغية"
     }
-  },
-
-  // Documents Module
-  documents: {
-    documentManagement: {
-      en: "Document Management",
-      ar: "إدارة المستندات"
-    },
     manageDocuments: {
       en: "Manage documents with e-signatures, OCR, and compliance tracking",
       ar: "إدارة المستندات مع التوقيعات الإلكترونية والتعرف الضوئي وتتبع الامتثال"
@@ -4549,21 +2484,9 @@ export const appContent = {
       en: "Inspections",
       ar: "التفتيشات"
     },
-    financial: {
-      en: "Financial",
-      ar: "المالية"
-    },
     legal: {
       en: "Legal",
       ar: "القانونية"
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    draft: {
-      en: "Draft",
-      ar: "مسودة"
     },
     pendingReview: {
       en: "Pending Review",
@@ -4577,17 +2500,9 @@ export const appContent = {
       en: "Signed",
       ar: "موقع"
     },
-    expired: {
-      en: "Expired",
-      ar: "منتهي الصلاحية"
-    },
     sortByDate: {
       en: "Sort by Date",
       ar: "ترتيب حسب التاريخ"
-    },
-    sortByName: {
-      en: "Sort by Name",
-      ar: "ترتيب حسب الاسم"
     },
     sortBySize: {
       en: "Sort by Size",
@@ -4600,14 +2515,6 @@ export const appContent = {
     grid: {
       en: "Grid",
       ar: "شبكة"
-    },
-    list: {
-      en: "List",
-      ar: "قائمة"
-    },
-    templates: {
-      en: "Templates",
-      ar: "القوالب"
     },
     upload: {
       en: "Upload",
@@ -4645,14 +2552,6 @@ export const appContent = {
       en: "Document",
       ar: "المستند"
     },
-    type: {
-      en: "Type",
-      ar: "النوع"
-    },
-    status: {
-      en: "Status",
-      ar: "الحالة"
-    },
     owner: {
       en: "Owner",
       ar: "المالك"
@@ -4661,29 +2560,9 @@ export const appContent = {
       en: "Modified",
       ar: "معدل"
     },
-    actions: {
-      en: "Actions",
-      ar: "الإجراءات"
-    },
-    views: {
-      en: "views",
-      ar: "مشاهدات"
-    },
-    more: {
-      en: "more",
-      ar: "أكثر"
-    },
     signatureRequired: {
       en: "Signature Required",
       ar: "التوقيع مطلوب"
-    },
-    pending: {
-      en: "Pending",
-      ar: "معلق"
-    },
-    completed: {
-      en: "Completed",
-      ar: "مكتمل"
     },
     complianceStatus: {
       en: "Compliance Status",
@@ -4705,14 +2584,6 @@ export const appContent = {
       en: "Search contracts...",
       ar: "البحث في العقود..."
     },
-    allTypes: {
-      en: "All Types",
-      ar: "جميع الأنواع"
-    },
-    purchase: {
-      en: "Purchase",
-      ar: "شراء"
-    },
     listing: {
       en: "Listing",
       ar: "إدراج"
@@ -4721,10 +2592,6 @@ export const appContent = {
       en: "Lease",
       ar: "إيجار"
     },
-    management: {
-      en: "Management",
-      ar: "إدارة"
-    },
     service: {
       en: "Service",
       ar: "خدمة"
@@ -4732,30 +2599,6 @@ export const appContent = {
     employment: {
       en: "Employment",
       ar: "توظيف"
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    allPriorities: {
-      en: "All Priorities",
-      ar: "جميع الأولويات"
-    },
-    low: {
-      en: "Low",
-      ar: "منخفضة"
-    },
-    medium: {
-      en: "Medium",
-      ar: "متوسطة"
-    },
-    high: {
-      en: "High",
-      ar: "عالية"
-    },
-    urgent: {
-      en: "Urgent",
-      ar: "عاجلة"
     },
     newContract: {
       en: "New Contract",
@@ -4769,21 +2612,9 @@ export const appContent = {
       en: "Active Contracts",
       ar: "العقود النشطة"
     },
-    pendingSignatures: {
-      en: "Pending Signatures",
-      ar: "التوقيعات المعلقة"
-    },
-    totalValue: {
-      en: "Total Value",
-      ar: "القيمة الإجمالية"
-    },
     contractTitle: {
       en: "Contract Title",
       ar: "عنوان العقد"
-    },
-    property: {
-      en: "Property",
-      ar: "العقار"
     },
     value: {
       en: "Value",
@@ -4800,26 +2631,6 @@ export const appContent = {
     parties: {
       en: "Parties",
       ar: "الأطراف"
-    },
-    buyer: {
-      en: "Buyer",
-      ar: "المشتري"
-    },
-    seller: {
-      en: "Seller",
-      ar: "البائع"
-    },
-    landlord: {
-      en: "Landlord",
-      ar: "المالك"
-    },
-    tenant: {
-      en: "Tenant",
-      ar: "المستأجر"
-    },
-    agent: {
-      en: "Agent",
-      ar: "الوكيل"
     },
     broker: {
       en: "Broker",
@@ -4853,37 +2664,9 @@ export const appContent = {
       en: "All Categories",
       ar: "جميع الفئات"
     },
-    contract: {
-      en: "Contract",
-      ar: "عقد"
-    },
     disclosure: {
       en: "Disclosure",
       ar: "إفصاح"
-    },
-    listing: {
-      en: "Listing",
-      ar: "إدراج"
-    },
-    legal: {
-      en: "Legal",
-      ar: "قانوني"
-    },
-    marketing: {
-      en: "Marketing",
-      ar: "تسويق"
-    },
-    financial: {
-      en: "Financial",
-      ar: "مالي"
-    },
-    inspection: {
-      en: "Inspection",
-      ar: "تفتيش"
-    },
-    other: {
-      en: "Other",
-      ar: "أخرى"
     },
     allTemplates: {
       en: "All Templates",
@@ -4937,10 +2720,6 @@ export const appContent = {
       en: "Author",
       ar: "المؤلف"
     },
-    rating: {
-      en: "Rating",
-      ar: "التقييم"
-    },
     usage: {
       en: "Usage",
       ar: "الاستخدام"
@@ -4968,10 +2747,6 @@ export const appContent = {
     use: {
       en: "Use",
       ar: "استخدام"
-    },
-    edit: {
-      en: "Edit",
-      ar: "تعديل"
     },
     duplicate: {
       en: "Duplicate",
@@ -5017,10 +2792,6 @@ export const appContent = {
       en: "Preparing Dashboard",
       ar: "تحضير لوحة التحكم"
     },
-    loading: {
-      en: "Loading...",
-      ar: "جاري التحميل..."
-    },
     readyToGo: {
       en: "Ready to go!",
       ar: "جاهز للانطلاق!"
@@ -5036,10 +2807,6 @@ export const appContent = {
     comprehensiveAnalytics: {
       en: "Comprehensive sales performance analytics and insights",
       ar: "تحليلات شاملة لأداء المبيعات والرؤى"
-    },
-    totalRevenue: {
-      en: "Total Revenue",
-      ar: "إجمالي الإيرادات"
     },
     unitsSold: {
       en: "Units Sold",
@@ -5069,10 +2836,6 @@ export const appContent = {
       en: "Revenue Trend",
       ar: "اتجاه الإيرادات"
     },
-    propertyTypes: {
-      en: "Property Types",
-      ar: "أنواع العقارات"
-    },
     agentPerformance: {
       en: "Agent Performance",
       ar: "أداء الوكلاء"
@@ -5080,14 +2843,6 @@ export const appContent = {
     topPerformers: {
       en: "Top Performers",
       ar: "أفضل الأداء"
-    },
-    allAgents: {
-      en: "All Agents",
-      ar: "جميع الوكلاء"
-    },
-    agent: {
-      en: "Agent",
-      ar: "الوكيل"
     },
     revenue: {
       en: "Revenue",
@@ -5145,10 +2900,6 @@ export const appContent = {
       en: "Channels",
       ar: "القنوات"
     },
-    totalRevenue: {
-      en: "Total Revenue",
-      ar: "إجمالي الإيرادات"
-    },
     avgSatisfaction: {
       en: "Avg Satisfaction",
       ar: "متوسط الرضا"
@@ -5180,14 +2931,6 @@ export const appContent = {
     dealsThisMonth: {
       en: "Deals This Month",
       ar: "الصفقات هذا الشهر"
-    },
-    revenue: {
-      en: "Revenue",
-      ar: "الإيرادات"
-    },
-    clientSatisfaction: {
-      en: "Client Satisfaction",
-      ar: "رضا العملاء"
     },
     tasksCompleted: {
       en: "Tasks Completed",
@@ -5225,17 +2968,9 @@ export const appContent = {
       en: "To Do",
       ar: "للقيام به"
     },
-    inProgress: {
-      en: "In Progress",
-      ar: "قيد التنفيذ"
-    },
     review: {
       en: "Review",
       ar: "مراجعة"
-    },
-    completed: {
-      en: "Completed",
-      ar: "مكتمل"
     },
     teamPerformance: {
       en: "Team Performance",
@@ -5273,10 +3008,6 @@ export const appContent = {
       en: "List View",
       ar: "عرض القائمة"
     },
-    calendarView: {
-      en: "Calendar View",
-      ar: "عرض التقويم"
-    },
     scheduleAppointment: {
       en: "Schedule Appointment",
       ar: "جدولة موعد"
@@ -5284,10 +3015,6 @@ export const appContent = {
     seniorAgent: {
       en: "Senior Agent",
       ar: "وكيل أول"
-    },
-    agent: {
-      en: "Agent",
-      ar: "وكيل"
     },
     todaysAppointments: {
       en: "Today's Appointments",
@@ -5300,22 +3027,6 @@ export const appContent = {
     clientMeeting: {
       en: "Client Meeting",
       ar: "اجتماع العميل"
-    },
-    closing: {
-      en: "Closing",
-      ar: "الإغلاق"
-    },
-    inspection: {
-      en: "Inspection",
-      ar: "التفتيش"
-    },
-    scheduled: {
-      en: "Scheduled",
-      ar: "مجدول"
-    },
-    cancelled: {
-      en: "Cancelled",
-      ar: "ملغي"
     },
     clientInterested: {
       en: "Client interested in backyard space",
@@ -5393,33 +3104,9 @@ export const appContent = {
       en: "Search by name, email, or phone...",
       ar: "البحث بالاسم أو البريد الإلكتروني أو الهاتف..."
     },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    overdue: {
-      en: "Overdue",
-      ar: "متأخر"
-    },
-    dueToday: {
-      en: "Due Today",
-      ar: "مستحق اليوم"
-    },
     dueSoon: {
       en: "Due Soon",
       ar: "مستحق قريباً"
-    },
-    scheduled: {
-      en: "Scheduled",
-      ar: "مجدول"
-    },
-    allPriorities: {
-      en: "All Priorities",
-      ar: "جميع الأولويات"
-    },
-    allAgents: {
-      en: "All Agents",
-      ar: "جميع الوكلاء"
     },
     sortByNextFollowUp: {
       en: "Sort by Next Follow-up",
@@ -5437,41 +3124,13 @@ export const appContent = {
       en: "days overdue",
       ar: "أيام متأخرة"
     },
-    leadScore: {
-      en: "Lead Score",
-      ar: "نقاط العميل المحتمل"
-    },
-    lastContact: {
-      en: "Last Contact",
-      ar: "آخر اتصال"
-    },
-    nextFollowUp: {
-      en: "Next Follow-up",
-      ar: "المتابعة التالية"
-    },
     interests: {
       en: "Interests",
       ar: "الاهتمامات"
     },
-    budgetRange: {
-      en: "Budget Range",
-      ar: "نطاق الميزانية"
-    },
-    preferredAreas: {
-      en: "Preferred Areas",
-      ar: "المناطق المفضلة"
-    },
     contactHistory: {
       en: "Contact History",
       ar: "تاريخ الاتصال"
-    },
-    call: {
-      en: "Call",
-      ar: "مكالمة"
-    },
-    email: {
-      en: "Email",
-      ar: "بريد إلكتروني"
     },
     meeting: {
       en: "Meeting",
@@ -5513,45 +3172,9 @@ export const appContent = {
       en: "leads found",
       ar: "عملاء محتملون موجودون"
     },
-    searchLeads: {
-      en: "Search leads...",
-      ar: "البحث في العملاء المحتملين..."
-    },
-    allStatus: {
-      en: "All Status",
-      ar: "جميع الحالات"
-    },
-    new: {
-      en: "New",
-      ar: "جديد"
-    },
-    contacted: {
-      en: "Contacted",
-      ar: "تم الاتصال"
-    },
-    qualified: {
-      en: "Qualified",
-      ar: "مؤهل"
-    },
-    converted: {
-      en: "Converted",
-      ar: "محول"
-    },
-    lost: {
-      en: "Lost",
-      ar: "مفقود"
-    },
     addLead: {
       en: "Add Lead",
       ar: "إضافة عميل محتمل"
-    },
-    budget: {
-      en: "Budget",
-      ar: "الميزانية"
-    },
-    type: {
-      en: "Type",
-      ar: "النوع"
     },
     lookingFor2BR: {
       en: "Looking for 2BR condo with city view",
@@ -5569,14 +3192,6 @@ export const appContent = {
       en: "Website",
       ar: "الموقع الإلكتروني"
     },
-    referral: {
-      en: "Referral",
-      ar: "إحالة"
-    },
-    socialMedia: {
-      en: "Social Media",
-      ar: "وسائل التواصل الاجتماعي"
-    },
     downtown: {
       en: "Downtown",
       ar: "وسط المدينة"
@@ -5588,14 +3203,6 @@ export const appContent = {
     waterfront: {
       en: "Waterfront",
       ar: "الواجهة المائية"
-    },
-    condo: {
-      en: "Condo",
-      ar: "شقة"
-    },
-    house: {
-      en: "House",
-      ar: "منزل"
     },
     luxuryHome: {
       en: "Luxury Home",
@@ -5616,10 +3223,6 @@ export const appContent = {
     createCampaign: {
       en: "Create Campaign",
       ar: "إنشاء حملة"
-    },
-    totalBudget: {
-      en: "Total Budget",
-      ar: "إجمالي الميزانية"
     },
     totalSpent: {
       en: "Total Spent",
@@ -5653,25 +3256,9 @@ export const appContent = {
       en: "SMS Campaign",
       ar: "حملة رسائل نصية"
     },
-    draft: {
-      en: "Draft",
-      ar: "مسودة"
-    },
-    active: {
-      en: "Active",
-      ar: "نشط"
-    },
     paused: {
       en: "Paused",
       ar: "متوقف"
-    },
-    completed: {
-      en: "Completed",
-      ar: "مكتمل"
-    },
-    budget: {
-      en: "Budget",
-      ar: "الميزانية"
     },
     spent: {
       en: "Spent",
@@ -5680,10 +3267,6 @@ export const appContent = {
     leads: {
       en: "Leads",
       ar: "العملاء المحتملين"
-    },
-    conversionRate: {
-      en: "Conversion Rate",
-      ar: "معدل التحويل"
     },
     costPerLead: {
       en: "Cost per Lead",
@@ -5701,43 +3284,116 @@ export const appContent = {
       en: "Holiday Open House",
       ar: "بيت مفتوح للعطلة"
     }
-  },
-
-  // Task Management Module
-  taskManagement: {
-    title: { en: 'Task Management', ar: 'إدارة المهام' },
+    gridView: {
+      en: "Grid View",
+      ar: "عرض الشبكة"
+    },
+    avgROI: {
+      en: "Avg ROI",
+      ar: "متوسط العائد على الاستثمار"
+    },
+    searchCampaigns: {
+      en: "Search campaigns...",
+      ar: "البحث في الحملات..."
+    },
+    campaignEmail: {
+      en: "Email",
+      ar: "بريد إلكتروني"
+    },
+    campaignSocialMedia: {
+      en: "Social Media",
+      ar: "وسائل التواصل الاجتماعي"
+    },
+    campaignPPC: {
+      en: "PPC",
+      ar: "الدفع لكل نقرة"
+    },
+    campaignSMS: {
+      en: "SMS",
+      ar: "رسائل نصية"
+    },
+    campaignDirectMail: {
+      en: "Direct Mail",
+      ar: "البريد المباشر"
+    },
+    allCampaignStatus: {
+      en: "All Status",
+      ar: "جميع الحالات"
+    },
+    campaignDraft: {
+      en: "Draft",
+      ar: "مسودة"
+    },
+    campaignActive: {
+      en: "Active",
+      ar: "نشط"
+    },
+    campaignPaused: {
+      en: "Paused",
+      ar: "متوقف"
+    },
+    campaignCompleted: {
+      en: "Completed",
+      ar: "مكتمل"
+    },
+    campaignScheduled: {
+      en: "Scheduled",
+      ar: "مجدول"
+    },
+    campaignBudget: {
+      en: "Budget",
+      ar: "الميزانية"
+    },
+    campaignSpent: {
+      en: "Spent",
+      ar: "المصروف"
+    },
+    campaignROI: {
+      en: "ROI",
+      ar: "العائد على الاستثمار"
+    },
+    impressions: {
+      en: "Impressions",
+      ar: "المشاهدات"
+    },
+    clicks: {
+      en: "Clicks",
+      ar: "النقرات"
+    },
+    clickRate: {
+      en: "Click Rate",
+      ar: "معدل النقر"
+    },
+    targetAudience: {
+      en: "Target Audience",
+      ar: "الجمهور المستهدف"
+    },
+    objectives: {
+      en: "Objectives",
+      ar: "الأهداف"
+    },
+    noCampaignsFound: {
+      en: "No campaigns found",
+      ar: "لم يتم العثور على حملات"
+    },
+    noCampaignsMatch: {
+      en: "No campaigns match your search criteria. Try adjusting your filters or create a new campaign.",
+      ar: "لا توجد حملات تطابق معايير البحث الخاصة بك. جرب تعديل المرشحات أو إنشاء حملة جديدة."
+    },
+    clearCampaignFilters: {
+      en: "Clear Filters",
+      ar: "مسح المرشحات"
+    }
     subtitle: { en: 'Organize and track your team\'s tasks and projects', ar: 'تنظيم وتتبع مهام ومشاريع فريقك' },
     totalTasks: { en: 'Total Tasks', ar: 'إجمالي المهام' },
-    pending: { en: 'Pending', ar: 'معلق' },
-    inProgress: { en: 'In Progress', ar: 'قيد التنفيذ' },
-    review: { en: 'Review', ar: 'مراجعة' },
-    completed: { en: 'Completed', ar: 'مكتمل' },
-    overdue: { en: 'Overdue', ar: 'متأخر' },
-    addTask: { en: 'Add Task', ar: 'إضافة مهمة' },
-    searchTasks: { en: 'Search tasks...', ar: 'البحث في المهام...' },
-    allStatus: { en: 'All Status', ar: 'جميع الحالات' },
     allPriority: { en: 'All Priority', ar: 'جميع الأولويات' },
-    urgent: { en: 'Urgent', ar: 'عاجل' },
-    high: { en: 'High', ar: 'عالي' },
-    medium: { en: 'Medium', ar: 'متوسط' },
-    low: { en: 'Low', ar: 'منخفض' },
-    dueDate: { en: 'Due Date', ar: 'تاريخ الاستحقاق' },
-    priority: { en: 'Priority', ar: 'الأولوية' },
-    assignedTo: { en: 'Assigned To', ar: 'مُعين إلى' },
     estimatedTime: { en: 'Estimated Time', ar: 'الوقت المقدر' },
-    progress: { en: 'Progress', ar: 'التقدم' },
-    created: { en: 'Created', ar: 'تم الإنشاء' },
-    edit: { en: 'Edit', ar: 'تحرير' },
-    complete: { en: 'Complete', ar: 'إكمال' }
   },
 
   // Financial Dashboard Module
   financialDashboard: {
     title: { en: 'Financial Dashboard', ar: 'لوحة التحكم المالية' },
-    subtitle: { en: 'Track revenue, expenses, and financial performance', ar: 'تتبع الإيرادات والمصروفات والأداء المالي' },
-    totalRevenue: { en: 'Total Revenue', ar: 'إجمالي الإيرادات' },
     totalCommissions: { en: 'Total Commissions', ar: 'إجمالي العمولات' },
-    expenses: { en: 'Expenses', ar: 'المصروفات' },
     netProfit: { en: 'Net Profit', ar: 'صافي الربح' },
     fromLastMonth: { en: 'from last month', ar: 'من الشهر الماضي' },
     revenueOverTime: { en: 'Revenue Over Time', ar: 'الإيرادات عبر الوقت' },
@@ -5748,22 +3404,14 @@ export const appContent = {
     salesCommissions: { en: 'Sales Commissions', ar: 'عمولات المبيعات' },
     rentalCommissions: { en: 'Rental Commissions', ar: 'عمولات الإيجار' },
     referralBonuses: { en: 'Referral Bonuses', ar: 'مكافآت الإحالة' },
-    transactions: { en: 'transactions', ar: 'معاملات' },
     referrals: { en: 'referrals', ar: 'إحالات' },
     expenseTracking: { en: 'Expense Tracking', ar: 'تتبع المصروفات' },
     addExpense: { en: 'Add Expense', ar: 'إضافة مصروف' },
     exportReport: { en: 'Export Report', ar: 'تصدير التقرير' },
-    marketing: { en: 'Marketing', ar: 'التسويق' },
     officeRent: { en: 'Office Rent', ar: 'إيجار المكتب' },
     utilities: { en: 'Utilities', ar: 'المرافق' },
-    other: { en: 'Other', ar: 'أخرى' },
     recentTransactions: { en: 'Recent Transactions', ar: 'المعاملات الحديثة' },
-    viewAll: { en: 'View All', ar: 'عرض الكل' },
-    date: { en: 'Date', ar: 'التاريخ' },
-    description: { en: 'Description', ar: 'الوصف' },
-    type: { en: 'Type', ar: 'النوع' },
     amount: { en: 'Amount', ar: 'المبلغ' },
-    commission: { en: 'Commission', ar: 'عمولة' },
     expense: { en: 'Expense', ar: 'مصروف' },
     sampleTransaction1: { en: 'Commission - Downtown Property Sale', ar: 'عمولة - بيع عقار وسط المدينة' },
     sampleTransaction2: { en: 'Marketing Campaign Expenses', ar: 'مصروفات الحملة التسويقية' },
@@ -5773,40 +3421,17 @@ export const appContent = {
   // Analytics Dashboard Module
   analyticsDashboard: {
     title: { en: 'Analytics Dashboard', ar: 'لوحة تحكم التحليلات' },
-    subtitle: { en: 'Comprehensive insights and performance metrics', ar: 'رؤى شاملة ومقاييس الأداء' },
-    totalLeads: { en: 'Total Leads', ar: 'إجمالي العملاء المحتملين' },
-    conversionRate: { en: 'Conversion Rate', ar: 'معدل التحويل' },
     avgDealValue: { en: 'Avg Deal Value', ar: 'متوسط قيمة الصفقة' },
     avgSaleCycle: { en: 'Avg Sale Cycle', ar: 'متوسط دورة البيع' },
     days: { en: 'days', ar: 'أيام' },
-    thisMonth: { en: 'this month', ar: 'هذا الشهر' },
     salesPerformance: { en: 'Sales Performance', ar: 'أداء المبيعات' },
-    last30Days: { en: 'Last 30 Days', ar: 'آخر 30 يوماً' },
     last90Days: { en: 'Last 90 Days', ar: 'آخر 90 يوماً' },
-    lastYear: { en: 'Last Year', ar: 'العام الماضي' },
-    chartPlaceholder: { en: 'Chart will be displayed here', ar: 'سيتم عرض الرسم البياني هنا' },
     leadSources: { en: 'Lead Sources', ar: 'مصادر العملاء المحتملين' },
-    website: { en: 'Website', ar: 'الموقع الإلكتروني' },
-    referrals: { en: 'Referrals', ar: 'الإحالات' },
-    socialMedia: { en: 'Social Media', ar: 'وسائل التواصل الاجتماعي' },
     advertising: { en: 'Advertising', ar: 'الإعلان' },
-    leads: { en: 'leads', ar: 'عملاء محتملون' },
-    agentPerformance: { en: 'Agent Performance', ar: 'أداء الوكلاء' },
-    refresh: { en: 'Refresh', ar: 'تحديث' },
-    export: { en: 'Export', ar: 'تصدير' },
-    agent: { en: 'Agent', ar: 'الوكيل' },
-    totalSales: { en: 'Total Sales', ar: 'إجمالي المبيعات' },
-    commission: { en: 'Commission', ar: 'العمولة' },
-    avgDealSize: { en: 'Avg Deal Size', ar: 'متوسط حجم الصفقة' },
-    performance: { en: 'Performance', ar: 'الأداء' },
-    excellent: { en: 'Excellent', ar: 'ممتاز' },
-    good: { en: 'Good', ar: 'جيد' },
     average: { en: 'Average', ar: 'متوسط' },
-    marketTrends: { en: 'Market Trends', ar: 'اتجاهات السوق' },
     priceGrowth: { en: 'Price Growth', ar: 'نمو الأسعار' },
     yearOverYear: { en: 'Year over Year', ar: 'سنة بعد سنة' },
     avgTimeOnMarket: { en: 'Avg Time on Market', ar: 'متوسط الوقت في السوق' },
-    thisQuarter: { en: 'This Quarter', ar: 'هذا الربع' },
     inventoryTurnover: { en: 'Inventory Turnover', ar: 'دوران المخزون' },
     lastMonth: { en: 'Last Month', ar: 'الشهر الماضي' }
   },
@@ -5814,53 +3439,320 @@ export const appContent = {
   // System Integration Module
   systemIntegration: {
     title: { en: 'System Integration', ar: 'تكامل الأنظمة' },
-    subtitle: { en: 'Monitor and manage all system integrations', ar: 'مراقبة وإدارة جميع تكاملات الأنظمة' },
     activeIntegrations: { en: 'Active Integrations', ar: 'التكاملات النشطة' },
     pendingSetup: { en: 'Pending Setup', ar: 'في انتظار الإعداد' },
     dataSync: { en: 'Data Sync', ar: 'مزامنة البيانات' },
     apiCalls: { en: 'API Calls', ar: 'استدعاءات API' },
-    thisMonth: { en: 'This Month', ar: 'هذا الشهر' },
     crmIntegrations: { en: 'CRM Integrations', ar: 'تكاملات إدارة علاقات العملاء' },
     marketingTools: { en: 'Marketing Tools', ar: 'أدوات التسويق' },
     financialSystems: { en: 'Financial Systems', ar: 'الأنظمة المالية' },
     addNew: { en: 'Add New', ar: 'إضافة جديد' },
-    connected: { en: 'Connected', ar: 'متصل' },
-    active: { en: 'Active', ar: 'نشط' },
     setupRequired: { en: 'Setup Required', ar: 'يتطلب إعداد' },
-    pending: { en: 'Pending', ar: 'معلق' },
     apiManagement: { en: 'API Management', ar: 'إدارة API' },
     syncNow: { en: 'Sync Now', ar: 'مزامنة الآن' },
     newApi: { en: 'New API', ar: 'API جديد' },
     activeApis: { en: 'Active APIs', ar: 'APIs النشطة' },
     uptime: { en: 'Uptime', ar: 'وقت التشغيل' },
     recordsSynced: { en: 'Records Synced', ar: 'السجلات المتزامنة' },
-    avgResponseTime: { en: 'Avg Response Time', ar: 'متوسط وقت الاستجابة' },
-    recentActivity: { en: 'Recent Activity', ar: 'النشاط الحديث' },
-    viewAll: { en: 'View All', ar: 'عرض الكل' },
     salesforceSync: { en: 'Salesforce sync completed', ar: 'تمت مزامنة Salesforce' },
     syncedContacts: { en: 'Synced 247 contacts and 89 deals', ar: 'تمت مزامنة 247 جهة اتصال و 89 صفقة' },
-    minutesAgo: { en: 'minutes ago', ar: 'دقائق مضت' },
     quickbooksUpdate: { en: 'QuickBooks data updated', ar: 'تم تحديث بيانات QuickBooks' },
     financialDataSynced: { en: 'Financial data synced successfully', ar: 'تمت مزامنة البيانات المالية بنجاح' },
     mailchimpCampaign: { en: 'Mailchimp campaign synced', ar: 'تمت مزامنة حملة Mailchimp' },
     campaignDataUpdated: { en: 'Campaign performance data updated', ar: 'تم تحديث بيانات أداء الحملة' },
     hourAgo: { en: 'hour ago', ar: 'ساعة مضت' }
+    generateReports: {
+      en: "Generate comprehensive reports and analytics",
+      ar: "إنشاء تقارير وتحليلات شاملة"
+    },
+    totalReports: {
+      en: "Total Reports",
+      ar: "إجمالي التقارير"
+    },
+    activeReports: {
+      en: "Active Reports",
+      ar: "التقارير النشطة"
+    },
+    allReports: {
+      en: "All Reports",
+      ar: "جميع التقارير"
+    },
+    reportBuilder: {
+      en: "Report Builder",
+      ar: "منشئ التقارير"
+    },
+    scheduledReports: {
+      en: "Scheduled Reports",
+      ar: "التقارير المجدولة"
+    },
+    searchReports: {
+      en: "Search reports...",
+      ar: "البحث في التقارير..."
+    },
+    sales: {
+      en: "Sales",
+      ar: "المبيعات"
+    },
+    operational: {
+      en: "Operational",
+      ar: "التشغيلية"
+    },
+    archived: {
+      en: "Archived",
+      ar: "مؤرشف"
+    },
+    frequency: {
+      en: "Frequency",
+      ar: "التكرار"
+    },
+    lastGenerated: {
+      en: "Last Generated",
+      ar: "آخر إنشاء"
+    },
+    report: {
+      en: "Report",
+      ar: "التقرير"
+    },
+    propertiesSold: {
+      en: "properties sold",
+      ar: "عقار مباع"
+    },
+    totalSalesVolume: {
+      en: "Total Sales Volume",
+      ar: "إجمالي حجم المبيعات"
+    },
+    propertiesSoldThisMonth: {
+      en: "Properties Sold This Month",
+      ar: "العقارات المباعة هذا الشهر"
+    },
+    searchSoldProperties: {
+      en: "Search sold properties...",
+      ar: "البحث في العقارات المباعة..."
+    },
+    filterByDate: {
+      en: "Filter by Date",
+      ar: "تصفية حسب التاريخ"
+    },
+    sortBy: {
+      en: "Sort by",
+      ar: "ترتيب حسب"
+    },
+    soldDate: {
+      en: "Sold Date",
+      ar: "تاريخ البيع"
+    },
+    soldPrice: {
+      en: "Sold Price",
+      ar: "سعر البيع"
+    },
+    priceChange: {
+      en: "Price Change",
+      ar: "تغيير السعر"
+    },
+    propertiesInPipeline: {
+      en: "properties in pipeline",
+      ar: "عقار في المسار"
+    },
+    addPendingSale: {
+      en: "Add Pending Sale",
+      ar: "إضافة مبيعة معلقة"
+    },
+    avgDaysToClose: {
+      en: "Avg Days to Close",
+      ar: "متوسط أيام الإغلاق"
+    },
+    highRisk: {
+      en: "High Risk",
+      ar: "مخاطرة عالية"
+    },
+    readyToClose: {
+      en: "Ready to Close",
+      ar: "جاهز للإغلاق"
+    },
+    searchPlaceholder: {
+      en: "Search pending sales...",
+      ar: "البحث في المبيعات المعلقة..."
+    },
+    pendingInspection: {
+      en: "Pending Inspection",
+      ar: "في انتظار التفتيش"
+    },
+    pendingAppraisal: {
+      en: "Pending Appraisal",
+      ar: "في انتظار التقييم"
+    },
+    pendingFinancing: {
+      en: "Pending Financing",
+      ar: "في انتظار التمويل"
+    },
+    finalWalkthrough: {
+      en: "Final Walkthrough",
+      ar: "الجولة النهائية"
+    },
+    allRiskLevels: {
+      en: "All Risk Levels",
+      ar: "جميع مستويات المخاطر"
+    },
+    lowRisk: {
+      en: "Low Risk",
+      ar: "مخاطرة منخفضة"
+    },
+    mediumRisk: {
+      en: "Medium Risk",
+      ar: "مخاطرة متوسطة"
+    },
+    risk: {
+      en: "Risk",
+      ar: "مخاطرة"
+    },
+    documentProgress: {
+      en: "Document Progress",
+      ar: "تقدم الوثائق"
+    },
+    appraisal: {
+      en: "Appraisal",
+      ar: "التقييم"
+    },
+    financing: {
+      en: "Financing",
+      ar: "التمويل"
+    },
+    insurance: {
+      en: "Insurance",
+      ar: "التأمين"
+    },
+    title: {
+      en: "Title",
+      ar: "الملكية"
+    },
+    activeContingencies: {
+      en: "Active Contingencies",
+      ar: "الشروط النشطة"
+    },
+    noPendingSalesFound: {
+      en: "No Pending Sales Found",
+      ar: "لم يتم العثور على مبيعات معلقة"
+    },
+    noSalesMatchFilters: {
+      en: "No sales match your current filters.",
+      ar: "لا توجد مبيعات تطابق المرشحات الحالية."
+    },
+    clearFilters: {
+      en: "Clear Filters",
+      ar: "مسح المرشحات"
+    }
+    trustedServiceProviders: {
+      en: "trusted service providers",
+      ar: "مقدمي خدمات موثوقين"
+    },
+    totalVendors: {
+      en: "Total Vendors",
+      ar: "إجمالي الموردين"
+    },
+    avgRating: {
+      en: "Avg Rating",
+      ar: "متوسط التقييم"
+    },
+    searchVendors: {
+      en: "Search vendors...",
+      ar: "البحث في الموردين..."
+    },
+    inspector: {
+      en: "Inspector",
+      ar: "مفتش"
+    },
+    cleaner: {
+      en: "Cleaner",
+      ar: "منظف"
+    },
+    landscaper: {
+      en: "Landscaper",
+      ar: "منسق حدائق"
+    },
+    photographer: {
+      en: "Photographer",
+      ar: "مصور"
+    },
+    stager: {
+      en: "Stager",
+      ar: "منسق ديكور"
+    },
+    lawyer: {
+      en: "Lawyer",
+      ar: "محامي"
+    },
+    allAvailability: {
+      en: "All Availability",
+      ar: "جميع حالات التوفر"
+    },
+    unavailable: {
+      en: "Unavailable",
+      ar: "غير متاح"
+    },
+    sortByRating: {
+      en: "Sort by Rating",
+      ar: "ترتيب حسب التقييم"
+    },
+    sortByTotalJobs: {
+      en: "Sort by Total Jobs",
+      ar: "ترتيب حسب إجمالي الوظائف"
+    },
+    sortByLastWorked: {
+      en: "Sort by Last Worked",
+      ar: "ترتيب حسب آخر عمل"
+    },
+    insured: {
+      en: "Insured",
+      ar: "مؤمن"
+    },
+    specialties: {
+      en: "Specialties",
+      ar: "التخصصات"
+    },
+    rate: {
+      en: "Rate",
+      ar: "السعر"
+    },
+    hr: {
+      en: "hr",
+      ar: "ساعة"
+    },
+    project: {
+      en: "project",
+      ar: "مشروع"
+    },
+    contactForQuote: {
+      en: "Contact for Quote",
+      ar: "تواصل للحصول على عرض سعر"
+    },
+    totalJobs: {
+      en: "Total Jobs",
+      ar: "إجمالي الوظائف"
+    },
+    certifications: {
+      en: "Certifications",
+      ar: "الشهادات"
+    },
+    lastWorked: {
+      en: "Last Worked",
+      ar: "آخر عمل"
+    },
+    added: {
+      en: "Added",
+      ar: "تم الإضافة"
+    },
   },
 
   // Mobile App Module
   mobileApp: {
     title: { en: 'Mobile App', ar: 'التطبيق المحمول' },
-    subtitle: { en: 'Manage your mobile application and track user engagement', ar: 'إدارة تطبيقك المحمول وتتبع تفاعل المستخدمين' },
     appName: { en: 'CREO Real Estate Mobile', ar: 'تطبيق كريو العقاري المحمول' },
     appDescription: { en: 'Your complete real estate solution on the go', ar: 'حلك العقاري الكامل أثناء التنقل' },
-    reviews: { en: '2,847 reviews', ar: '2,847 مراجعة' },
     downloadIos: { en: 'Download for iOS', ar: 'تحميل لنظام iOS' },
     downloadAndroid: { en: 'Download for Android', ar: 'تحميل لنظام Android' },
     appStatistics: { en: 'App Statistics', ar: 'إحصائيات التطبيق' },
     activeUsers: { en: 'Active Users', ar: 'المستخدمون النشطون' },
     downloads: { en: 'Downloads', ar: 'التحميلات' },
-    rating: { en: 'Rating', ar: 'التقييم' },
-    satisfaction: { en: 'Satisfaction', ar: 'الرضا' },
     keyFeatures: { en: 'Key Features', ar: 'الميزات الرئيسية' },
     realTimeAnalytics: { en: 'Real-time Analytics', ar: 'التحليلات الفورية' },
     analyticsDescription: { en: 'Track performance metrics and market trends instantly', ar: 'تتبع مقاييس الأداء واتجاهات السوق فوراً' },
