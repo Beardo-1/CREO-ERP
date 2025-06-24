@@ -1,0 +1,17 @@
+collection_id,property_id,project_name,unit_number,tenant_name,agent_id,agent_name,collection_month,collection_year,rent_amount,amount_collected,amount_pending,collection_date,payment_method,payment_reference,collection_status,late_fee,notes,created_date
+COL001,PROP001,Green Valley Residences,A-101,Ahmed Hassan,AGT001,Sarah Johnson,January,2024,25000,25000,0,2024-01-15,Bank Transfer,TXN123456789,Collected,0,On time payment,2024-01-15
+COL002,PROP002,Green Valley Residences,A-102,Fatima Al-Zahra,AGT001,Sarah Johnson,January,2024,35000,35000,0,2024-01-10,Cash,CASH001,Collected,0,Early payment,2024-01-10
+COL003,PROP004,Green Valley Residences,B-101,Mohammed Ali,AGT002,Ahmed Rahman,January,2024,18000,18000,0,2024-01-20,Cheque,CHQ987654,Collected,500,5 days late,2024-01-20
+COL004,PROP006,Marina Heights,T1-1001,Khalid Al-Mansouri,AGT003,Layla Hassan,January,2024,55000,55000,0,2024-01-12,Bank Transfer,TXN234567890,Collected,0,On time payment,2024-01-12
+COL005,PROP007,Marina Heights,T1-1002,Noor Abdullah,AGT003,Layla Hassan,January,2024,40000,30000,10000,2024-01-25,Bank Transfer,TXN345678901,Partial,0,Partial payment - remaining pending,2024-01-25
+COL006,PROP009,Business District Plaza,OB-301,Tech Solutions LLC,AGT004,Omar Khalil,January,2024,45000,45000,0,2024-01-05,Bank Transfer,TXN456789012,Collected,0,Early payment,2024-01-05
+COL007,PROP010,Business District Plaza,OB-302,Digital Marketing Co,AGT004,Omar Khalil,January,2024,28000,0,28000,,,Pending,0,Payment overdue,2024-01-31
+COL008,PROP011,Sunset Villas,V-001,Hassan Al-Fahim,AGT005,Amira Said,January,2024,120000,120000,0,2024-01-08,Bank Transfer,TXN567890123,Collected,0,Early payment,2024-01-08
+COL009,PROP001,Green Valley Residences,A-101,Ahmed Hassan,AGT001,Sarah Johnson,February,2024,25000,25000,0,2024-02-15,Bank Transfer,TXN678901234,Collected,0,On time payment,2024-02-15
+COL010,PROP002,Green Valley Residences,A-102,Fatima Al-Zahra,AGT001,Sarah Johnson,February,2024,35000,35000,0,2024-02-10,Bank Transfer,TXN789012345,Collected,0,On time payment,2024-02-10
+COL011,PROP004,Green Valley Residences,B-101,Mohammed Ali,AGT002,Ahmed Rahman,February,2024,18000,18000,0,2024-02-18,Cash,CASH002,Collected,0,On time payment,2024-02-18
+COL012,PROP006,Marina Heights,T1-1001,Khalid Al-Mansouri,AGT003,Layla Hassan,February,2024,55000,55000,0,2024-02-14,Bank Transfer,TXN890123456,Collected,0,On time payment,2024-02-14
+COL013,PROP007,Marina Heights,T1-1002,Noor Abdullah,AGT003,Layla Hassan,February,2024,40000,40000,0,2024-02-28,Cheque,CHQ123789,Collected,1000,Late payment,2024-02-28
+COL014,PROP009,Business District Plaza,OB-301,Tech Solutions LLC,AGT004,Omar Khalil,February,2024,45000,45000,0,2024-02-03,Bank Transfer,TXN901234567,Collected,0,Early payment,2024-02-03
+COL015,PROP010,Business District Plaza,OB-302,Digital Marketing Co,AGT004,Omar Khalil,February,2024,28000,28000,0,2024-02-25,Bank Transfer,TXN012345678,Collected,500,Late payment,2024-02-25
+COL016,PROP011,Sunset Villas,V-001,Hassan Al-Fahim,AGT005,Amira Said,February,2024,120000,120000,0,2024-02-07,Bank Transfer,TXN123456780,Collected,0,Early payment,2024-02-07 

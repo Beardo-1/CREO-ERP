@@ -1,0 +1,2 @@
+id,title,address,city,state,zipCode,price,bedrooms,bathrooms,squareFeet,propertyType,status,description,images,listingDate,agentId,features,yearBuilt,lotSize
+property-1,شقة حديثة,123 Main St,Metropolis,NY,10001,500000,2,2,1200,Residential,Available,"شقة جميلة حديثة",[],2024-06-24,agent-1,"["شرفة","صالة رياضية"]",2020,0.5 

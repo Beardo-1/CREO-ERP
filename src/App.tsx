@@ -84,6 +84,7 @@ import { SystemStatus } from './components/Admin/SystemStatus';
 import { SystemPerformance } from './components/Admin/SystemPerformance';
 import { Settings } from './components/Admin/Settings';
 import { Profile } from './components/Profile/Profile';
+import RentCollections from './components/Collections/RentCollections';
 
 // Safe Component Wrapper
 const SafeComponent: React.FC<{
@@ -1847,6 +1848,20 @@ function App() {
           );
 
         // Leads Sub-routes - DUPLICATE REMOVED
+
+        case 'collections':
+          return (
+            <SafeComponent 
+              component={RentCollections} 
+              name="RentCollections"
+              fallback={
+                <div className="p-8">
+                  <h2 className="text-2xl font-bold mb-4">Rent Collections</h2>
+                  <p className="text-gray-600">Loading rent collections...</p>
+                </div>
+              }
+            />
+          );
 
         default:
           // For truly unknown tabs, show a proper error message without auto-redirect

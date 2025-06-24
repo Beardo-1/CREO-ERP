@@ -161,8 +161,8 @@ export default function SoldProperties() {
     }));
     
     const csvContent = [
-      Object.keys(csvData[0]).join(','),
-      ...csvData.map(row => Object.values(row).join(','))
+      Object.keys((csvData[0] || {})).join(','),
+      ...(csvData || []).map(row => Object.values(row).join(','))
     ].join('\n');
     
     const blob = new Blob([csvContent], { type: 'text/csv' });

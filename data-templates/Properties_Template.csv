@@ -1,0 +1,13 @@
+property_id,project_name,building_name,unit_number,property_type,bedrooms,bathrooms,area_sqft,floor_number,rent_amount,security_deposit,status,tenant_name,tenant_phone,tenant_email,lease_start_date,lease_end_date,agent_id,agent_name,last_maintenance_date,maintenance_cost,created_date,updated_date
+PROP001,Green Valley Residences,Building A,A-101,Apartment,2,2,1200,1,25000,50000,Occupied,Ahmed Hassan,+971501234567,ahmed.hassan@email.com,2024-01-15,2025-01-14,AGT001,Sarah Johnson,2024-11-15,2500,2024-01-10,2024-12-01
+PROP002,Green Valley Residences,Building A,A-102,Apartment,3,2,1500,1,35000,70000,Occupied,Fatima Al-Zahra,+971507654321,fatima.zahra@email.com,2024-03-01,2025-02-28,AGT001,Sarah Johnson,2024-10-20,1800,2024-01-10,2024-12-01
+PROP003,Green Valley Residences,Building A,A-201,Apartment,2,2,1200,2,25000,50000,Vacant,,,,,,,AGT001,Sarah Johnson,2024-12-01,3200,2024-01-10,2024-12-01
+PROP004,Green Valley Residences,Building B,B-101,Apartment,1,1,800,1,18000,36000,Occupied,Mohammed Ali,+971509876543,mohammed.ali@email.com,2024-06-01,2025-05-31,AGT002,Ahmed Rahman,2024-11-10,1200,2024-01-10,2024-12-01
+PROP005,Green Valley Residences,Building B,B-102,Apartment,1,1,800,1,18000,36000,Under Maintenance,,,,,,,AGT002,Ahmed Rahman,2024-11-25,4500,2024-01-10,2024-12-01
+PROP006,Marina Heights,Tower 1,T1-1001,Apartment,3,3,2000,10,55000,110000,Occupied,Khalid Al-Mansouri,+971502345678,khalid.mansouri@email.com,2024-02-15,2025-02-14,AGT003,Layla Hassan,2024-09-15,2800,2024-01-10,2024-12-01
+PROP007,Marina Heights,Tower 1,T1-1002,Apartment,2,2,1400,10,40000,80000,Occupied,Noor Abdullah,+971508765432,noor.abdullah@email.com,2024-04-01,2025-03-31,AGT003,Layla Hassan,2024-11-05,2100,2024-01-10,2024-12-01
+PROP008,Marina Heights,Tower 2,T2-501,Apartment,4,4,2500,5,75000,150000,Vacant,,,,,,,AGT003,Layla Hassan,2024-10-30,5200,2024-01-10,2024-12-01
+PROP009,Business District Plaza,Office Block,OB-301,Commercial,0,2,1000,3,45000,90000,Occupied,Tech Solutions LLC,+971504567890,info@techsolutions.ae,2024-01-01,2024-12-31,AGT004,Omar Khalil,2024-08-15,3500,2024-01-10,2024-12-01
+PROP010,Business District Plaza,Office Block,OB-302,Commercial,0,1,600,3,28000,56000,Occupied,Digital Marketing Co,+971506789012,contact@digitalmarketing.ae,2024-05-15,2025-05-14,AGT004,Omar Khalil,2024-11-20,1900,2024-01-10,2024-12-01
+PROP011,Sunset Villas,Villa Complex,V-001,Villa,5,4,3500,0,120000,240000,Occupied,Hassan Al-Fahim,+971503456789,hassan.fahim@email.com,2024-01-01,2024-12-31,AGT005,Amira Said,2024-07-10,8500,2024-01-10,2024-12-01
+PROP012,Sunset Villas,Villa Complex,V-002,Villa,4,3,3000,0,95000,190000,Vacant,,,,,,,AGT005,Amira Said,2024-11-28,6200,2024-01-10,2024-12-01 

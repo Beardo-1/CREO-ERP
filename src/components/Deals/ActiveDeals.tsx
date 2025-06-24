@@ -476,7 +476,14 @@ export default function ActiveDeals() {
           <Handshake className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">{t(appContent.deals.noDealsFound)}</h3>
           <p className="text-gray-600 mb-6">{t(appContent.deals.adjustSearchCriteria)}</p>
-          <button className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg">
+          <button
+            onClick={() => {
+              // Navigate to Deals Pipeline to create a new deal
+              // @ts-ignore
+              if (window.setActiveTab) window.setActiveTab('deals-pipeline');
+            }}
+            className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all shadow-lg"
+          >
             {t(appContent.deals.createFirstDeal)}
           </button>
         </div>

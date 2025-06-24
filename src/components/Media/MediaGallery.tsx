@@ -141,11 +141,11 @@ export function MediaGallery() {
         item.size,
         item.dimensions,
         item.photographer,
-        item.tags.join('; ')
+        (item.tags || []).join('; ')
       ])
     ];
     
-    const csvContent = reportData.map(row => row.join(',')).join('\n');
+    const csvContent = reportData.map(row => (row || []).join(',')).join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -593,7 +593,7 @@ export function MediaGallery() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
                   <input
                     type="text"
-                    defaultValue={selectedItem.tags.join(', ')}
+                    defaultValue={(selectedItem.tags || []).join(', ')}
                     placeholder="Enter tags separated by commas"
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                   />

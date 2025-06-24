@@ -1,0 +1,18 @@
+[
+  {
+    "id": "deal-1",
+    "propertyId": "property-1",
+    "clientId": "contact-1",
+    "agentId": "agent-1",
+    "type": "Sale",
+    "stage": "Qualified",
+    "value": 500000,
+    "commission": 15000,
+    "expectedCloseDate": "2024-07-01",
+    "actualCloseDate": "",
+    "notes": "Negotiating price.",
+    "createdAt": "2024-06-24",
+    "updatedAt": "2024-06-24",
+    "paymentMethod": "Bank Transfer"
+  }
+]

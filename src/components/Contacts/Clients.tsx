@@ -23,7 +23,8 @@ import {
   Briefcase,
   Download,
   Upload,
-  FileText
+  FileText,
+  X
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
@@ -70,6 +71,10 @@ export default function Clients() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [showImportModal, setShowImportModal] = useState(false);
   const [importResult, setImportResult] = useState<CSVImportResult | null>(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+  const [uploadMessage, setUploadMessage] = useState('');
 
   // Load contacts from dataService
   useEffect(() => {
@@ -340,6 +345,77 @@ export default function Clients() {
     a.download = `clients-export-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === 'text/csv') {
+      setUploadFile(file);
+    } else {
+      alert('Please select a valid CSV file');
+    }
+  };
+
+  const processCSVUpload = async () => {
+    if (!uploadFile) return;
+
+    setUploadStatus('uploading');
+    setUploadMessage('Processing CSV file...');
+
+    try {
+      const text = await uploadFile.text();
+      const lines = text.split('\n');
+      const headers = lines[0].split(',').map(h => h.trim());
+      
+      const newContacts: Partial<Contact>[] = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.trim());
+        if (values.length >= headers.length && values[0]) {
+          const contact: Partial<Contact> = {
+            id: `contact_${Date.now()}_${i}`,
+            name: values[0] || 'Unnamed Contact',
+            email: values[1] || '',
+            phone: values[2] || '',
+            company: values[3] || '',
+            type: (values[4] as any) || 'Client',
+            status: (values[5] as any) || 'Active',
+            address: values[6] || '',
+            city: values[7] || '',
+            country: values[8] || 'Saudi Arabia',
+            notes: values[9] || '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+          newContacts.push(contact);
+        }
+      }
+
+      // Add contacts to the system
+      for (const contact of newContacts) {
+        await unifiedDataService.addContact(contact as Contact);
+      }
+
+      setUploadStatus('success');
+      setUploadMessage(`Successfully uploaded ${newContacts.length} contacts!`);
+      
+      // Reload contacts
+      const loadedContacts = await unifiedDataService.getContacts();
+      setContacts(Array.isArray(loadedContacts) ? loadedContacts : []);
+      
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        setShowUploadModal(false);
+        setUploadFile(null);
+        setUploadStatus('idle');
+        setUploadMessage('');
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error processing CSV:', error);
+      setUploadStatus('error');
+      setUploadMessage('Error processing CSV file. Please check the format.');
+    }
   };
 
   const filteredClients = clients.filter(client => {
@@ -892,6 +968,103 @@ export default function Clients() {
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Upload Contacts CSV</h3>
+              <button
+                onClick={() => setShowUploadModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {uploadStatus === 'idle' && (
+              <div className="space-y-4">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600 mb-4">Select a CSV file to upload contacts</p>
+                  <input
+                    type="file"
+                    accept=".csv"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    id="csv-upload"
+                  />
+                  <label
+                    htmlFor="csv-upload"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg cursor-pointer inline-block transition-colors"
+                  >
+                    Choose CSV File
+                  </label>
+                </div>
+
+                {uploadFile && (
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-700">
+                      <strong>Selected:</strong> {uploadFile.name}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Size: {(uploadFile.size / 1024).toFixed(1)} KB
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setShowUploadModal(false)}
+                    className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={processCSVUpload}
+                    disabled={!uploadFile}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white py-2 px-4 rounded-lg transition-colors"
+                  >
+                    Upload
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {uploadStatus === 'uploading' && (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">{uploadMessage}</p>
+              </div>
+            )}
+
+            {uploadStatus === 'success' && (
+              <div className="text-center py-8">
+                <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4" />
+                <p className="text-green-600 font-medium">{uploadMessage}</p>
+              </div>
+            )}
+
+            {uploadStatus === 'error' && (
+              <div className="text-center py-8">
+                <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
+                <p className="text-red-600 font-medium">{uploadMessage}</p>
+                <button
+                  onClick={() => {
+                    setUploadStatus('idle');
+                    setUploadMessage('');
+                    setUploadFile(null);
+                  }}
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

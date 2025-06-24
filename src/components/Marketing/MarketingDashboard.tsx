@@ -466,7 +466,7 @@ export function MarketingDashboard() {
     ];
 
     if (format === 'csv') {
-      const csvContent = exportData.map(row => row.join(',')).join('\n');
+      const csvContent = (exportData || []).map(row => (row || []).join(',')).join('\n');
       const blob = new Blob([csvContent], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');

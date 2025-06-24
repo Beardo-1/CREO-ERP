@@ -4,6 +4,7 @@ import { NotificationSystem } from '../Notifications/NotificationSystem';
 import { headerContent } from './Header.content';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { spacingResponsive, textResponsive, visibility } from '../../utils/responsive';
+import { SearchBar } from './SearchBar';
 
 interface HeaderProps {
   activeTab: string;
@@ -99,17 +100,9 @@ export function Header({ activeTab, userName: initialUserName, onMobileMenuToggl
         
         {/* Center Section - Search Bar (Desktop Only) */}
         <div className={`${visibility.desktopOnly} flex-1 max-w-md mx-8`}>
-          <div className="relative group">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-amber-500 transition-colors" />
-            <input
-              type="text"
-              placeholder={t(headerContent.searchPlaceholder)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white/70 backdrop-blur-sm border border-gray-200/50 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent focus:bg-white transition-all duration-300 hover:shadow-md hover:bg-white/90"
-              aria-label="Search"
-            />
-          </div>
-          </div>
-          
+          <SearchBar />
+        </div>
+        
         {/* Right Section - Actions */}
         <div className="flex items-center space-x-2 sm:space-x-3">
           {/* Mobile Search Toggle */}

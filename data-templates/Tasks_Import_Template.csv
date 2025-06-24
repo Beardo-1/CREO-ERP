@@ -1,0 +1,2 @@
+id,title,description,assignedTo,relatedTo,priority,status,dueDate,createdAt,completedAt
+task-1,اتصل بمحمد,متابعة مع محمد الأنصاري بشأن اهتمامه بالعقار,agent-1,"{\"type\":\"Contact\",\"id\":\"contact-1\"}",High,Pending,2024-06-25,2024-06-24, 

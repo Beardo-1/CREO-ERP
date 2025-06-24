@@ -509,13 +509,13 @@ export function ClientPortal() {
                         <div>
                           <h4 className="font-medium text-gray-700 mb-2">Property Types</h4>
                           <p className="text-gray-600">
-                            {selectedClient.preferences.propertyTypes.join(', ') || 'Not specified'}
+                            {(selectedClient.preferences.propertyTypes || []).join(', ') || 'Not specified'}
                           </p>
                         </div>
                         <div>
                           <h4 className="font-medium text-gray-700 mb-2">Preferred Locations</h4>
                           <p className="text-gray-600">
-                            {selectedClient.preferences.locations.join(', ') || 'Not specified'}
+                            {(selectedClient.preferences.locations || []).join(', ') || 'Not specified'}
                           </p>
                         </div>
                         <div>

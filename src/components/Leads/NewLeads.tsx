@@ -20,7 +20,14 @@ import {
   User,
   Building,
   DollarSign,
-  X
+  X,
+  UserPlus,
+  Trash2,
+  MoreHorizontal,
+  RefreshCw,
+  Download,
+  Upload,
+  FileText
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
@@ -35,102 +42,86 @@ export default function NewLeads() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+  const [uploadMessage, setUploadMessage] = useState('');
 
-  // Load real leads data
+  // Load leads from localStorage
   useEffect(() => {
-    const loadLeads = () => {
-      try {
-        setLoading(true);
-        const leadsData = realDataService.getLeadsByStatus('new');
-        setLeads(leadsData);
-      } catch (error) {
-        console.error('Error loading leads:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadLeads();
   }, []);
 
-  // Sample leads for initial data (if no real data exists)
-  const sampleLeads: Lead[] = [
-    {
-      id: '1',
-      name: 'Emma Rodriguez',
-      email: 'emma.rodriguez@email.com',
-      phone: '+1 (555) 123-4567',
-      source: 'website',
-      status: 'new',
-      score: 85,
-      interest: 'buying',
-      budget: {
-        min: 300000,
-        max: 450000
-      },
-      location: 'Downtown',
-      propertyType: ['condo', 'apartment'],
-      notes: 'Looking for modern apartment with city view. First-time buyer.',
-      createdDate: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      lastContact: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      nextFollowUp: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      agent: {
-        id: '1',
-        name: 'Mike Chen'
-      },
-      tags: ['first-time-buyer', 'high-priority']
-    },
-    {
-      id: '2',
-      name: 'David Thompson',
-      email: 'david.thompson@email.com',
-      phone: '+1 (555) 234-5678',
-      source: 'referral',
-      status: 'new',
-      score: 92,
-      interest: 'selling',
-      budget: {
-        min: 0,
-        max: 0
-      },
-      location: 'Suburbs',
-      propertyType: ['house'],
-      notes: 'Referred by existing client. Wants to sell family home.',
-      createdDate: new Date(Date.now() - 4 * 60 * 60 * 1000),
-      lastContact: new Date(Date.now() - 4 * 60 * 60 * 1000),
-      nextFollowUp: new Date(Date.now() + 12 * 60 * 60 * 1000),
-      agent: {
-        id: '2',
-        name: 'Sarah Johnson'
-      },
-      tags: ['referral', 'hot-lead']
-    },
-    {
-      id: '3',
-      name: 'Lisa Chen',
-      email: 'lisa.chen@email.com',
-      phone: '+1 (555) 345-6789',
-      source: 'social',
-      status: 'new',
-      score: 78,
-      interest: 'investing',
-      budget: {
-        min: 200000,
-        max: 500000
-      },
-      location: 'Arts District',
-      propertyType: ['apartment', 'loft'],
-      notes: 'Interested in investment properties. Looking for rental income.',
-      createdDate: new Date(Date.now() - 6 * 60 * 60 * 1000),
-      lastContact: new Date(Date.now() - 6 * 60 * 60 * 1000),
-      nextFollowUp: new Date(Date.now() + 48 * 60 * 60 * 1000),
-      agent: {
-        id: '3',
-        name: 'Emily Davis'
-      },
-      tags: ['investor', 'social-media']
+  const loadLeads = () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const leadsData = realDataService.getLeadsByStatus('new');
+      setLeads(leadsData);
+      
+      // If no leads exist, add some sample data
+      if (leadsData.length === 0) {
+        addSampleLeads();
+      }
+    } catch (err) {
+      console.error('Error loading leads:', err);
+      setError('Failed to load leads');
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const addSampleLeads = () => {
+    const sampleLeads = [
+      {
+        name: 'أحمد محمد',
+        email: 'ahmed.mohammed@email.com',
+        phone: '+966501234567',
+        source: 'website' as const,
+        status: 'new' as const,
+        score: 85,
+        interest: 'buying' as const,
+        budget: { min: 800000, max: 1200000 },
+        location: 'الرياض',
+        propertyType: ['residential'],
+        notes: 'مهتم بشقة 3 غرف في حي الملز',
+        lastContact: new Date(),
+        nextFollowUp: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+        agent: { id: 'agent1', name: 'سارة أحمد' },
+        tags: ['hot-lead', 'first-time-buyer']
+      },
+      {
+        name: 'فاطمة علي',
+        email: 'fatima.ali@email.com',
+        phone: '+966507654321',
+        source: 'referral' as const,
+        status: 'new' as const,
+        score: 92,
+        interest: 'investing' as const,
+        budget: { min: 1500000, max: 2500000 },
+        location: 'جدة',
+        propertyType: ['commercial', 'residential'],
+        notes: 'مستثمرة تبحث عن عقارات للاستثمار',
+        lastContact: new Date(),
+        nextFollowUp: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+        agent: { id: 'agent2', name: 'محمد خالد' },
+        tags: ['investor', 'high-value']
+      }
+    ];
+
+    try {
+      sampleLeads.forEach(leadData => {
+        realDataService.addLead(leadData);
+      });
+      // Reload leads after adding sample data
+      const updatedLeads = realDataService.getLeadsByStatus('new');
+      setLeads(updatedLeads);
+    } catch (error) {
+      console.error('Error adding sample leads:', error);
+    }
+  };
 
   const getSourceColor = (source: string) => {
     const colors = {
@@ -188,34 +179,6 @@ export default function NewLeads() {
     return `${Math.floor(hours / 24)} days ago`;
   };
 
-  // Initialize with sample data if no real data exists
-  useEffect(() => {
-    if (leads.length === 0 && !loading) {
-      sampleLeads.forEach(lead => {
-        realDataService.addLead({
-          name: lead.name,
-          email: lead.email,
-          phone: lead.phone,
-          source: lead.source,
-          status: lead.status,
-          score: lead.score,
-          interest: lead.interest,
-          budget: lead.budget,
-          location: lead.location,
-          propertyType: lead.propertyType,
-          notes: lead.notes,
-          lastContact: lead.lastContact,
-          nextFollowUp: lead.nextFollowUp,
-          agent: lead.agent,
-          tags: lead.tags
-        });
-      });
-      // Reload leads after adding sample data
-      const leadsData = realDataService.getLeadsByStatus('new');
-      setLeads(leadsData);
-    }
-  }, [leads.length, loading]);
-
   const filteredLeads = leads.filter((lead: Lead) => {
     const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lead.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -236,6 +199,7 @@ export default function NewLeads() {
       setShowAddModal(false);
     } catch (error) {
       console.error('Error adding lead:', error);
+      setError('Failed to add lead');
     }
   };
 
@@ -247,6 +211,7 @@ export default function NewLeads() {
       }
     } catch (error) {
       console.error('Error updating lead:', error);
+      setError('Failed to update lead');
     }
   };
 
@@ -258,6 +223,7 @@ export default function NewLeads() {
       }
     } catch (error) {
       console.error('Error deleting lead:', error);
+      setError('Failed to delete lead');
     }
   };
 
@@ -272,7 +238,101 @@ export default function NewLeads() {
       }
     } catch (error) {
       console.error('Error converting lead:', error);
+      setError('Failed to convert lead');
     }
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === 'text/csv') {
+      setUploadFile(file);
+    } else {
+      alert('Please select a valid CSV file');
+    }
+  };
+
+  const processCSVUpload = async () => {
+    if (!uploadFile) return;
+
+    setUploadStatus('uploading');
+    setUploadMessage('Processing CSV file...');
+
+    try {
+      const text = await uploadFile.text();
+      const lines = text.split('\n');
+      const headers = lines[0].split(',').map(h => h.trim());
+      
+      const newLeads = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.trim());
+        if (values.length >= headers.length && values[0]) {
+          const leadData = {
+            name: values[0] || 'Unnamed Lead',
+            email: values[1] || '',
+            phone: values[2] || '',
+            source: (values[3] as any) || 'website',
+            status: 'new' as const,
+            score: parseInt(values[4]) || 75,
+            interest: (values[5] as any) || 'buying',
+            budget: { 
+              min: parseInt(values[6]) || 100000, 
+              max: parseInt(values[7]) || 500000 
+            },
+            location: values[8] || '',
+            propertyType: [values[9] || 'residential'],
+            notes: values[10] || '',
+            lastContact: new Date(),
+            nextFollowUp: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            agent: { id: 'agent1', name: 'Agent' },
+            tags: values[11] ? values[11].split(';') : []
+          };
+          newLeads.push(leadData);
+        }
+      }
+
+      // Add leads to the system
+      for (const leadData of newLeads) {
+        realDataService.addLead(leadData);
+      }
+
+      setUploadStatus('success');
+      setUploadMessage(`Successfully uploaded ${newLeads.length} leads!`);
+      
+      // Reload leads
+      const updatedLeads = realDataService.getLeadsByStatus('new');
+      setLeads(updatedLeads);
+      
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        setShowUploadModal(false);
+        setUploadFile(null);
+        setUploadStatus('idle');
+        setUploadMessage('');
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error processing CSV:', error);
+      setUploadStatus('error');
+      setUploadMessage('Error processing CSV file. Please check the format.');
+    }
+  };
+
+  const downloadTemplate = () => {
+    const csvContent = `Name,Email,Phone,Source,Score,Interest,Budget Min,Budget Max,Location,Property Type,Notes,Tags
+Ahmed Al-Rashid,ahmed.rashid@email.com,+966501234567,website,85,buying,800000,1200000,Riyadh,residential,Interested in luxury villa,hot-lead;first-time-buyer
+Sarah Al-Mahmoud,sarah.mahmoud@email.com,+966507654321,referral,92,investing,1500000,2500000,Jeddah,commercial,Looking for investment opportunities,investor;high-value
+Mohammed Al-Harbi,mohammed.harbi@email.com,+966512345678,social,78,renting,50000,80000,Dammam,residential,Needs family apartment,family;urgent`;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'leads_template.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   };
 
   if (loading) {
@@ -288,6 +348,127 @@ export default function NewLeads() {
 
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-white">
+      {/* Header with Upload Button */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">New Leads</h1>
+          <p className="text-gray-600">Manage and nurture your new leads</p>
+        </div>
+        <div className="flex space-x-3">
+          <button
+            onClick={() => setShowUploadModal(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          >
+            <Upload className="w-4 h-4" />
+            <span>Upload CSV</span>
+          </button>
+          <button
+            onClick={downloadTemplate}
+            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            <span>Template</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Upload Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Upload Leads CSV</h3>
+              <button
+                onClick={() => setShowUploadModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {uploadStatus === 'idle' && (
+              <div className="space-y-4">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600 mb-4">Select a CSV file to upload leads</p>
+                  <input
+                    type="file"
+                    accept=".csv"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    id="csv-upload"
+                  />
+                  <label
+                    htmlFor="csv-upload"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg cursor-pointer inline-block transition-colors"
+                  >
+                    Choose CSV File
+                  </label>
+                </div>
+
+                {uploadFile && (
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-700">
+                      <strong>Selected:</strong> {uploadFile.name}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Size: {(uploadFile.size / 1024).toFixed(1)} KB
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setShowUploadModal(false)}
+                    className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={processCSVUpload}
+                    disabled={!uploadFile}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white py-2 px-4 rounded-lg transition-colors"
+                  >
+                    Upload
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {uploadStatus === 'uploading' && (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">{uploadMessage}</p>
+              </div>
+            )}
+
+            {uploadStatus === 'success' && (
+              <div className="text-center py-8">
+                <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4" />
+                <p className="text-green-600 font-medium">{uploadMessage}</p>
+              </div>
+            )}
+
+            {uploadStatus === 'error' && (
+              <div className="text-center py-8">
+                <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
+                <p className="text-red-600 font-medium">{uploadMessage}</p>
+                <button
+                  onClick={() => {
+                    setUploadStatus('idle');
+                    setUploadMessage('');
+                    setUploadFile(null);
+                  }}
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
@@ -448,7 +629,7 @@ export default function NewLeads() {
                   {formatPrice(lead.budget.min)} - {formatPrice(lead.budget.max)}
                 </div>
                 <div className="text-xs text-gray-600 mt-1">
-                  {t(appContent.leads.interestedIn)}: {lead.propertyType.join(', ')}
+                  {t(appContent.leads.interestedIn)}: {(lead.propertyType || []).join(', ')}
                 </div>
               </div>
             )}

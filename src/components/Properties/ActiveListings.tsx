@@ -3,7 +3,7 @@ import { PropertyCard } from './PropertyCard';
 import { Property } from '../../types';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
-import { Plus, Search, Filter, Download, Eye, Edit, Trash2, MapPin, Bed, Bath, Square, Calendar, DollarSign, X, Upload, Image, Building } from 'lucide-react';
+import { Plus, Search, Filter, Download, Eye, Edit, Trash2, MapPin, Bed, Bath, Square, Calendar, DollarSign, X, Upload, Image, Building, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import { unifiedDataService } from '../../services/unifiedDataService';
 
 interface NewProperty {
@@ -57,11 +57,17 @@ const ActiveListings: React.FC = () => {
     listingDate: new Date().toISOString().split('T')[0],
     agent: 'Current Agent'
   });
+  const [loading, setLoading] = useState(true);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+  const [uploadMessage, setUploadMessage] = useState('');
 
   // Load properties from dataService
   useEffect(() => {
     const loadProperties = async () => {
       try {
+        setLoading(true);
         const loadedProperties = await unifiedDataService.getProperties();
         // Ensure we have an array
         const safeProperties = Array.isArray(loadedProperties) ? loadedProperties : [];
@@ -69,6 +75,8 @@ const ActiveListings: React.FC = () => {
       } catch (error) {
         console.error('Error loading properties:', error);
         setProperties([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -271,6 +279,97 @@ const ActiveListings: React.FC = () => {
     }).format(price);
   };
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === 'text/csv') {
+      setUploadFile(file);
+    } else {
+      alert('Please select a valid CSV file');
+    }
+  };
+
+  const processCSVUpload = async () => {
+    if (!uploadFile) return;
+
+    setUploadStatus('uploading');
+    setUploadMessage('Processing CSV file...');
+
+    try {
+      const text = await uploadFile.text();
+      const lines = text.split('\n');
+      const headers = lines[0].split(',').map(h => h.trim());
+      
+      const newProperties: Partial<Property>[] = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.trim());
+        if (values.length >= headers.length && values[0]) {
+          const property: Partial<Property> = {
+            id: `prop_${Date.now()}_${i}`,
+            title: values[0] || 'Untitled Property',
+            address: values[1] || '',
+            city: values[2] || '',
+            state: values[3] || '',
+            country: values[4] || 'Saudi Arabia',
+            price: parseFloat(values[5]) || 0,
+            type: values[6] || 'Residential',
+                         status: (values[7] as any) || 'Available',
+            bedrooms: parseInt(values[8]) || 0,
+            bathrooms: parseInt(values[9]) || 0,
+            area: parseInt(values[10]) || 0,
+            agent: values[11] || 'Unassigned',
+            description: values[12] || '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+          newProperties.push(property);
+        }
+      }
+
+      // Add properties to the system
+      for (const property of newProperties) {
+        await unifiedDataService.addProperty(property as Property);
+      }
+
+      setUploadStatus('success');
+      setUploadMessage(`Successfully uploaded ${newProperties.length} properties!`);
+      
+      // Reload properties
+      const loadedProperties = await unifiedDataService.getProperties();
+      setProperties(Array.isArray(loadedProperties) ? loadedProperties : []);
+      
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        setShowUploadModal(false);
+        setUploadFile(null);
+        setUploadStatus('idle');
+        setUploadMessage('');
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error processing CSV:', error);
+      setUploadStatus('error');
+      setUploadMessage('Error processing CSV file. Please check the format.');
+    }
+  };
+
+  const downloadTemplate = () => {
+    const csvContent = `Title,Address,City,State,Country,Price,Type,Status,Bedrooms,Bathrooms,Area,Agent,Description
+Sample Villa,123 King Fahd Road,Riyadh,Riyadh Province,Saudi Arabia,1200000,Villa,Available,4,3,350,Ahmed Al-Rashid,Luxury villa in prime location
+Modern Apartment,456 Olaya Street,Riyadh,Riyadh Province,Saudi Arabia,800000,Apartment,Available,2,2,120,Sarah Al-Mahmoud,Modern apartment with city view
+Commercial Office,789 Business District,Jeddah,Makkah Province,Saudi Arabia,2500000,Commercial,Available,0,2,200,Mohammed Al-Harbi,Prime commercial space`;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'properties_template.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white p-6">
       <div className="max-w-7xl mx-auto">
@@ -341,13 +440,121 @@ const ActiveListings: React.FC = () => {
           </div>
         </div>
 
+        {/* Upload Modal */}
+        {showUploadModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl p-6 w-full max-w-md">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Upload Properties CSV</h3>
+                <button
+                  onClick={() => setShowUploadModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {uploadStatus === 'idle' && (
+                <div className="space-y-4">
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600 mb-4">Select a CSV file to upload properties</p>
+                    <input
+                      type="file"
+                      accept=".csv"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      id="csv-upload"
+                    />
+                    <label
+                      htmlFor="csv-upload"
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg cursor-pointer inline-block transition-colors"
+                    >
+                      Choose CSV File
+                    </label>
+                  </div>
+
+                  {uploadFile && (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm text-gray-700">
+                        <strong>Selected:</strong> {uploadFile.name}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Size: {(uploadFile.size / 1024).toFixed(1)} KB
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={() => setShowUploadModal(false)}
+                      className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={processCSVUpload}
+                      disabled={!uploadFile}
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white py-2 px-4 rounded-lg transition-colors"
+                    >
+                      Upload
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {uploadStatus === 'uploading' && (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-600">{uploadMessage}</p>
+                </div>
+              )}
+
+              {uploadStatus === 'success' && (
+                <div className="text-center py-8">
+                  <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4" />
+                  <p className="text-green-600 font-medium">{uploadMessage}</p>
+                </div>
+              )}
+
+              {uploadStatus === 'error' && (
+                <div className="text-center py-8">
+                  <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
+                  <p className="text-red-600 font-medium">{uploadMessage}</p>
+                  <button
+                    onClick={() => {
+                      setUploadStatus('idle');
+                      setUploadMessage('');
+                      setUploadFile(null);
+                    }}
+                    className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Properties Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProperties.length === 0 ? (
+          {loading ? (
+            <div className="col-span-full text-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading properties...</p>
+            </div>
+          ) : filteredProperties.length === 0 ? (
             <div className="col-span-full text-center py-12">
               <Filter className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No properties found</h3>
               <p className="text-gray-500">Try adjusting your search or filters, or add a new property.</p>
+              <button
+                onClick={() => setShowUploadModal(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Upload Properties CSV
+              </button>
             </div>
           ) : (
             filteredProperties.map((property) => (

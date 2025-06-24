@@ -1,0 +1,17 @@
+[
+  {
+    "id": "task-1",
+    "title": "Call John Doe",
+    "description": "Follow up with John Doe about his property interest.",
+    "assignedTo": "agent-1",
+    "relatedTo": {
+      "type": "Contact",
+      "id": "contact-1"
+    },
+    "priority": "High",
+    "status": "Pending",
+    "dueDate": "2024-06-25",
+    "createdAt": "2024-06-24",
+    "completedAt": ""
+  }
+]

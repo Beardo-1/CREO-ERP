@@ -464,8 +464,23 @@ export function parseExcelFile<T>(file: File): Promise<T[]> {
 }
 
 export function parseCsvWithPapa<T = any>(csv: string): T[] {
-  // @ts-expect-error: papaparse types may not be found
-  const Papa = require('papaparse');
-  const result = Papa.parse(csv, { header: true });
-  return result.data as T[];
+  // Simple CSV parser without external dependencies
+  const lines = csv.trim().split('\n');
+  if (lines.length < 2) return [];
+  
+  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+  const data: T[] = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+    if (values.length === headers.length) {
+      const row: any = {};
+      headers.forEach((header, index) => {
+        row[header] = values[index];
+      });
+      data.push(row as T);
+    }
+  }
+  
+  return data;
 } 

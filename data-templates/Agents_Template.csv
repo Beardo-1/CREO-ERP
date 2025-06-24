@@ -1,0 +1,9 @@
+agent_id,agent_name,agent_email,agent_phone,hire_date,commission_rate,specialization,total_properties_managed,total_collections_ytd,performance_rating,status,manager_id,territory,created_date,updated_date
+AGT001,Sarah Johnson,sarah.johnson@creo.ae,+971501111111,2023-03-15,5.0,Residential,3,85000,4.8,Active,MGR001,Green Valley Area,2023-03-15,2024-12-01
+AGT002,Ahmed Rahman,ahmed.rahman@creo.ae,+971502222222,2023-06-01,4.5,Residential,2,36000,4.5,Active,MGR001,Green Valley Area,2023-06-01,2024-12-01
+AGT003,Layla Hassan,layla.hassan@creo.ae,+971503333333,2023-01-10,6.0,Luxury Residential,3,135000,4.9,Active,MGR002,Marina District,2023-01-10,2024-12-01
+AGT004,Omar Khalil,omar.khalil@creo.ae,+971504444444,2023-04-20,5.5,Commercial,2,73000,4.7,Active,MGR002,Business District,2023-04-20,2024-12-01
+AGT005,Amira Said,amira.said@creo.ae,+971505555555,2023-02-28,7.0,Luxury Villas,2,240000,5.0,Active,MGR003,Premium Areas,2023-02-28,2024-12-01
+AGT006,Khalid Al-Mansoori,khalid.mansoori@creo.ae,+971506666666,2023-08-15,4.0,Residential,0,0,4.2,Active,MGR001,New Developments,2023-08-15,2024-12-01
+AGT007,Fatima Al-Zahra,fatima.zahra@creo.ae,+971507777777,2023-09-01,4.5,Commercial,0,0,4.3,Active,MGR002,Industrial Zone,2023-09-01,2024-12-01
+AGT008,Mohammed Al-Rashid,mohammed.rashid@creo.ae,+971508888888,2023-10-10,5.0,Mixed Use,0,0,4.0,Active,MGR003,Mixed Developments,2023-10-10,2024-12-01 

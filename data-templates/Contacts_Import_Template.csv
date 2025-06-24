@@ -1,0 +1,2 @@
+id,firstName,lastName,email,phone,type,status,source,assignedAgent,notes,createdAt,lastContact,propertyInterests,budget
+contact-1,محمد,الأنصاري,mohammed.ansari@example.com,555-1234,Client,Qualified,Website,agent-1,"مهتم بشراء شقة",2024-06-24,2024-06-24,"[property-1]","{\"min\":400000,\"max\":600000}" 

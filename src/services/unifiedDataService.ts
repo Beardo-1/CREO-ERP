@@ -27,19 +27,9 @@ class UnifiedDataService {
   }
 
   private determineDataSource(): void {
-    // Check if we're in production environment
-    const isProd = import.meta.env.PROD;
-    
-    // Check if user is authenticated and wants to use production data
-    const useProductionData = localStorage.getItem('creo_use_production') === 'true';
-    const isAuthenticated = localStorage.getItem('creo_authenticated') === 'true';
-    
-    // Use production service if:
-    // 1. We're in production environment, OR
-    // 2. User explicitly enabled production mode and is authenticated
-    this.useProduction = isProd || (useProductionData && isAuthenticated);
-    
-    console.log(`UnifiedDataService: Using ${this.useProduction ? 'Production (Supabase)' : 'Development (localStorage)'} data service`);
+    // Force local data service for all environments
+    this.useProduction = false;
+    console.log('UnifiedDataService: Forced to use Development (localStorage) data service');
   }
 
   // Method to manually switch data sources

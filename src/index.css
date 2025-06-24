@@ -1,9 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
+/* Arabic Font Support */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Arabic Font Support */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   body {

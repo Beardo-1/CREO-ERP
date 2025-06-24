@@ -1,0 +1,26 @@
+[
+  {
+    "id": "property-1",
+    "title": "Modern Apartment",
+    "address": "123 Main St",
+    "city": "Metropolis",
+    "state": "NY",
+    "zipCode": "10001",
+    "price": 500000,
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "squareFeet": 1200,
+    "propertyType": "Residential",
+    "status": "Available",
+    "description": "A beautiful modern apartment.",
+    "images": [],
+    "listingDate": "2024-06-24",
+    "agentId": "agent-1",
+    "features": [
+      "Balcony",
+      "Gym"
+    ],
+    "yearBuilt": 2020,
+    "lotSize": 0.5
+  }
+]

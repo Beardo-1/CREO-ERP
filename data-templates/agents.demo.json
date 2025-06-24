@@ -1,0 +1,16 @@
+[
+  {
+    "id": "agent-1",
+    "firstName": "Alice",
+    "lastName": "Smith",
+    "email": "alice.smith@creoerp.com",
+    "phone": "555-5678",
+    "role": "Agent",
+    "licenseNumber": "LIC12345",
+    "profileImage": "",
+    "joinDate": "2022-01-01",
+    "totalSales": 10,
+    "activeListings": 2,
+    "commission": 50000
+  }
+]

@@ -1,0 +1,101 @@
+agent_id,agent_name,agent_email,agent_phone,hire_date,commission_rate,specialization,total_properties_managed,total_collections_ytd,performance_rating,status,manager_id,territory,created_date,updated_date
+AGT001,Layla Abdullah,layla.abdullah@example.com,+971588231370,2022-04-27,4.2,Apartments,0,114694,4.5,Inactive,MGR002,Premium Areas,2019-10-05,2020-05-22
+AGT002,Amira Abdullah,amira.abdullah@example.com,+971518385107,2022-05-04,4.1,Commercial,2,164806,4.0,Inactive,MGR001,Green Valley Area,2021-09-12,2024-04-14
+AGT003,Sarah Said,sarah.said@example.com,+971572383759,2022-04-05,5.5,Residential,0,182812,3.0,Inactive,MGR001,Industrial Zone,2022-01-10,2022-01-26
+AGT004,Sarah Al-Rashid,sarah.alrashid@example.com,+971557641302,2018-09-24,7.0,Luxury Residential,0,124039,4.4,Active,MGR002,Premium Areas,2019-11-29,2022-05-28
+AGT005,Khalid Fahim,khalid.fahim@example.com,+971563285052,2022-10-26,5.1,Residential,7,104838,2.5,Active,MGR003,Green Valley Area,2019-02-09,2019-05-01
+AGT006,Fatima Khalil,fatima.khalil@example.com,+971570376379,2018-06-03,6.2,Apartments,9,81922,3.5,Active,MGR002,Mixed Developments,2018-11-01,2022-07-08
+AGT007,Noor Fahim,noor.fahim@example.com,+971520732217,2018-07-05,7.6,Villas,3,24003,4.5,Inactive,MGR002,Premium Areas,2020-01-06,2021-09-05
+AGT008,Youssef Abdullah,youssef.abdullah@example.com,+971597588777,2020-12-18,7.8,Villas,4,85933,3.4,Active,MGR002,Green Valley Area,2024-06-19,2024-12-17
+AGT009,Ahmed Abdullah,ahmed.abdullah@example.com,+971561153121,2019-12-09,6.4,Residential,6,10678,2.2,Active,MGR002,Business District,2022-02-12,2023-05-16
+AGT010,Amira Abdullah,amira.abdullah@example.com,+971534255680,2024-01-30,5.2,Mixed Use,10,140553,4.1,Inactive,MGR003,Marina District,2019-03-22,2019-04-10
+AGT011,Khalid Abdullah,khalid.abdullah@example.com,+971587382842,2025-02-23,7.3,Luxury Residential,2,94893,3.6,Active,MGR002,Premium Areas,2024-02-04,2024-11-07
+AGT012,Ahmed Hassan,ahmed.hassan@example.com,+971556514906,2020-10-06,3.4,Mixed Use,7,197842,2.7,Active,MGR003,Marina District,2023-10-17,2024-12-29
+AGT013,Fatima Al-Mansoori,fatima.almansoori@example.com,+971520709773,2021-06-22,4.9,Commercial,8,141409,2.2,Active,MGR003,Business District,2018-12-18,2023-02-11
+AGT014,Mohammed Abdullah,mohammed.abdullah@example.com,+971577202539,2024-12-02,6.9,Villas,7,6668,3.4,Active,MGR003,Mixed Developments,2019-11-13,2022-05-28
+AGT015,Ahmed Khalil,ahmed.khalil@example.com,+971558683164,2021-12-10,4.5,Apartments,3,102096,3.9,Inactive,MGR001,Green Valley Area,2023-01-04,2023-09-30
+AGT016,Khalid Said,khalid.said@example.com,+971572266059,2022-05-21,7.8,Mixed Use,7,83832,4.8,Inactive,MGR002,Marina District,2019-05-01,2020-05-23
+AGT017,Khalid Johnson,khalid.johnson@example.com,+971529389888,2020-09-19,5.2,Luxury Residential,10,188375,3.5,Inactive,MGR002,Green Valley Area,2024-07-22,2024-08-06
+AGT018,Khalid Abdullah,khalid.abdullah@example.com,+971544304329,2019-10-07,4.7,Villas,6,142890,4.0,Inactive,MGR001,Business District,2019-12-22,2020-03-13
+AGT019,Fatima Abdullah,fatima.abdullah@example.com,+971582671886,2023-05-16,6.1,Apartments,5,75489,3.4,Active,MGR002,New Developments,2019-05-16,2022-08-20
+AGT020,Youssef Al-Zahra,youssef.alzahra@example.com,+971563606680,2020-12-12,4.1,Mixed Use,5,135555,2.8,Inactive,MGR003,Marina District,2020-01-20,2024-09-14
+AGT021,Fatima Al-Zahra,fatima.alzahra@example.com,+971517422264,2025-06-02,6.9,Mixed Use,0,135907,2.7,Inactive,MGR001,Business District,2018-11-21,2019-09-03
+AGT022,Youssef Al-Zahra,youssef.alzahra@example.com,+971596059370,2022-09-09,5.1,Villas,2,105129,3.3,Inactive,MGR002,Industrial Zone,2021-03-17,2024-05-10
+AGT023,Mohammed Khalil,mohammed.khalil@example.com,+971511095280,2018-04-22,7.2,Apartments,5,185285,2.6,Active,MGR002,Business District,2025-04-28,2025-06-13
+AGT024,Amira Rahman,amira.rahman@example.com,+971555086697,2019-12-22,5.5,Commercial,9,47363,3.6,Active,MGR002,Green Valley Area,2021-05-17,2023-08-07
+AGT025,Youssef Al-Mansoori,youssef.almansoori@example.com,+971592152162,2025-05-31,3.5,Luxury Residential,4,125269,4.6,Active,MGR001,Mixed Developments,2018-07-28,2021-07-17
+AGT026,Khalid Al-Mansoori,khalid.almansoori@example.com,+971544287476,2023-04-28,4.3,Residential,5,35347,2.1,Active,MGR001,Business District,2020-10-24,2020-12-27
+AGT027,Youssef Johnson,youssef.johnson@example.com,+971592294753,2020-04-25,7.3,Commercial,7,27344,4.8,Inactive,MGR001,New Developments,2020-08-18,2025-03-02
+AGT028,Omar Fahim,omar.fahim@example.com,+971511769149,2024-08-16,4.0,Luxury Residential,3,19406,2.6,Inactive,MGR002,Mixed Developments,2025-06-19,2025-06-23
+AGT029,Mohammed Abdullah,mohammed.abdullah@example.com,+971514032609,2022-10-26,6.5,Apartments,4,164650,2.9,Active,MGR003,Green Valley Area,2019-08-17,2023-07-30
+AGT030,Noor Johnson,noor.johnson@example.com,+971595141116,2022-09-17,3.2,Villas,9,25023,4.6,Inactive,MGR001,Industrial Zone,2023-05-11,2023-10-14
+AGT031,Mohammed Khalil,mohammed.khalil@example.com,+971552058664,2020-12-24,6.8,Luxury Residential,8,47430,3.8,Inactive,MGR003,New Developments,2024-09-13,2024-12-07
+AGT032,Ahmed Fahim,ahmed.fahim@example.com,+971584505706,2019-02-10,4.6,Luxury Residential,8,190593,2.6,Active,MGR001,Marina District,2019-08-25,2023-12-13
+AGT033,Fatima Al-Zahra,fatima.alzahra@example.com,+971563350022,2022-01-23,5.8,Commercial,7,137992,4.3,Inactive,MGR002,Mixed Developments,2019-04-27,2023-04-28
+AGT034,Ahmed Johnson,ahmed.johnson@example.com,+971537269455,2024-11-24,6.3,Residential,3,42991,2.5,Active,MGR003,Business District,2022-09-27,2023-07-16
+AGT035,Sarah Al-Rashid,sarah.alrashid@example.com,+971586950131,2019-09-06,3.6,Apartments,5,84272,4.3,Inactive,MGR003,New Developments,2019-02-16,2024-12-29
+AGT036,Omar Al-Rashid,omar.alrashid@example.com,+971591889090,2022-07-30,3.5,Residential,9,33333,2.6,Active,MGR001,Green Valley Area,2025-02-10,2025-02-20
+AGT037,Mohammed Johnson,mohammed.johnson@example.com,+971529923916,2018-04-10,5.6,Villas,1,182277,3.0,Active,MGR001,New Developments,2024-12-08,2025-04-28
+AGT038,Ahmed Al-Rashid,ahmed.alrashid@example.com,+971532684706,2021-06-01,7.0,Mixed Use,2,23918,4.7,Inactive,MGR003,Industrial Zone,2021-12-02,2024-11-28
+AGT039,Amira Fahim,amira.fahim@example.com,+971527900749,2020-04-10,6.8,Commercial,8,107563,4.1,Active,MGR002,Premium Areas,2022-01-28,2022-06-14
+AGT040,Sarah Al-Rashid,sarah.alrashid@example.com,+971542323117,2019-04-30,6.9,Villas,5,56369,2.3,Inactive,MGR003,Business District,2024-10-23,2025-03-28
+AGT041,Noor Al-Rashid,noor.alrashid@example.com,+971575849860,2018-09-16,6.9,Residential,8,152960,4.9,Inactive,MGR001,Marina District,2023-09-18,2023-09-25
+AGT042,Ahmed Al-Rashid,ahmed.alrashid@example.com,+971524454356,2022-09-24,7.6,Commercial,8,116494,2.4,Active,MGR003,Marina District,2018-08-01,2020-02-04
+AGT043,Layla Fahim,layla.fahim@example.com,+971567056198,2019-01-14,4.9,Commercial,8,97045,3.5,Active,MGR002,New Developments,2021-10-01,2024-04-14
+AGT044,Khalid Abdullah,khalid.abdullah@example.com,+971554897916,2019-09-01,7.1,Commercial,1,105538,2.8,Active,MGR001,Premium Areas,2021-11-08,2023-01-15
+AGT045,Layla Al-Mansoori,layla.almansoori@example.com,+971558629804,2023-09-01,4.3,Residential,8,160916,4.5,Inactive,MGR001,New Developments,2021-03-15,2025-01-08
+AGT046,Layla Al-Zahra,layla.alzahra@example.com,+971541385179,2019-06-23,7.7,Commercial,4,188439,2.4,Inactive,MGR001,New Developments,2019-02-21,2024-04-25
+AGT047,Noor Fahim,noor.fahim@example.com,+971550681293,2019-04-25,3.2,Mixed Use,6,176260,3.1,Active,MGR003,Marina District,2019-02-15,2022-03-07
+AGT048,Omar Rahman,omar.rahman@example.com,+971581908753,2020-10-23,4.5,Mixed Use,1,123020,3.5,Active,MGR003,Marina District,2019-11-01,2023-11-02
+AGT049,Khalid Khalil,khalid.khalil@example.com,+971521735735,2025-04-16,4.0,Apartments,7,131925,5.0,Active,MGR002,Green Valley Area,2020-05-27,2021-10-19
+AGT050,Mohammed Hassan,mohammed.hassan@example.com,+971574045339,2023-08-18,5.3,Villas,0,112908,4.6,Active,MGR002,Mixed Developments,2024-09-26,2025-02-16
+AGT051,Omar Rahman,omar.rahman@example.com,+971579702571,2020-01-01,6.6,Commercial,4,150367,3.1,Active,MGR002,Business District,2019-06-25,2021-08-16
+AGT052,Ahmed Al-Mansoori,ahmed.almansoori@example.com,+971579820931,2021-12-23,5.8,Luxury Residential,4,73611,2.2,Active,MGR003,Industrial Zone,2023-05-20,2023-07-12
+AGT053,Khalid Said,khalid.said@example.com,+971588318551,2020-05-08,3.3,Luxury Residential,7,43439,4.9,Active,MGR001,New Developments,2025-03-31,2025-04-07
+AGT054,Noor Johnson,noor.johnson@example.com,+971516019143,2023-10-23,4.5,Luxury Residential,7,11250,4.1,Inactive,MGR003,Premium Areas,2020-11-07,2024-03-08
+AGT055,Sarah Al-Mansoori,sarah.almansoori@example.com,+971551415871,2019-04-19,4.4,Commercial,10,168412,2.6,Active,MGR002,Mixed Developments,2021-03-23,2024-03-16
+AGT056,Sarah Johnson,sarah.johnson@example.com,+971554493645,2023-05-09,3.9,Residential,9,122122,2.6,Inactive,MGR001,New Developments,2024-09-06,2025-03-23
+AGT057,Khalid Fahim,khalid.fahim@example.com,+971535266828,2018-05-07,7.7,Residential,1,36915,4.3,Inactive,MGR003,Industrial Zone,2022-05-21,2022-07-12
+AGT058,Mohammed Hassan,mohammed.hassan@example.com,+971524066768,2024-09-13,6.3,Apartments,10,79912,4.8,Active,MGR001,Marina District,2020-07-21,2025-05-12
+AGT059,Youssef Al-Zahra,youssef.alzahra@example.com,+971513236346,2020-11-13,4.8,Residential,10,196380,3.9,Inactive,MGR003,Mixed Developments,2025-03-05,2025-04-25
+AGT060,Layla Al-Mansoori,layla.almansoori@example.com,+971527079190,2022-01-06,3.9,Residential,7,194018,3.5,Inactive,MGR001,Marina District,2021-08-03,2024-07-14
+AGT061,Ahmed Abdullah,ahmed.abdullah@example.com,+971584867117,2021-09-20,6.2,Apartments,9,128294,4.0,Active,MGR003,New Developments,2022-09-16,2025-04-16
+AGT062,Omar Al-Rashid,omar.alrashid@example.com,+971582846332,2022-08-27,7.7,Residential,0,158740,2.7,Inactive,MGR003,Business District,2018-06-04,2020-05-29
+AGT063,Sarah Johnson,sarah.johnson@example.com,+971516992466,2018-11-26,7.9,Villas,3,105110,4.9,Active,MGR003,Marina District,2020-06-08,2021-08-02
+AGT064,Mohammed Johnson,mohammed.johnson@example.com,+971520208818,2020-03-26,6.3,Apartments,9,170954,4.8,Active,MGR002,Marina District,2023-01-05,2024-03-02
+AGT065,Ahmed Said,ahmed.said@example.com,+971533219798,2024-01-31,6.1,Commercial,2,83939,3.3,Active,MGR001,Premium Areas,2024-06-02,2024-07-16
+AGT066,Sarah Johnson,sarah.johnson@example.com,+971546909250,2019-12-11,5.8,Mixed Use,7,148449,3.3,Inactive,MGR002,Business District,2024-10-16,2024-11-22
+AGT067,Ahmed Al-Mansoori,ahmed.almansoori@example.com,+971551152155,2020-05-14,7.1,Luxury Residential,4,151547,4.5,Inactive,MGR001,Business District,2019-09-06,2024-06-25
+AGT068,Sarah Hassan,sarah.hassan@example.com,+971536017289,2020-12-16,4.4,Villas,6,84038,2.9,Inactive,MGR001,Mixed Developments,2021-04-22,2022-12-26
+AGT069,Ahmed Johnson,ahmed.johnson@example.com,+971518550809,2018-04-19,7.8,Commercial,8,118659,2.2,Inactive,MGR002,New Developments,2020-06-13,2024-10-06
+AGT070,Khalid Abdullah,khalid.abdullah@example.com,+971559180285,2020-09-27,4.0,Apartments,10,198792,4.1,Active,MGR001,Premium Areas,2024-12-06,2025-03-07
+AGT071,Layla Al-Zahra,layla.alzahra@example.com,+971558963179,2024-09-12,6.4,Commercial,8,55182,2.0,Active,MGR002,Premium Areas,2019-08-24,2020-03-22
+AGT072,Layla Al-Zahra,layla.alzahra@example.com,+971570838104,2023-05-12,4.0,Apartments,4,85950,4.3,Inactive,MGR001,Premium Areas,2022-12-01,2023-06-21
+AGT073,Omar Said,omar.said@example.com,+971590586130,2022-10-02,3.1,Mixed Use,7,124341,4.7,Inactive,MGR002,New Developments,2019-11-05,2021-02-02
+AGT074,Amira Al-Rashid,amira.alrashid@example.com,+971517780252,2025-03-02,4.3,Apartments,0,56361,3.5,Active,MGR002,Mixed Developments,2025-05-06,2025-05-22
+AGT075,Layla Hassan,layla.hassan@example.com,+971511832764,2023-07-15,5.7,Mixed Use,2,102992,2.3,Active,MGR002,Mixed Developments,2021-01-22,2021-05-27
+AGT076,Amira Al-Mansoori,amira.almansoori@example.com,+971519262558,2018-09-29,3.0,Mixed Use,4,134342,4.8,Inactive,MGR003,Premium Areas,2018-06-04,2025-03-16
+AGT077,Mohammed Hassan,mohammed.hassan@example.com,+971530599395,2022-04-11,6.7,Mixed Use,9,167163,4.0,Inactive,MGR002,Green Valley Area,2019-05-10,2022-12-12
+AGT078,Khalid Al-Zahra,khalid.alzahra@example.com,+971534279135,2021-09-15,5.0,Commercial,5,164758,2.4,Active,MGR003,Premium Areas,2024-06-16,2024-10-19
+AGT079,Khalid Al-Mansoori,khalid.almansoori@example.com,+971535490237,2023-01-30,6.7,Apartments,8,100417,2.7,Inactive,MGR002,Premium Areas,2018-12-01,2024-01-06
+AGT080,Khalid Rahman,khalid.rahman@example.com,+971556107710,2024-05-06,3.6,Luxury Residential,7,18674,3.5,Inactive,MGR003,Mixed Developments,2018-11-03,2024-06-12
+AGT081,Fatima Said,fatima.said@example.com,+971592640009,2019-08-15,5.5,Commercial,7,165788,3.9,Inactive,MGR003,Green Valley Area,2018-11-29,2023-04-12
+AGT082,Mohammed Johnson,mohammed.johnson@example.com,+971543305510,2024-05-23,5.6,Commercial,7,90494,4.0,Inactive,MGR003,Industrial Zone,2020-12-23,2023-11-18
+AGT083,Omar Rahman,omar.rahman@example.com,+971570583299,2023-01-08,6.0,Mixed Use,6,14779,3.2,Active,MGR003,Premium Areas,2022-04-24,2022-06-10
+AGT084,Ahmed Al-Rashid,ahmed.alrashid@example.com,+971578466079,2019-08-30,4.0,Apartments,7,28675,4.2,Active,MGR002,Industrial Zone,2021-09-15,2024-12-19
+AGT085,Sarah Hassan,sarah.hassan@example.com,+971527808552,2022-03-07,3.6,Commercial,6,29422,2.5,Active,MGR001,Mixed Developments,2023-09-09,2025-04-22
+AGT086,Youssef Al-Mansoori,youssef.almansoori@example.com,+971564889722,2019-04-02,3.0,Commercial,5,157765,3.6,Inactive,MGR002,Mixed Developments,2023-01-25,2024-07-25
+AGT087,Khalid Rahman,khalid.rahman@example.com,+971568418330,2020-11-07,4.9,Commercial,2,122476,2.7,Active,MGR002,Industrial Zone,2019-12-13,2023-05-27
+AGT088,Amira Rahman,amira.rahman@example.com,+971518087047,2022-03-21,6.3,Villas,10,64914,4.8,Active,MGR001,Green Valley Area,2024-06-03,2024-09-14
+AGT089,Omar Said,omar.said@example.com,+971593827258,2018-05-20,5.7,Apartments,4,136456,2.9,Inactive,MGR003,New Developments,2024-03-08,2024-04-03
+AGT090,Fatima Abdullah,fatima.abdullah@example.com,+971583463297,2023-04-23,5.2,Mixed Use,6,95264,3.8,Inactive,MGR003,Business District,2018-11-28,2020-07-17
+AGT091,Sarah Rahman,sarah.rahman@example.com,+971589897639,2022-10-06,6.9,Commercial,0,28340,2.1,Active,MGR002,Marina District,2024-08-26,2025-04-28
+AGT092,Layla Al-Zahra,layla.alzahra@example.com,+971547093347,2022-03-07,7.7,Residential,3,182632,3.0,Inactive,MGR001,Premium Areas,2022-04-15,2024-04-26
+AGT093,Omar Fahim,omar.fahim@example.com,+971517742986,2024-02-24,4.5,Mixed Use,6,45208,2.6,Active,MGR002,Mixed Developments,2021-06-19,2024-03-07
+AGT094,Amira Al-Mansoori,amira.almansoori@example.com,+971537427676,2023-09-18,4.7,Apartments,6,16002,3.7,Inactive,MGR003,Business District,2019-02-21,2020-03-04
+AGT095,Amira Johnson,amira.johnson@example.com,+971571642611,2020-08-17,4.4,Villas,10,166443,3.8,Active,MGR003,Premium Areas,2019-02-13,2023-05-15
+AGT096,Mohammed Said,mohammed.said@example.com,+971585875745,2023-12-31,5.4,Commercial,0,111110,4.6,Inactive,MGR003,Industrial Zone,2019-08-27,2022-02-03
+AGT097,Sarah Al-Mansoori,sarah.almansoori@example.com,+971565554890,2022-09-03,6.2,Villas,8,58583,4.8,Active,MGR003,Green Valley Area,2023-08-13,2024-10-17
+AGT098,Noor Said,noor.said@example.com,+971576913723,2018-01-06,4.6,Luxury Residential,3,74703,4.6,Active,MGR003,Mixed Developments,2021-03-21,2022-01-06
+AGT099,Amira Said,amira.said@example.com,+971538684941,2025-02-03,6.0,Residential,3,168669,5.0,Inactive,MGR002,Green Valley Area,2018-05-14,2019-11-29
+AGT100,Layla Fahim,layla.fahim@example.com,+971513659957,2018-05-09,3.8,Residential,5,30839,3.8,Inactive,MGR003,Marina District,2022-08-16,2024-04-02

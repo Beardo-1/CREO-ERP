@@ -1,0 +1,2 @@
+id,propertyId,clientId,agentId,type,stage,value,commission,expectedCloseDate,actualCloseDate,notes,createdAt,updatedAt,paymentMethod
+deal-1,property-1,contact-1,agent-1,Sale,Qualified,500000,15000,2024-07-01,,"تفاوض على السعر",2024-06-24,2024-06-24,Bank Transfer 

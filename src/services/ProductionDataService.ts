@@ -32,6 +32,26 @@ export interface FilterOptions {
   [key: string]: any
 }
 
+export interface Lead {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  source: 'website' | 'referral' | 'social' | 'advertising' | 'cold-call' | 'walk-in';
+  status: 'new' | 'contacted' | 'qualified' | 'unqualified' | 'converted';
+  score: number;
+  interest: 'buying' | 'selling' | 'renting' | 'investing';
+  budget: { min: number; max: number };
+  location: string;
+  propertyType: string[];
+  notes: string;
+  createdDate: Date;
+  lastContact: Date;
+  nextFollowUp: Date;
+  agent: { id: string; name: string };
+  tags: string[];
+}
+
 export class ProductionDataService {
   private static instance: ProductionDataService
 
@@ -611,6 +631,173 @@ export class ProductionDataService {
         callback
       )
       .subscribe()
+  }
+
+  // Leads Management (using contacts table with lead_status)
+  
+  public async getLeadsByStatus(status: string): Promise<Lead[]> {
+    try {
+      const response = await this.getContacts({}, { lead_status: status });
+      
+      if (response.success && response.data) {
+        return response.data.map(contact => this.contactToLead(contact));
+      }
+      
+      return [];
+    } catch (error) {
+      console.error('Error fetching leads by status:', error);
+      return [];
+    }
+  }
+
+  public async addLead(leadData: Omit<Lead, 'id' | 'createdDate'>): Promise<Lead> {
+    try {
+      const currentUser = productionAuthService.getCurrentUser();
+      if (!currentUser) {
+        throw new Error('User not authenticated');
+      }
+
+      const contactData: Tables['contacts']['Insert'] = {
+        name: leadData.name,
+        email: leadData.email,
+        phone: leadData.phone,
+        contact_type: 'lead',
+        lead_status: leadData.status,
+        lead_source: leadData.source,
+        notes: leadData.notes,
+        tags: leadData.tags,
+        city: leadData.location,
+        assigned_agent_id: currentUser.id
+      };
+
+      const response = await this.createContact(contactData);
+      
+      if (response.success && response.data) {
+        return this.contactToLead(response.data);
+      }
+      
+      throw new Error(response.error || 'Failed to create lead');
+    } catch (error) {
+      console.error('Error adding lead:', error);
+      throw error;
+    }
+  }
+
+  public async updateLead(id: string, updates: Partial<Lead>): Promise<Lead | null> {
+    try {
+      const contactUpdates: Tables['contacts']['Update'] = {};
+      
+      if (updates.name) contactUpdates.name = updates.name;
+      if (updates.email) contactUpdates.email = updates.email;
+      if (updates.phone) contactUpdates.phone = updates.phone;
+      if (updates.status) contactUpdates.lead_status = updates.status;
+      if (updates.source) contactUpdates.lead_source = updates.source;
+      if (updates.notes) contactUpdates.notes = updates.notes;
+      if (updates.tags) contactUpdates.tags = updates.tags;
+      if (updates.location) contactUpdates.city = updates.location;
+
+      const { data, error } = await supabase
+        .from('contacts')
+        .update(contactUpdates)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating lead:', error);
+        return null;
+      }
+
+      return this.contactToLead(data);
+    } catch (error) {
+      console.error('Error updating lead:', error);
+      return null;
+    }
+  }
+
+  public async deleteLead(id: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('contacts')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error deleting lead:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting lead:', error);
+      return false;
+    }
+  }
+
+  public async convertLeadToDeal(leadId: string, dealData: Partial<any> = {}): Promise<any> {
+    try {
+      // Update lead status to converted
+      await this.updateLead(leadId, { status: 'converted' });
+
+      // Get the lead data
+      const { data: contact } = await supabase
+        .from('contacts')
+        .select('*')
+        .eq('id', leadId)
+        .single();
+
+      if (!contact) {
+        throw new Error('Lead not found');
+      }
+
+      // Create a deal from the lead
+      const newDeal: Tables['deals']['Insert'] = {
+        title: `Deal for ${contact.name}`,
+        property_id: dealData.propertyId || '', // This would need to be provided
+        client_id: leadId,
+        agent_id: contact.assigned_agent_id,
+        deal_value: dealData.value || 100000,
+        commission_rate: 6.0,
+        commission_amount: (dealData.value || 100000) * 0.06,
+        deal_stage: 'prospecting',
+        deal_status: 'active',
+        probability: 25,
+        notes: `Converted from lead: ${contact.notes || ''}`
+      };
+
+      const dealResponse = await this.createDeal(newDeal);
+      
+      if (dealResponse.success) {
+        return dealResponse.data;
+      }
+      
+      throw new Error(dealResponse.error || 'Failed to create deal');
+    } catch (error) {
+      console.error('Error converting lead to deal:', error);
+      return null;
+    }
+  }
+
+  private contactToLead(contact: Contact): Lead {
+    return {
+      id: contact.id,
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone || '',
+      source: (contact.lead_source as any) || 'website',
+      status: (contact.lead_status as any) || 'new',
+      score: 75, // Default score
+      interest: 'buying',
+      budget: { min: 100000, max: 500000 },
+      location: contact.city || '',
+      propertyType: ['residential'],
+      notes: contact.notes || '',
+      createdDate: new Date(contact.created_at),
+      lastContact: new Date(contact.created_at),
+      nextFollowUp: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      agent: { id: contact.assigned_agent_id, name: 'Agent' },
+      tags: contact.tags || []
+    };
   }
 }
 

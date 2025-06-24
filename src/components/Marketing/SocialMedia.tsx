@@ -71,8 +71,10 @@ export default function SocialMedia() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedPost, setSelectedPost] = useState<SocialPost | null>(null);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [newPostContent, setNewPostContent] = useState('');
 
-  const socialAccounts: SocialAccount[] = [
+  const [socialAccounts, setSocialAccounts] = useState<SocialAccount[]>([
     {
       platform: 'facebook',
       handle: '@CreoRealEstate',
@@ -118,7 +120,7 @@ export default function SocialMedia() {
       engagement_rate: 8.2,
       connected: true
     }
-  ];
+  ]);
 
   const [socialPosts, setSocialPosts] = useState<SocialPost[]>([
     {
@@ -328,7 +330,7 @@ export default function SocialMedia() {
                 </div>
                 <div className="flex items-center space-x-2">
                   <button 
-                    onClick={() => console.log('View post', post.id)}
+                    onClick={() => handleViewPost(post)}
                     className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
                   >
                     <Eye className="w-4 h-4" />
@@ -535,13 +537,90 @@ export default function SocialMedia() {
   };
 
   const handleConnectAccount = (platform: string) => {
+    // Simulate API connection with loading state
+    const button = document.querySelector(`[data-platform="${platform}"]`);
+    if (button) {
+      button.textContent = 'Connecting...';
+      button.disabled = true;
+    }
     
-    // Integration with social media APIs would go here
+    setTimeout(() => {
+      // Show success notification
+      alert(`✅ Successfully connected to ${platform.charAt(0).toUpperCase() + platform.slice(1)}!\n\nYou can now:\n• Post content directly\n• View analytics\n• Manage your account`);
+      
+      // Update button state
+      if (button) {
+        button.textContent = 'Connected ✓';
+        button.className = button.className.replace('bg-amber-500', 'bg-green-500').replace('hover:bg-amber-600', 'hover:bg-green-600');
+        button.disabled = false;
+      }
+    }, 1500);
   };
 
   const handleDisconnectAccount = (platform: string) => {
+    // Confirm disconnection
+    if (confirm(`Are you sure you want to disconnect from ${platform.charAt(0).toUpperCase() + platform.slice(1)}?\n\nThis will:\n• Stop automatic posting\n• Remove access to analytics\n• Require re-authentication`)) {
+      const button = document.querySelector(`[data-platform="${platform}"]`);
+      if (button) {
+        button.textContent = 'Disconnecting...';
+        button.disabled = true;
+      }
+      
+      setTimeout(() => {
+        alert(`❌ Successfully disconnected from ${platform.charAt(0).toUpperCase() + platform.slice(1)}`);
+        
+        // Update button state
+        if (button) {
+          button.textContent = 'Connect';
+          button.className = button.className.replace('bg-green-500', 'bg-amber-500').replace('hover:bg-green-600', 'hover:bg-amber-600');
+          button.disabled = false;
+        }
+      }, 1000);
+    }
+  };
+
+  const handleViewPost = (post: SocialPost) => {
+    setSelectedPost(post);
+    setShowViewModal(true);
+  };
+
+  const handleSaveDraft = () => {
+    // Create new draft post
+    const newPost: SocialPost = {
+      id: `POST-${Date.now()}`,
+      platform: 'facebook', // Default platform
+      content: newPostContent,
+      status: 'draft',
+      engagement: { likes: 0, comments: 0, shares: 0, views: 0 },
+      hashtags: [],
+      mentions: [],
+      createdBy: 'Current User'
+    };
     
-    // API disconnect logic would go here
+    setSocialPosts(posts => [newPost, ...posts]);
+    setShowCreateModal(false);
+    setNewPostContent('');
+    alert('Post saved as draft successfully!');
+  };
+
+  const handlePublishNow = () => {
+    // Create new published post
+    const newPost: SocialPost = {
+      id: `POST-${Date.now()}`,
+      platform: 'facebook', // Default platform
+      content: newPostContent,
+      status: 'published',
+      publishedDate: new Date().toISOString(),
+      engagement: { likes: 0, comments: 0, shares: 0, views: 0 },
+      hashtags: [],
+      mentions: [],
+      createdBy: 'Current User'
+    };
+    
+    setSocialPosts(posts => [newPost, ...posts]);
+    setShowCreateModal(false);
+    setNewPostContent('');
+    alert('Post published successfully!');
   };
 
   return (

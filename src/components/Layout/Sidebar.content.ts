@@ -313,4 +313,16 @@ export const sidebarContent = {
       ar: "تسجيل الخروج",
     },
   },
+
+  // Collections
+  collections: {
+    section: 'Collections',
+    items: [
+      {
+        label: 'Rent Collections',
+        icon: 'DollarSign',
+        route: '/collections/rent',
+      },
+    ],
+  },
 }; 

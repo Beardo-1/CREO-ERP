@@ -296,7 +296,7 @@ export default function MarketingCampaigns() {
       ])
     ];
     
-    const csvContent = reportData.map(row => row.join(',')).join('\n');
+    const csvContent = (reportData || []).map(row => (row || []).join(',')).join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -889,7 +889,7 @@ export default function MarketingCampaigns() {
                     </div>
                     <div>
                       <p className="text-gray-600">Channels:</p>
-                      <p className="font-medium">{selectedCampaign.channels.join(', ')}</p>
+                      <p className="font-medium">{(selectedCampaign.channels || []).join(', ')}</p>
                     </div>
                   </div>
                 </div>
@@ -917,7 +917,7 @@ export default function MarketingCampaigns() {
                         ['Cost Per Lead', selectedCampaign.metrics.cost_per_lead.toFixed(2)],
                         ['ROI', selectedCampaign.metrics.roi.toFixed(2) + '%']
                       ];
-                      const csvContent = reportData.map(row => row.join(',')).join('\n');
+                      const csvContent = (reportData || []).map(row => (row || []).join(',')).join('\n');
                       const blob = new Blob([csvContent], { type: 'text/csv' });
                       const url = window.URL.createObjectURL(blob);
                       const a = document.createElement('a');

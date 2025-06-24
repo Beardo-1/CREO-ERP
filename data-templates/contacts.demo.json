@@ -1,0 +1,23 @@
+[
+  {
+    "id": "contact-1",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "555-1234",
+    "type": "Client",
+    "status": "Qualified",
+    "source": "Website",
+    "assignedAgent": "agent-1",
+    "notes": "Interested in modern apartments.",
+    "createdAt": "2024-06-24",
+    "lastContact": "2024-06-24",
+    "propertyInterests": [
+      "property-1"
+    ],
+    "budget": {
+      "min": 400000,
+      "max": 600000
+    }
+  }
+]
