@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, Download, FileText, CheckCircle, AlertCircle, X } from 'lucide-react';
+import { parseCsvWithPapa } from '../../utils/csvImport';
 
 interface RentCollection {
   tenantName: string;
@@ -56,11 +57,8 @@ export default function RentCollections() {
     setUploadStatus('uploading');
     setUploadMessage('Processing CSV file...');
     try {
-      // @ts-expect-error: papaparse types may not be found in dynamic import
-      const { default: Papa } = await import('papaparse');
       const text = await uploadFile.text();
-      const result = Papa.parse(text, { header: true });
-      const data = result.data as RentCollection[];
+      const data = parseCsvWithPapa<RentCollection>(text);
       setCollections(data);
       setUploadStatus('success');
       setUploadMessage(`Successfully uploaded ${data.length} records!`);

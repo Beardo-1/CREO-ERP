@@ -3617,10 +3617,6 @@ export const appContent = {
       en: "Insurance",
       ar: "التأمين"
     },
-    title: {
-      en: "Title",
-      ar: "الملكية"
-    },
     activeContingencies: {
       en: "Active Contingencies",
       ar: "الشروط النشطة"
