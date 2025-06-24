@@ -35,7 +35,10 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
   const t = (content: { en: string; ar: string } | string | undefined | null) => {
     // Handle null/undefined cases
     if (content === null || content === undefined) {
-      console.warn('Translation content is null or undefined:', content);
+      // Only log in development and limit repeated warnings
+      if (import.meta.env.DEV) {
+        console.warn('Translation content is null or undefined:', content);
+      }
       return '';
     }
     
@@ -48,7 +51,9 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
     if (typeof content === 'object') {
       // Ensure content has the required language properties
       if (!content.en && !content.ar) {
-        console.warn('Translation content missing language properties:', content);
+        if (import.meta.env.DEV) {
+          console.warn('Translation content missing language properties:', content);
+        }
         return '';
       }
       
@@ -56,17 +61,23 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
         const translatedText = content[currentLanguage] || content.en || '';
         return String(translatedText);
       } catch (error) {
-        console.error('Error accessing translation content:', error, content);
+        if (import.meta.env.DEV) {
+          console.error('Error accessing translation content:', error, content);
+        }
         return content.en || content.ar || '';
       }
     }
     
     // Fallback for any other type
-    console.warn('Translation content has unexpected type:', typeof content, content);
+    if (import.meta.env.DEV) {
+      console.warn('Translation content has unexpected type:', typeof content, content);
+    }
     try {
       return String(content);
     } catch (error) {
-      console.error('Failed to convert content to string:', error, content);
+      if (import.meta.env.DEV) {
+        console.error('Failed to convert content to string:', error, content);
+      }
       return '';
     }
   };

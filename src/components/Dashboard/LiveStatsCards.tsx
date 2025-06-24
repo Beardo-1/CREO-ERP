@@ -4,6 +4,7 @@ import { getResponsiveClasses, spacingResponsive, componentSizes } from '../../u
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
 import { unifiedDataService } from '../../services/unifiedDataService';
+import { safeNestedTranslate } from '../../utils/translationHelpers';
 
 interface StatCard {
   titleKey: keyof typeof appContent.stats;
@@ -154,16 +155,7 @@ export function LiveStatsCards() {
           
           {/* Title */}
           <h3 className="text-xs sm:text-sm font-medium text-gray-600 mb-2">
-            {(() => {
-              const translationKey = appContent.stats[stat.titleKey];
-              if (translationKey) {
-                return t(translationKey);
-              } else {
-                // Fallback with proper translation object
-                const fallbackKey = String(stat.titleKey);
-                return t({ en: fallbackKey, ar: fallbackKey });
-              }
-            })()}
+            {safeNestedTranslate(t, appContent.stats, stat.titleKey as string, String(stat.titleKey))}
           </h3>
           
           {/* Value */}

@@ -9,12 +9,14 @@ import { getResponsiveClasses, spacingResponsive, textResponsive } from './utils
 import { useTranslation } from './contexts/TranslationContext';
 import { appContent } from './content/app.content';
 import { LoadingScreen } from './components/LoadingScreen';
-import { LiveStatsCards } from './components/Dashboard/LiveStatsCards';
-import { ProgressCard } from './components/Dashboard/ProgressCard';
-import { TimeTracker } from './components/Dashboard/TimeTracker';
-import { TaskProgress } from './components/Dashboard/TaskProgress';
 import { ProfileCard } from './components/Dashboard/ProfileCard';
-import { CalendarWidget } from './components/Dashboard/CalendarWidget';
+import { 
+  SafeLiveStatsCards, 
+  SafeTaskProgress, 
+  SafeCalendarWidget, 
+  SafeProgressCard, 
+  SafeTimeTracker 
+} from './components/Dashboard/SafeDashboardComponents';
 import { LiveActivityFeed } from './components/Dashboard/LiveActivityFeed';
 import { PropertyCard } from './components/Properties/PropertyCard';
 import { PropertyModal } from './components/Properties/PropertyModal';
@@ -213,44 +215,12 @@ function App() {
             <div className="space-y-6 w-full">
               <div className="flex flex-col lg:flex-row gap-6">
                 <div className="flex-1 space-y-6">
-                  <SafeComponent 
-                    component={LiveStatsCards} 
-                    name="LiveStatsCards"
-                    fallback={
-                      <div className="bg-white rounded-xl shadow-lg p-6">
-                        <p className="text-gray-600">Loading stats...</p>
-                      </div>
-                    }
-                  />
+                  <SafeLiveStatsCards />
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                    <SafeComponent 
-                      component={ProgressCard} 
-                      name="ProgressCard"
-                      fallback={
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                          <p className="text-gray-600">Loading progress...</p>
-                        </div>
-                      }
-                    />
-                    <SafeComponent 
-                      component={TimeTracker} 
-                      name="TimeTracker"
-                      fallback={
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                          <p className="text-gray-600">Loading time tracker...</p>
-                        </div>
-                      }
-                    />
+                    <SafeProgressCard />
+                    <SafeTimeTracker />
                   </div>
-                  <SafeComponent 
-                    component={TaskProgress} 
-                    name="TaskProgress"
-                    fallback={
-                      <div className="bg-white rounded-xl shadow-lg p-6">
-                        <p className="text-gray-600">Loading tasks...</p>
-                      </div>
-                    }
-                  />
+                  <SafeTaskProgress />
                 </div>
                 <div className="lg:w-80 space-y-6">
                   <ProfileCard
@@ -258,15 +228,7 @@ function App() {
                     role={currentUser?.role || ''}
                     earnings={currentUser?.earnings || '--'}
                   />
-                  <SafeComponent 
-                    component={CalendarWidget} 
-                    name="CalendarWidget"
-                    fallback={
-                      <div className="bg-white rounded-xl shadow-lg p-6">
-                        <p className="text-gray-600">Loading calendar...</p>
-                      </div>
-                    }
-                  />
+                  <SafeCalendarWidget />
                 </div>
               </div>
             </div>

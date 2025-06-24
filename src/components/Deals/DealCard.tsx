@@ -3,6 +3,7 @@ import { DollarSign, Calendar, User, Home, TrendingUp, Clock, Target, CheckCircl
 import { Deal } from '../../types';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
+import { safeNestedTranslate } from '../../utils/translationHelpers';
 
 interface DealCardProps {
   deal: Deal;
@@ -82,10 +83,10 @@ export function DealCard({ deal, onClick }: DealCardProps) {
         {/* Stage and Type Badges */}
         <div className="flex justify-between items-start mb-4">
           <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStageColor(deal.stage)}`}>
-            {t(appContent.deals[deal.stage.toLowerCase() as keyof typeof appContent.deals] || { en: deal.stage, ar: deal.stage })}
+            {safeNestedTranslate(t, appContent.deals, deal.stage.toLowerCase(), deal.stage)}
           </span>
           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getTypeColor(deal.type)}`}>
-            {t(appContent.deals[deal.type.toLowerCase() as keyof typeof appContent.deals] || { en: deal.type, ar: deal.type })}
+            {safeNestedTranslate(t, appContent.deals, deal.type.toLowerCase(), deal.type)}
           </span>
         </div>
         

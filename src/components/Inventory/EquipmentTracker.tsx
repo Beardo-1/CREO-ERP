@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Wrench, Calendar, AlertTriangle, CheckCircle, Clock, MapPin, User, DollarSign, TrendingUp, Settings, Plus, Search, Filter } from 'lucide-react';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
+import { safeNestedTranslate } from '../../utils/translationHelpers';
 
 interface Equipment {
   id: string;

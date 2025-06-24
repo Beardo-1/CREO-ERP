@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
+import { safeNestedTranslate } from '../../utils/translationHelpers';
 
 export function CalendarWidget() {
   const { t } = useTranslation();
@@ -56,14 +57,7 @@ export function CalendarWidget() {
         {weekDays.map((day, index) => (
           <div key={day.key} className="text-center">
             <div className="text-xs text-gray-500 mb-2">
-              {(() => {
-                const translationKey = appContent.calendar[day.key];
-                if (translationKey) {
-                  return t(translationKey);
-                } else {
-                  return t({ en: day.short, ar: day.short });
-                }
-              })()}
+              {safeNestedTranslate(t, appContent.calendar, day.key, day.short)}
             </div>
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium ${
               index === 2 ? 'bg-gray-900 text-white' : 'text-gray-700'
@@ -80,24 +74,10 @@ export function CalendarWidget() {
             <div className="text-sm font-medium text-gray-600">{meeting.time}</div>
             <div className="flex-1">
               <div className="font-medium text-gray-900">
-                {(() => {
-                  const translationKey = appContent.calendar[meeting.titleKey];
-                  if (translationKey) {
-                    return t(translationKey);
-                  } else {
-                    return t({ en: String(meeting.titleKey), ar: String(meeting.titleKey) });
-                  }
-                })()}
+                {safeNestedTranslate(t, appContent.calendar, meeting.titleKey, String(meeting.titleKey))}
               </div>
               <div className="text-sm text-gray-600">
-                {(() => {
-                  const translationKey = appContent.calendar[meeting.subtitleKey];
-                  if (translationKey) {
-                    return t(translationKey);
-                  } else {
-                    return t({ en: String(meeting.subtitleKey), ar: String(meeting.subtitleKey) });
-                  }
-                })()}
+                {safeNestedTranslate(t, appContent.calendar, meeting.subtitleKey, String(meeting.subtitleKey))}
               </div>
             </div>
             <div className="flex -space-x-2">

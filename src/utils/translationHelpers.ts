@@ -50,6 +50,28 @@ export const safeTranslate = (
   }
 };
 
+// Safe nested key access for appContent
+export const safeNestedTranslate = (
+  t: (content: any) => string,
+  contentObject: any,
+  key: string,
+  fallback?: string
+): string => {
+  try {
+    const translationKey = contentObject?.[key];
+    if (translationKey && typeof translationKey === 'object' && (translationKey.en || translationKey.ar)) {
+      return t(translationKey);
+    }
+    
+    // Create fallback translation object
+    const fallbackText = fallback || key.charAt(0).toUpperCase() + key.slice(1);
+    return t({ en: fallbackText, ar: fallbackText });
+  } catch (error) {
+    const fallbackText = fallback || key.charAt(0).toUpperCase() + key.slice(1);
+    return t({ en: fallbackText, ar: fallbackText });
+  }
+};
+
 // Hook for safe translation with context
 export const useSafeTranslation = (context?: string) => {
   const { t, ...rest } = useTranslation();

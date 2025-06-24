@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from '../contexts/TranslationContext';
 
 // Safe component wrapper to prevent React error #31
 export const SafeComponent: React.FC<{
@@ -82,4 +83,76 @@ export const useErrorHandler = () => {
   }, [error]);
 
   return { error, resetError, handleError };
+};
+
+interface SafeTranslationProps {
+  contentKey: any;
+  fallback?: string;
+  children?: (translatedText: string) => React.ReactNode;
+}
+
+export const SafeTranslation: React.FC<SafeTranslationProps> = ({ contentKey, fallback = '', children }) => {
+  const { t } = useTranslation();
+  
+  try {
+    let translatedText = '';
+    
+    // Handle null/undefined
+    if (contentKey === null || contentKey === undefined) {
+      translatedText = fallback || '';
+    }
+    // Handle string (already translated)
+    else if (typeof contentKey === 'string') {
+      translatedText = contentKey;
+    }
+    // Handle translation object
+    else if (typeof contentKey === 'object' && (contentKey.en || contentKey.ar)) {
+      translatedText = t(contentKey);
+    }
+    // Handle fallback
+    else {
+      translatedText = fallback || String(contentKey);
+    }
+    
+    if (children) {
+      return <>{children(translatedText)}</>;
+    }
+    
+    return <>{translatedText}</>;
+  } catch (error) {
+    // Silent fallback - don't log in production to avoid console spam
+    const fallbackText = fallback || (typeof contentKey === 'string' ? contentKey : '');
+    
+    if (children) {
+      return <>{children(fallbackText)}</>;
+    }
+    
+    return <>{fallbackText}</>;
+  }
+};
+
+// Hook version for more complex usage
+export const useSafeTranslation = () => {
+  const { t } = useTranslation();
+  
+  return (contentKey: any, fallback?: string): string => {
+    try {
+      // Handle null/undefined
+      if (contentKey === null || contentKey === undefined) {
+        return fallback || '';
+      }
+      // Handle string (already translated)
+      if (typeof contentKey === 'string') {
+        return contentKey;
+      }
+      // Handle translation object
+      if (typeof contentKey === 'object' && (contentKey.en || contentKey.ar)) {
+        return t(contentKey);
+      }
+      // Handle fallback
+      return fallback || String(contentKey);
+    } catch (error) {
+      return fallback || (typeof contentKey === 'string' ? contentKey : '');
+    }
+  };
 }; 

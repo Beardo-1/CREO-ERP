@@ -3,6 +3,7 @@ import { CheckCircle2, Circle, Clock } from 'lucide-react';
 import { componentSizes, textResponsive } from '../../utils/responsive';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
+import { safeNestedTranslate } from '../../utils/translationHelpers';
 
 export function TaskProgress() {
   const { t } = useTranslation();
@@ -61,16 +62,7 @@ export function TaskProgress() {
             </div>
             <div className="flex-1">
               <div className={`font-medium ${task.completed ? 'text-gray-400 line-through' : 'text-white'}`}>
-                {(() => {
-                  const translationKey = appContent.stats[task.titleKey];
-                  if (translationKey) {
-                    return t(translationKey);
-                  } else {
-                    // Fallback with proper translation object
-                    const fallbackKey = String(task.titleKey);
-                    return t({ en: fallbackKey, ar: fallbackKey });
-                  }
-                })()}
+                {safeNestedTranslate(t, appContent.stats, task.titleKey, String(task.titleKey))}
               </div>
               <div className="text-sm text-gray-400">{task.time}</div>
             </div>

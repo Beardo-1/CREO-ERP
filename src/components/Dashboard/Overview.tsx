@@ -25,6 +25,7 @@ import {
 import { useTranslation } from '../../contexts/TranslationContext';
 import { appContent } from '../../content/app.content';
 import { unifiedDataService } from '../../services/unifiedDataService';
+import { SafeRender } from '../../utils/safeRender';
 
 interface MetricCard {
   id: string;
@@ -68,90 +69,102 @@ export default function Overview() {
       try {
         setIsLoading(true);
         
-        const [properties, deals, contacts, agents] = await Promise.all([
-          unifiedDataService.getProperties(),
-          unifiedDataService.getDeals(),
-          unifiedDataService.getContacts(),
-          unifiedDataService.getAgents()
+        const [properties, deals, contacts] = await Promise.all([
+          unifiedDataService.getProperties().catch(() => []),
+          unifiedDataService.getDeals().catch(() => []),
+          unifiedDataService.getContacts().catch(() => [])
         ]);
+        
+        // Get agents separately since it's not async
+        const agents = unifiedDataService.getAgents();
 
-        // Calculate real metrics
-        const activeDeals = deals.filter((deal: any) => deal.stage !== 'Closed');
-        const closedDeals = deals.filter((deal: any) => deal.stage === 'Closed');
-        const totalRevenue = closedDeals.reduce((sum: number, deal: any) => sum + (deal.value || 0), 0);
-        const newContacts = contacts.filter((contact: any) => {
-          const createdDate = new Date(contact.createdAt);
-          const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-          return createdDate > monthAgo;
+        // Ensure arrays are valid
+        const safeProperties = Array.isArray(properties) ? properties : [];
+        const safeDeals = Array.isArray(deals) ? deals : [];
+        const safeContacts = Array.isArray(contacts) ? contacts : [];
+
+        // Calculate real metrics with safe array operations
+        const activeDeals = safeDeals.filter((deal: any) => deal && deal.stage !== 'Closed');
+        const closedDeals = safeDeals.filter((deal: any) => deal && deal.stage === 'Closed');
+        const totalRevenue = closedDeals.reduce((sum: number, deal: any) => sum + (deal?.value || 0), 0);
+        const newContacts = safeContacts.filter((contact: any) => {
+          if (!contact || !contact.createdAt) return false;
+          try {
+            const createdDate = new Date(contact.createdAt);
+            const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+            return createdDate > monthAgo;
+          } catch {
+            return false;
+          }
         });
 
-        // Calculate conversion rate
-        const qualifiedContacts = contacts.filter((c: any) => c.status === 'Qualified' || c.status === 'Converted');
-        const conversionRate = contacts.length > 0 ? (qualifiedContacts.length / contacts.length) * 100 : 0;
+        // Calculate conversion rate safely
+        const qualifiedContacts = safeContacts.filter((c: any) => c && (c.status === 'Qualified' || c.status === 'Converted'));
+        const conversionRate = safeContacts.length > 0 ? (qualifiedContacts.length / safeContacts.length) * 100 : 0;
 
         // Today's appointments (using recent contacts as proxy)
-        const todayAppointments = Math.floor(contacts.length * 0.05); // 5% of contacts
+        const todayAppointments = Math.floor(safeContacts.length * 0.05); // 5% of contacts
 
         const realMetrics: MetricCard[] = [
           {
             id: 'revenue',
-            title: t(appContent.overview.totalRevenue),
+            title: t(appContent.overview.totalRevenue) || 'Total Revenue',
             value: totalRevenue > 0 ? `$${(totalRevenue / 1000000).toFixed(1)}M` : '$0',
             change: totalRevenue > 0 ? 12.5 : 0,
             changeType: 'increase',
             icon: DollarSign,
             color: 'green',
-            description: t(appContent.overview.revenueGenerated)
+            description: t(appContent.overview.revenueGenerated) || 'Revenue generated this month'
           },
           {
             id: 'properties',
-            title: t(appContent.overview.activeProperties),
-            value: properties.length.toString(),
-            change: properties.length > 0 ? 8.2 : 0,
+            title: t(appContent.overview.activeProperties) || 'Active Properties',
+            value: safeProperties.length.toString(),
+            change: safeProperties.length > 0 ? 8.2 : 0,
             changeType: 'increase',
             icon: Building,
             color: 'blue',
-            description: t(appContent.overview.propertiesListed)
+            description: t(appContent.overview.propertiesListed) || 'Properties currently listed'
           },
           {
             id: 'deals',
-            title: t(appContent.stats.activeDeals),
+            title: t(appContent.stats.activeDeals) || 'Active Deals',
             value: activeDeals.length.toString(),
             change: activeDeals.length > closedDeals.length ? 5.1 : -3.1,
             changeType: activeDeals.length > closedDeals.length ? 'increase' : 'decrease',
             icon: Handshake,
             color: 'purple',
-            description: t(appContent.overview.dealsInProgress)
+            description: t(appContent.overview.dealsInProgress) || 'Deals in progress'
           },
           {
             id: 'clients',
-            title: t(appContent.stats.newClients),
+            title: t(appContent.stats.newClients) || 'New Clients',
             value: newContacts.length.toString(),
             change: newContacts.length > 0 ? 15.7 : 0,
             changeType: 'increase',
             icon: Users,
             color: 'amber',
-            description: t(appContent.overview.newClientsMonth)
+            description: t(appContent.overview.newClientsMonth) || 'New clients this month'
           },
           {
             id: 'appointments',
-            title: t(appContent.stats.appointments),
+            title: t(appContent.stats.appointments) || 'Appointments',
             value: todayAppointments.toString(),
             change: 0,
             changeType: 'neutral',
             icon: Calendar,
             color: 'indigo',
-            description: t(appContent.overview.scheduledToday)
+            description: t(appContent.overview.scheduledToday) || 'Scheduled for today'
           },
           {
             id: 'conversion',
-            title: t(appContent.overview.conversionRate),
+            title: t(appContent.overview.conversionRate) || 'Conversion Rate',
             value: `${conversionRate.toFixed(1)}%`,
             change: conversionRate > 50 ? 2.3 : -1.2,
             changeType: conversionRate > 50 ? 'increase' : 'decrease',
             icon: Target,
             color: 'emerald',
-            description: t(appContent.overview.leadConversion)
+            description: t(appContent.overview.leadConversion) || 'Lead to client conversion'
           }
         ];
 
@@ -159,74 +172,114 @@ export default function Overview() {
         const activities: RecentActivity[] = [];
 
         // Recent properties
-        const recentProperties = properties
-          .sort((a: any, b: any) => new Date(b.listingDate).getTime() - new Date(a.listingDate).getTime())
+        const recentProperties = safeProperties
+          .filter((p: any) => p && p.listingDate)
+          .sort((a: any, b: any) => {
+            try {
+              return new Date(b.listingDate).getTime() - new Date(a.listingDate).getTime();
+            } catch {
+              return 0;
+            }
+          })
           .slice(0, 2);
 
         recentProperties.forEach((property: any) => {
-          activities.push({
-            id: `property-${property.id}`,
-            type: 'property',
-            title: t(appContent.overview.newPropertyListed),
-            description: `${property.title} - $${property.price.toLocaleString()}`,
-            timestamp: new Date(property.listingDate),
-            status: 'success'
-          });
+          if (property && property.id && property.title) {
+            activities.push({
+              id: `property-${property.id}`,
+              type: 'property',
+              title: t(appContent.overview.newPropertyListed) || 'New Property Listed',
+              description: `${property.title} - $${(property.price || 0).toLocaleString()}`,
+              timestamp: new Date(property.listingDate),
+              status: 'success'
+            });
+          }
         });
 
         // Recent deals
-        const recentDeals = deals
-          .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        const recentDeals = safeDeals
+          .filter((d: any) => d && d.createdAt)
+          .sort((a: any, b: any) => {
+            try {
+              return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            } catch {
+              return 0;
+            }
+          })
           .slice(0, 2);
 
         recentDeals.forEach((deal: any) => {
-          const property = properties.find((p: any) => p.id === deal.propertyId);
-          activities.push({
-            id: `deal-${deal.id}`,
-            type: 'deal',
-            title: deal.stage === 'Closed' ? t(appContent.overview.dealClosed) : 'Deal Updated',
-            description: `${property?.title || 'Property'} - $${deal.value.toLocaleString()}`,
-            timestamp: new Date(deal.createdAt),
-            status: deal.stage === 'Closed' ? 'success' : 'info'
-          });
+          if (deal && deal.id) {
+            const property = safeProperties.find((p: any) => p && p.id === deal.propertyId);
+            activities.push({
+              id: `deal-${deal.id}`,
+              type: 'deal',
+              title: deal.stage === 'Closed' ? (t(appContent.overview.dealClosed) || 'Deal Closed') : 'Deal Updated',
+              description: `${property?.title || 'Property'} - $${(deal.value || 0).toLocaleString()}`,
+              timestamp: new Date(deal.createdAt),
+              status: deal.stage === 'Closed' ? 'success' : 'info'
+            });
+          }
         });
 
         // Recent contacts
-        const recentContacts = contacts
-          .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        const recentContacts = safeContacts
+          .filter((c: any) => c && c.createdAt)
+          .sort((a: any, b: any) => {
+            try {
+              return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            } catch {
+              return 0;
+            }
+          })
           .slice(0, 2);
 
         recentContacts.forEach((contact: any) => {
-          activities.push({
-            id: `contact-${contact.id}`,
-            type: 'contact',
-            title: t(appContent.overview.newClientAdded),
-            description: `${contact.firstName} ${contact.lastName} - ${contact.type}`,
-            timestamp: new Date(contact.createdAt),
-            status: 'info'
-          });
+          if (contact && contact.id) {
+            activities.push({
+              id: `contact-${contact.id}`,
+              type: 'contact',
+              title: t(appContent.overview.newClientAdded) || 'New Client Added',
+              description: `${contact.firstName || ''} ${contact.lastName || ''} - ${contact.type || 'Contact'}`,
+              timestamp: new Date(contact.createdAt),
+              status: 'info'
+            });
+          }
         });
 
         // Add follow-up reminders
-        const needFollowUp = contacts.filter((c: any) => {
-          const lastContact = new Date(c.lastContact);
-          const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-          return lastContact < weekAgo && c.status === 'Contacted';
+        const needFollowUp = safeContacts.filter((c: any) => {
+          if (!c || !c.lastContact || c.status !== 'Contacted') return false;
+          try {
+            const lastContact = new Date(c.lastContact);
+            const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+            return lastContact < weekAgo;
+          } catch {
+            return false;
+          }
         }).slice(0, 1);
 
         needFollowUp.forEach((contact: any) => {
-          activities.push({
-            id: `followup-${contact.id}`,
-            type: 'task',
-            title: 'Follow-up Required',
-            description: `${contact.firstName} ${contact.lastName} needs follow-up`,
-            timestamp: new Date(contact.lastContact),
-            status: 'warning'
-          });
+          if (contact && contact.id) {
+            activities.push({
+              id: `followup-${contact.id}`,
+              type: 'task',
+              title: 'Follow-up Required',
+              description: `${contact.firstName || ''} ${contact.lastName || ''} needs follow-up`,
+              timestamp: new Date(contact.lastContact),
+              status: 'warning'
+            });
+          }
         });
 
-        // Sort activities by timestamp
-        activities.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+        // Sort activities by timestamp safely
+        activities.sort((a, b) => {
+          try {
+            return b.timestamp.getTime() - a.timestamp.getTime();
+          } catch {
+            return 0;
+          }
+        });
 
         setMetrics(realMetrics);
         setRecentActivities(activities.slice(0, 6)); // Keep top 6 activities
@@ -250,32 +303,32 @@ export default function Overview() {
   const quickActions: QuickAction[] = [
     {
       id: 'add-property',
-      title: t(appContent.overview.addProperty),
-      description: t(appContent.overview.listNewProperty),
+      title: t(appContent.overview.addProperty) || 'Add Property',
+      description: t(appContent.overview.listNewProperty) || 'List a new property',
       icon: Building,
       color: 'blue',
       action: 'properties'
     },
     {
       id: 'add-contact',
-      title: t(appContent.overview.addContact),
-      description: t(appContent.overview.createNewContact),
+      title: t(appContent.overview.addContact) || 'Add Contact',
+      description: t(appContent.overview.createNewContact) || 'Create new contact',
       icon: Users,
       color: 'green',
       action: 'contacts'
     },
     {
       id: 'schedule-meeting',
-      title: t(appContent.overview.scheduleMeeting),
-      description: t(appContent.overview.bookAppointment),
+      title: t(appContent.overview.scheduleMeeting) || 'Schedule Meeting',
+      description: t(appContent.overview.bookAppointment) || 'Book an appointment',
       icon: Calendar,
       color: 'purple',
       action: 'calendar'
     },
     {
       id: 'create-deal',
-      title: t(appContent.overview.createDeal),
-      description: t(appContent.overview.startNewDeal),
+      title: t(appContent.overview.createDeal) || 'Create Deal',
+      description: t(appContent.overview.startNewDeal) || 'Start new deal',
       icon: Handshake,
       color: 'amber',
       action: 'deals'
@@ -327,14 +380,18 @@ export default function Overview() {
   };
 
   const formatTime = (timestamp: Date) => {
-    const now = new Date();
-    const diff = now.getTime() - timestamp.getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(hours / 24);
+    try {
+      const now = new Date();
+      const diff = now.getTime() - timestamp.getTime();
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const days = Math.floor(hours / 24);
 
-    if (days > 0) return `${days} days ago`;
-    if (hours > 0) return `${hours} hours ago`;
-    return 'Just now';
+      if (days > 0) return `${days} days ago`;
+      if (hours > 0) return `${hours} hours ago`;
+      return 'Just now';
+    } catch {
+      return 'Recently';
+    }
   };
 
   // Handle quick action clicks
@@ -393,54 +450,65 @@ export default function Overview() {
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {metrics.map((metric) => (
-          <div key={metric.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${getMetricColor(metric.color)} flex items-center justify-center text-white`}>
-                <metric.icon className="w-6 h-6" />
+        {metrics.map((metric) => {
+          // Safe icon rendering
+          const IconComponent = metric.icon;
+          return (
+            <div key={metric.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-4">
+                <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${getMetricColor(metric.color)} flex items-center justify-center text-white`}>
+                  <SafeRender componentName={`MetricIcon-${metric.id}`}>
+                    <IconComponent className="w-6 h-6" />
+                  </SafeRender>
+                </div>
+                <div className={`flex items-center space-x-1 ${getChangeColor(metric.changeType)}`}>
+                  {getChangeIcon(metric.changeType)}
+                  <span className="text-sm font-medium">
+                    {metric.change > 0 ? '+' : ''}{metric.change}%
+                  </span>
+                </div>
               </div>
-              <div className={`flex items-center space-x-1 ${getChangeColor(metric.changeType)}`}>
-                {getChangeIcon(metric.changeType)}
-                <span className="text-sm font-medium">
-                  {metric.change > 0 ? '+' : ''}{metric.change}%
-                </span>
+              
+              <div>
+                <h3 className="text-sm font-medium text-gray-600 mb-1">{metric.title}</h3>
+                <p className="text-2xl font-bold text-gray-900 mb-1">{metric.value}</p>
+                <p className="text-xs text-gray-500">{metric.description}</p>
               </div>
             </div>
-            
-            <div>
-              <h3 className="text-sm font-medium text-gray-600 mb-1">{metric.title}</h3>
-              <p className="text-2xl font-bold text-gray-900 mb-1">{metric.value}</p>
-              <p className="text-xs text-gray-500">{metric.description}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Quick Actions and Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Quick Actions */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.overview.quickActions)}</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.overview.quickActions) || 'Quick Actions'}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {quickActions.map((action) => (
-              <button
-                key={action.id}
-                onClick={() => handleQuickAction(action.action)}
-                className="p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors text-left group"
-              >
-                <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${getMetricColor(action.color)} flex items-center justify-center text-white mb-3 group-hover:scale-110 transition-transform`}>
-                  <action.icon className="w-5 h-5" />
-                </div>
-                <h3 className="font-medium text-gray-900 mb-1">{action.title}</h3>
-                <p className="text-sm text-gray-600">{action.description}</p>
-              </button>
-            ))}
+            {quickActions.map((action) => {
+              const ActionIcon = action.icon;
+              return (
+                <button
+                  key={action.id}
+                  onClick={() => handleQuickAction(action.action)}
+                  className="p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors text-left group"
+                >
+                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${getMetricColor(action.color)} flex items-center justify-center text-white mb-3 group-hover:scale-110 transition-transform`}>
+                    <SafeRender componentName={`ActionIcon-${action.id}`}>
+                      <ActionIcon className="w-5 h-5" />
+                    </SafeRender>
+                  </div>
+                  <h3 className="font-medium text-gray-900 mb-1">{action.title}</h3>
+                  <p className="text-sm text-gray-600">{action.description}</p>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Recent Activity */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.overview.recentActivity)}</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t(appContent.overview.recentActivity) || 'Recent Activity'}</h2>
           <div className="space-y-4">
             {recentActivities.length === 0 ? (
               <div className="text-center py-8">

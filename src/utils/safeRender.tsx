@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertCircle } from 'lucide-react';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 // Safe icon renderer to prevent React error #31
 export const SafeIcon: React.FC<{
@@ -60,4 +61,36 @@ export const safeRender = (element: any, fallback: React.ReactNode = null): Reac
   }
   
   return fallback;
+};
+
+interface SafeRenderProps {
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+  componentName?: string;
+}
+
+export const SafeRender: React.FC<SafeRenderProps> = ({ 
+  children, 
+  fallback,
+  componentName = 'Component' 
+}) => {
+  const defaultFallback = (
+    <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+      <div className="flex items-center space-x-2">
+        <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
+        <span className="text-sm text-yellow-800">
+          {componentName} temporarily unavailable
+        </span>
+      </div>
+    </div>
+  );
+
+  return (
+    <ErrorBoundary 
+      fallback={fallback || defaultFallback}
+      componentName={componentName}
+    >
+      {children}
+    </ErrorBoundary>
+  );
 }; 
