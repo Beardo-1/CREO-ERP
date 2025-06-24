@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Shield, Volume2, VolumeX, Music } from 'lucide-react';
+import React, { useState } from 'react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Shield, Volume2, VolumeX, Globe } from 'lucide-react';
 import { CreoLogo } from '../Logo/CreoLogo';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { loginContent } from './Login.content';
@@ -11,69 +11,12 @@ interface LoginProps {
 export function Login({ onLoginSuccess }: LoginProps) {
   const { t, currentLanguage, toggleLanguage } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const audioRef = useRef<any>(null);
-  
-
-  // Initialize ambient music
-  useEffect(() => {
-    // Audio functionality disabled to fix deployment issues
-    // const audio = new Audio('/morning-in-the-forest-347089.mp3');
-    // audio.loop = true;
-    // audio.volume = 0.3;
-    // audio.preload = 'auto';
-    // audioRef.current = audio;
-
-    // Handle audio loading
-    const handleCanPlay = () => {
-          };
-
-    const handleError = (e: any) => {
-      console.error('Audio functionality disabled for deployment');
-    };
-
-    // audio.addEventListener('canplay', handleCanPlay);
-    // audio.addEventListener('error', handleError);
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        // audioRef.current.removeEventListener('canplay', handleCanPlay);
-        // audioRef.current.removeEventListener('error', handleError);
-        audioRef.current = null;
-      }
-    };
-      }, []);
-
-  const toggleMusic = async () => {
-    if (audioRef.current) {
-      if (isMusicPlaying) {
-        audioRef.current.pause();
-        setIsMusicPlaying(false);
-      } else {
-        try {
-          await audioRef.current.play();
-          setIsMusicPlaying(true);
-        } catch (error) {
-                    setIsMusicPlaying(false);
-        }
-      }
-    }
-  };
-
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-    if (audioRef.current) {
-      audioRef.current.volume = isMuted ? 0.3 : 0;
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -169,68 +112,6 @@ export function Login({ onLoginSuccess }: LoginProps) {
                 <span className="font-semibold">
                   {currentLanguage === 'en' ? 'العربية' : 'English'}
                 </span>
-              </div>
-              {/* Tooltip arrow */}
-              <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gradient-to-r from-amber-600 to-orange-600 rotate-45"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Music Control Orb - Top Right (next to language switcher) */}
-      <div className="absolute top-8 right-24 z-30">
-        <div className="relative group">
-          <button 
-            onClick={toggleMusic}
-            className="relative w-14 h-14 rounded-full transition-all duration-500 hover:scale-110 active:scale-95 bg-gradient-to-br from-amber-400 via-orange-500 to-yellow-500 shadow-2xl shadow-amber-500/50 backdrop-blur-sm border-2 border-white/40 animate-glow cursor-pointer focus:outline-none focus:ring-4 focus:ring-amber-300/50"
-            aria-label={isMusicPlaying && !isMuted ? 'Pause Forest Music' : 'Play Forest Music'}
-            title={isMusicPlaying && !isMuted ? 'Pause Forest Ambience' : 'Play Forest Ambience'}
-          >
-            {/* Inner glow ring */}
-            <div className="absolute inset-1 rounded-full bg-gradient-to-br from-white/40 to-transparent"></div>
-            
-            {/* Center content */}
-            <div className="relative flex items-center justify-center h-full z-10">
-              {isMusicPlaying && !isMuted ? (
-                <Music className="w-6 h-6 text-white filter drop-shadow-lg transform transition-all duration-300 group-hover:scale-125 animate-pulse" />
-              ) : (
-                <Music className="w-6 h-6 text-white filter drop-shadow-lg transform transition-all duration-300 group-hover:scale-125" />
-              )}
-            </div>
-            
-            {/* Floating particles (always visible like language switcher) */}
-            <div className="absolute inset-0 rounded-full">
-              <div className="absolute w-2 h-2 bg-white/90 rounded-full animate-bounce" 
-                   style={{ 
-                     top: '15%', 
-                     left: '50%', 
-                     transform: 'translateX(-50%)',
-                     animationDelay: '0s',
-                     animationDuration: '2s'
-                   }}></div>
-              <div className="absolute w-1.5 h-1.5 bg-yellow-200/80 rounded-full animate-ping" 
-                   style={{ 
-                     bottom: '20%', 
-                     right: '25%',
-                     animationDelay: '0.5s',
-                     animationDuration: '1.5s'
-                   }}></div>
-              <div className="absolute w-1 h-1 bg-amber-200/70 rounded-full animate-pulse" 
-                   style={{ 
-                     left: '20%', 
-                     top: '65%',
-                     animationDelay: '1s',
-                     animationDuration: '2.5s'
-                   }}></div>
-            </div>
-          </button>
-          
-          {/* Enhanced tooltip */}
-          <div className="absolute -bottom-14 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50">
-            <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white text-sm px-4 py-2 rounded-xl backdrop-blur-sm shadow-lg border border-amber-400/30 whitespace-nowrap">
-              <div className="flex items-center space-x-2">
-                <span>{isMusicPlaying && !isMuted ? 'Pause' : 'Play'}</span>
-                <span className="font-semibold">Forest Sounds</span>
               </div>
               {/* Tooltip arrow */}
               <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gradient-to-r from-amber-600 to-orange-600 rotate-45"></div>

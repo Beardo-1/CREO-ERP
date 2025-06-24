@@ -244,7 +244,14 @@ export default function SocialMedia() {
                   </div>
                   <div>
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getPlatformColor(post.platform)}`}>
-                      {t(appContent.deals[post.platform as keyof typeof appContent.deals] || { en: post.platform.toUpperCase(), ar: post.platform.toUpperCase() })}
+                      {(() => {
+                        const translationKey = appContent.deals[post.platform as keyof typeof appContent.deals];
+                        if (translationKey) {
+                          return t(translationKey);
+                        } else {
+                          return t({ en: post.platform.toUpperCase(), ar: post.platform.toUpperCase() });
+                        }
+                      })()}
                     </span>
                     <p className="text-sm text-gray-600 mt-1">
                       {post.status === 'published' ? `${t(appContent.deals.publishedOn)} ${new Date(post.publishedDate!).toLocaleDateString()}` :
@@ -254,7 +261,14 @@ export default function SocialMedia() {
                   </div>
                 </div>
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(post.status)}`}>
-                  {t(appContent.deals[post.status as keyof typeof appContent.deals] || { en: post.status.toUpperCase(), ar: post.status.toUpperCase() })}
+                  {(() => {
+                    const translationKey = appContent.deals[post.status as keyof typeof appContent.deals];
+                    if (translationKey) {
+                      return t(translationKey);
+                    } else {
+                      return t({ en: post.status.toUpperCase(), ar: post.status.toUpperCase() });
+                    }
+                  })()}
                 </span>
               </div>
 
