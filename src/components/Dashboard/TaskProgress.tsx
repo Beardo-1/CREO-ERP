@@ -61,7 +61,16 @@ export function TaskProgress() {
             </div>
             <div className="flex-1">
               <div className={`font-medium ${task.completed ? 'text-gray-400 line-through' : 'text-white'}`}>
-                {t(appContent.stats[task.titleKey] || { en: String(task.titleKey), ar: String(task.titleKey) })}
+                {(() => {
+                  const translationKey = appContent.stats[task.titleKey];
+                  if (translationKey) {
+                    return t(translationKey);
+                  } else {
+                    // Fallback with proper translation object
+                    const fallbackKey = String(task.titleKey);
+                    return t({ en: fallbackKey, ar: fallbackKey });
+                  }
+                })()}
               </div>
               <div className="text-sm text-gray-400">{task.time}</div>
             </div>

@@ -154,7 +154,16 @@ export function LiveStatsCards() {
           
           {/* Title */}
           <h3 className="text-xs sm:text-sm font-medium text-gray-600 mb-2">
-            {t(appContent.stats[stat.titleKey] || { en: String(stat.titleKey), ar: String(stat.titleKey) })}
+            {(() => {
+              const translationKey = appContent.stats[stat.titleKey];
+              if (translationKey) {
+                return t(translationKey);
+              } else {
+                // Fallback with proper translation object
+                const fallbackKey = String(stat.titleKey);
+                return t({ en: fallbackKey, ar: fallbackKey });
+              }
+            })()}
           </h3>
           
           {/* Value */}
