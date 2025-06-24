@@ -1781,7 +1781,7 @@ export const appContent = {
     pipelineDealId: {
       en: "Deal ID",
       ar: "معرف الصفقة"
-    }
+    },
     totalProspects: {
       en: "Total Prospects",
       ar: "إجمالي العملاء المحتملين"
@@ -1953,7 +1953,7 @@ export const appContent = {
     sqFt: {
       en: "sq ft",
       ar: "قدم مربع"
-    }
+    },
     addAgent: {
       en: "Add Agent",
       ar: "إضافة وكيل",
@@ -2459,7 +2459,7 @@ export const appContent = {
     workOrderCancelled: {
       en: "cancelled",
       ar: "ملغية"
-    }
+    },
     manageDocuments: {
       en: "Manage documents with e-signatures, OCR, and compliance tracking",
       ar: "إدارة المستندات مع التوقيعات الإلكترونية والتعرف الضوئي وتتبع الامتثال"
@@ -3283,7 +3283,7 @@ export const appContent = {
     holidayOpenHouse: {
       en: "Holiday Open House",
       ar: "بيت مفتوح للعطلة"
-    }
+    },
     gridView: {
       en: "Grid View",
       ar: "عرض الشبكة"
@@ -3384,10 +3384,6 @@ export const appContent = {
       en: "Clear Filters",
       ar: "مسح المرشحات"
     }
-    subtitle: { en: 'Organize and track your team\'s tasks and projects', ar: 'تنظيم وتتبع مهام ومشاريع فريقك' },
-    totalTasks: { en: 'Total Tasks', ar: 'إجمالي المهام' },
-    allPriority: { en: 'All Priority', ar: 'جميع الأولويات' },
-    estimatedTime: { en: 'Estimated Time', ar: 'الوقت المقدر' },
   },
 
   // Financial Dashboard Module
@@ -3460,8 +3456,8 @@ export const appContent = {
     financialDataSynced: { en: 'Financial data synced successfully', ar: 'تمت مزامنة البيانات المالية بنجاح' },
     mailchimpCampaign: { en: 'Mailchimp campaign synced', ar: 'تمت مزامنة حملة Mailchimp' },
     campaignDataUpdated: { en: 'Campaign performance data updated', ar: 'تم تحديث بيانات أداء الحملة' },
-    hourAgo: { en: 'hour ago', ar: 'ساعة مضت' }
-    generateReports: {
+    hourAgo: { en: 'hour ago', ar: 'ساعة مضت' },
+  generateReports: {
       en: "Generate comprehensive reports and analytics",
       ar: "إنشاء تقارير وتحليلات شاملة"
     },
@@ -3640,7 +3636,7 @@ export const appContent = {
     clearFilters: {
       en: "Clear Filters",
       ar: "مسح المرشحات"
-    }
+    },
     trustedServiceProviders: {
       en: "trusted service providers",
       ar: "مقدمي خدمات موثوقين"
