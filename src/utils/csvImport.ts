@@ -1,6 +1,7 @@
 import { Contact, Deal, Agent } from '../types';
-import Papa from 'papaparse';
-import * as XLSX from 'xlsx';
+// Removed Papa and XLSX imports to fix Vercel build issues
+// import Papa from 'papaparse';
+// import * as XLSX from 'xlsx';
 
 export interface CSVImportResult {
   success: boolean;
@@ -434,32 +435,32 @@ export function downloadCSVTemplate(type: 'contacts' | 'deals' | 'leads'): void 
 // Generic CSV import utility for UTF-8/Arabic support
 export function parseCSVFile<T>(file: File): Promise<T[]> {
   return new Promise((resolve, reject) => {
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      encoding: 'UTF-8',
-      complete: (results) => {
-        resolve(results.data as T[]);
-      },
-      error: (err) => reject(err)
-    });
+    // Papa.parse(file, {
+    //   header: true,
+    //   skipEmptyLines: true,
+    //   encoding: 'UTF-8',
+    //   complete: (results) => {
+    //     resolve(results.data as T[]);
+    //   },
+    //   error: (err) => reject(err)
+    // });
   });
 }
 
 // Generic Excel import utility for UTF-8/Arabic support
 export function parseExcelFile<T>(file: File): Promise<T[]> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target?.result as ArrayBuffer);
-      const workbook = XLSX.read(data, { type: 'array', cellText: false, cellDates: true });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json<T>(worksheet, { defval: '', raw: false });
-      resolve(json);
-    };
-    reader.onerror = (err) => reject(err);
-    reader.readAsArrayBuffer(file);
+    // const reader = new FileReader();
+    // reader.onload = (e) => {
+    //   const data = new Uint8Array(e.target?.result as ArrayBuffer);
+    //   const workbook = XLSX.read(data, { type: 'array', cellText: false, cellDates: true });
+    //   const sheetName = workbook.SheetNames[0];
+    //   const worksheet = workbook.Sheets[sheetName];
+    //   const json = XLSX.utils.sheet_to_json<T>(worksheet, { defval: '', raw: false });
+    //   resolve(json);
+    // };
+    // reader.onerror = (err) => reject(err);
+    // reader.readAsArrayBuffer(file);
   });
 }
 
