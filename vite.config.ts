@@ -18,10 +18,7 @@ export default defineConfig({
         manualChunks: {
           vendor: ['react', 'react-dom'],
           supabase: ['@supabase/supabase-js']
-        },
-        entryFileNames: `[name]-${Date.now()}.js`,
-        chunkFileNames: `[name]-${Date.now()}.js`,
-        assetFileNames: `[name]-${Date.now()}.[ext]`
+        }
       }
     }
   },
@@ -34,7 +31,6 @@ export default defineConfig({
     },
   },
   define: {
-    global: 'globalThis',
-    __BUILD_TIME__: JSON.stringify(new Date().toISOString())
+    global: 'globalThis'
   }
 });

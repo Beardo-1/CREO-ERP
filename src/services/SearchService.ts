@@ -1,4 +1,4 @@
-import Fuse from 'fuse.js';
+// import Fuse from 'fuse.js';
 import { supabase } from '../lib/supabase';
 import { unifiedDataService } from './unifiedDataService';
 
@@ -8,14 +8,6 @@ export interface SearchResult {
   type: string;
   route: string;
 }
-
-// Configure Fuse for client-side search
-const fuseOptions: Fuse.IFuseOptions<any> = {
-  keys: ['label'],
-  threshold: 0.3,
-  distance: 100,
-  includeScore: true
-};
 
 export async function searchAll(query: string): Promise<SearchResult[]> {
   // If no query, return empty
@@ -69,7 +61,7 @@ export async function searchAll(query: string): Promise<SearchResult[]> {
     return results.slice(0, 20);
   }
 
-  // Development: fetch all and run Fuse
+  // Development: fetch all and run simple search instead of Fuse
   const [props, contacts, agents, deals] = await Promise.all([
     unifiedDataService.getProperties(),
     unifiedDataService.getContacts(),
@@ -78,14 +70,17 @@ export async function searchAll(query: string): Promise<SearchResult[]> {
   ]);
 
   const items = [
-    ...props.map(p => ({ id: p.id, label: p.title, type: 'Property', route: `/properties/${p.id}` })),
-    ...contacts.map(c => ({ id: c.id, label: c.name, type: 'Contact', route: `/contacts/${c.id}` })),
-    ...agents.map(a => ({ id: a.id, label: a.name, type: 'Agent', route: `/agents/${a.id}` })),
-    ...deals.map(d => ({ id: d.id, label: d.title, type: 'Deal', route: `/deals/${d.id}` }))
+    ...props.map(p => ({ id: p.id, label: p.title || 'Untitled Property', type: 'Property', route: `/properties/${p.id}` })),
+    ...contacts.map(c => ({ id: c.id, label: `${c.firstName || ''} ${c.lastName || ''}`.trim() || 'Unnamed Contact', type: 'Contact', route: `/contacts/${c.id}` })),
+    ...agents.map(a => ({ id: a.id, label: `${a.firstName || ''} ${a.lastName || ''}`.trim() || 'Unnamed Agent', type: 'Agent', route: `/agents/${a.id}` })),
+    ...deals.map(d => ({ id: d.id, label: `Deal ${d.id}`, type: 'Deal', route: `/deals/${d.id}` }))
   ];
 
-  const fuse = new Fuse(items, fuseOptions);
-  const fuseResults = fuse.search(query, { limit: 20 });
+  // Simple string search instead of Fuse.js
+  const lowerQuery = query.toLowerCase();
+  const filteredItems = items.filter(item => 
+    item.label.toLowerCase().includes(lowerQuery)
+  );
 
-  return fuseResults.map(r => ({ id: r.item.id, label: r.item.label, type: r.item.type, route: r.item.route }));
+  return filteredItems.slice(0, 20);
 } 
