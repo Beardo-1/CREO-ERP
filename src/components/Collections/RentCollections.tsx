@@ -51,11 +51,28 @@ const RentCollections: React.FC = () => {
     }
   };
 
+  // Translation helpers with fallbacks
+  const translations = {
+    title: { en: 'Rent Collections', ar: 'تحصيل الإيجارات' },
+    property: { en: 'Property', ar: 'العقار' },
+    tenant: { en: 'Tenant', ar: 'المستأجر' },
+    amount: { en: 'Amount', ar: 'المبلغ' },
+    dueDate: { en: 'Due Date', ar: 'تاريخ الاستحقاق' },
+    status: { en: 'Status', ar: 'الحالة' },
+    actions: { en: 'Actions', ar: 'الإجراءات' },
+    paid: { en: 'Paid', ar: 'مدفوع' },
+    pending: { en: 'Pending', ar: 'معلق' },
+    overdue: { en: 'Overdue', ar: 'متأخر' },
+    view: { en: 'View', ar: 'عرض' },
+    markPaid: { en: 'Mark Paid', ar: 'تسجيل كمدفوع' },
+    totalCollected: { en: 'Total Collected', ar: 'إجمالي المحصل' },
+  };
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">
-          {t('Rent Collections')}
+          {t(translations.title)}
         </h1>
       </div>
 
@@ -65,22 +82,22 @@ const RentCollections: React.FC = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('Property')}
+                {t(translations.property)}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('Tenant')}
+                {t(translations.tenant)}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('Amount')}
+                {t(translations.amount)}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('Due Date')}
+                {t(translations.dueDate)}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('Status')}
+                {t(translations.status)}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('Actions')}
+                {t(translations.actions)}
               </th>
             </tr>
           </thead>
@@ -101,16 +118,16 @@ const RentCollections: React.FC = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(collection.status)}`}>
-                    {t(collection.status)}
+                    {t(translations[collection.status as keyof typeof translations] || translations.pending)}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <button className="text-indigo-600 hover:text-indigo-900 mr-3">
-                    {t('View')}
+                    {t(translations.view)}
                   </button>
                   {collection.status === 'pending' && (
                     <button className="text-green-600 hover:text-green-900">
-                      {t('Mark Paid')}
+                      {t(translations.markPaid)}
                     </button>
                   )}
                 </td>
@@ -124,19 +141,19 @@ const RentCollections: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            {t('Total Collected')}
+            {t(translations.totalCollected)}
           </h3>
           <p className="text-3xl font-bold text-green-600">$1,200</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            {t('Pending')}
+            {t(translations.pending)}
           </h3>
           <p className="text-3xl font-bold text-yellow-600">$1,500</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            {t('Overdue')}
+            {t(translations.overdue)}
           </h3>
           <p className="text-3xl font-bold text-red-600">$1,100</p>
         </div>

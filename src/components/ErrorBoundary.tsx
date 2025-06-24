@@ -7,6 +7,7 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
+  errorInfo?: ErrorInfo;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -15,11 +16,14 @@ export class ErrorBoundary extends Component<Props, State> {
   };
 
   public static getDerivedStateFromError(error: Error): State {
+    console.log('React Error Boundary - Error caught:', error);
     return { hasError: true, error };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('React Error Boundary caught an error:', error, errorInfo);
+    console.error('React Error Boundary - Error caught:', error);
+    console.error('React Error Boundary - Full error details:', { error, errorInfo });
+    this.setState({ error, errorInfo });
   }
 
   public render() {
@@ -37,6 +41,15 @@ export class ErrorBoundary extends Component<Props, State> {
               <p className="text-sm text-gray-600 mb-4">
                 We're sorry, but something unexpected happened. Please refresh the page to try again.
               </p>
+              {this.state.error && (
+                <details className="text-left text-xs text-gray-500 mb-4 bg-gray-50 p-2 rounded">
+                  <summary className="cursor-pointer font-medium">Error Details</summary>
+                  <pre className="mt-2 whitespace-pre-wrap">{this.state.error.message}</pre>
+                  {this.state.error.stack && (
+                    <pre className="mt-1 whitespace-pre-wrap text-xs">{this.state.error.stack.slice(0, 500)}...</pre>
+                  )}
+                </details>
+              )}
               <button
                 onClick={() => window.location.reload()}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"

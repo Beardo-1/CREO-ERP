@@ -52,13 +52,23 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
         return '';
       }
       
-      const translatedText = content[currentLanguage] || content.en || '';
-      return String(translatedText);
+      try {
+        const translatedText = content[currentLanguage] || content.en || '';
+        return String(translatedText);
+      } catch (error) {
+        console.error('Error accessing translation content:', error, content);
+        return content.en || content.ar || '';
+      }
     }
     
     // Fallback for any other type
     console.warn('Translation content has unexpected type:', typeof content, content);
-    return String(content);
+    try {
+      return String(content);
+    } catch (error) {
+      console.error('Failed to convert content to string:', error, content);
+      return '';
+    }
   };
 
   // Map our language codes to LibreTranslate codes

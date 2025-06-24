@@ -24,29 +24,29 @@ export function Login({ onLoginSuccess }: LoginProps) {
 
   // Initialize ambient music
   useEffect(() => {
-    // Create audio element with your forest ambient music
-    const audio = new Audio('/morning-in-the-forest-347089.mp3');
-    audio.loop = true;
-    audio.volume = 0.3;
-    audio.preload = 'auto';
-    audioRef.current = audio;
+    // Audio functionality disabled to fix deployment issues
+    // const audio = new Audio('/morning-in-the-forest-347089.mp3');
+    // audio.loop = true;
+    // audio.volume = 0.3;
+    // audio.preload = 'auto';
+    // audioRef.current = audio;
 
     // Handle audio loading
     const handleCanPlay = () => {
           };
 
     const handleError = (e: any) => {
-      console.error('Error loading ambient music:', e);
+      console.error('Audio functionality disabled for deployment');
     };
 
-    audio.addEventListener('canplay', handleCanPlay);
-    audio.addEventListener('error', handleError);
+    // audio.addEventListener('canplay', handleCanPlay);
+    // audio.addEventListener('error', handleError);
 
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
-        audioRef.current.removeEventListener('canplay', handleCanPlay);
-        audioRef.current.removeEventListener('error', handleError);
+        // audioRef.current.removeEventListener('canplay', handleCanPlay);
+        // audioRef.current.removeEventListener('error', handleError);
         audioRef.current = null;
       }
     };

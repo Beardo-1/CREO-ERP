@@ -181,7 +181,7 @@ function App() {
   };
 
   const renderContent = () => {
-    console.log('🔍 DEBUGGING - Current activeTab:', activeTab, 'Type:', typeof activeTab);
+    // Removed debugging console.log statements for better performance
     
     // Debug specific problematic routes
     const problematicRoutes = [
@@ -193,18 +193,18 @@ function App() {
       'leads-follow-up'
     ];
     
-    // SPECIFIC KPI-MANAGE DEBUG
-    if (activeTab === 'kpi-manage') {
-      console.log('🚨 KPI-MANAGE ROUTE DETECTED!');
-      console.log('🔍 activeTab:', activeTab);
-      console.log('🔍 typeof activeTab:', typeof activeTab);
-      console.log('🔍 activeTab === "kpi-manage":', activeTab === 'kpi-manage');
-      console.log('🔍 KPIBuilder component:', KPIBuilder);
-    }
+    // SPECIFIC KPI-MANAGE DEBUG - Removed for production
+    // if (activeTab === 'kpi-manage') {
+    //   console.log('🚨 KPI-MANAGE ROUTE DETECTED!');
+    //   console.log('🔍 activeTab:', activeTab);
+    //   console.log('🔍 typeof activeTab:', typeof activeTab);
+    //   console.log('🔍 activeTab === "kpi-manage":', activeTab === 'kpi-manage');
+    //   console.log('🔍 KPIBuilder component:', KPIBuilder);
+    // }
     
-    if (problematicRoutes.includes(activeTab)) {
-      console.log('🎯 FOUND PROBLEMATIC ROUTE:', activeTab, '- Should be handled!');
-    }
+    // if (problematicRoutes.includes(activeTab)) {
+    //   console.log('🎯 FOUND PROBLEMATIC ROUTE:', activeTab, '- Should be handled!');
+    // }
     
     try {
       switch (activeTab) {
