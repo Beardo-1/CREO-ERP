@@ -55,7 +55,7 @@ export function CalendarWidget() {
       
       <div className="grid grid-cols-6 gap-3 mb-4">
         {weekDays.map((day, index) => (
-          <div key={day.key} className="text-center">
+                  <div key={day.key} className="text-center">
             <div className="text-xs text-gray-500 mb-2">
               {safeNestedTranslate(t, appContent.calendar, day.key, day.short)}
             </div>

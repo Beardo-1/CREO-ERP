@@ -45,31 +45,31 @@ function App() {
 
   const renderContent = () => {
     // Simple routing with safe component loading
-    switch (activeTab) {
-      case 'dashboard':
-        return (
+      switch (activeTab) {
+        case 'dashboard':
+          return (
           <ErrorBoundary componentName="Dashboard">
             <Overview />
           </ErrorBoundary>
         );
 
-      default:
-        return (
+        default:
+          return (
           <div className="p-6">
             <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
               <h3 className="text-yellow-800 font-medium">Module Not Available</h3>
               <p className="text-yellow-600 text-sm mt-1">
                 The requested module "{activeTab}" is not yet implemented.
               </p>
-              <button 
-                onClick={() => setActiveTab('dashboard')}
+                  <button
+                    onClick={() => setActiveTab('dashboard')}
                 className="mt-2 text-sm bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700"
-              >
-                Go to Dashboard
-              </button>
-            </div>
+                  >
+                    Go to Dashboard
+            </button>
           </div>
-        );
+        </div>
+      );
     }
   };
 
@@ -111,4 +111,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;

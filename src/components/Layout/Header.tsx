@@ -13,6 +13,26 @@ interface HeaderProps {
   onTabChange?: (tab: string) => void;
 }
 
+// Safe SearchBar wrapper
+const SafeSearchBar: React.FC = () => {
+  try {
+    return <SearchBar />;
+  } catch (error) {
+    console.warn('SearchBar error:', error);
+    return (
+      <div className="relative text-gray-600">
+        <input
+          type="search"
+          className="py-2 text-sm text-gray-900 bg-white rounded-full pl-10 pr-4 w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+          placeholder="Search..."
+          disabled
+        />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+      </div>
+    );
+  }
+};
+
 export function Header({ activeTab, userName: initialUserName, onMobileMenuToggle, onTabChange }: HeaderProps) {
   const { currentLanguage, toggleLanguage, t } = useTranslation();
   const [showMobileSearch, setShowMobileSearch] = useState(false);
@@ -22,12 +42,16 @@ export function Header({ activeTab, userName: initialUserName, onMobileMenuToggl
   // Listen for profile updates
   useEffect(() => {
     const handleProfileUpdate = (event: CustomEvent) => {
-      console.log('🎯 Header received profileUpdated event:', event.detail);
-      const profileData = event.detail;
-      if (profileData) {
-        setCurrentUserName(profileData.name || initialUserName);
-        setCurrentUserRole(profileData.role || 'Real Estate Agent');
-        console.log('✅ Header updated with:', { name: profileData.name, role: profileData.role });
+      try {
+        console.log('🎯 Header received profileUpdated event:', event.detail);
+        const profileData = event.detail;
+        if (profileData) {
+          setCurrentUserName(profileData.name || initialUserName);
+          setCurrentUserRole(profileData.role || 'Real Estate Agent');
+          console.log('✅ Header updated with:', { name: profileData.name, role: profileData.role });
+        }
+      } catch (error) {
+        console.warn('Error handling profile update:', error);
       }
     };
 
@@ -56,13 +80,39 @@ export function Header({ activeTab, userName: initialUserName, onMobileMenuToggl
   }, [initialUserName]);
 
   const getPageTitle = (tab: string) => {
-    const titles = headerContent.pageTitles as Record<string, { en: string; ar: string }>;
-    return titles[tab] ? t(titles[tab]) : t(titles.dashboard);
+    try {
+      const titles = headerContent.pageTitles as Record<string, { en: string; ar: string }>;
+      return titles[tab] ? t(titles[tab]) : t(titles.dashboard);
+    } catch (error) {
+      console.warn('Error getting page title:', error);
+      return 'Dashboard';
+    }
   };
 
   const getPageDescription = (tab: string) => {
-    const descriptions = headerContent.pageDescriptions as Record<string, { en: string; ar: string }>;
-    return descriptions[tab] ? t(descriptions[tab]) : t(descriptions.dashboard);
+    try {
+      const descriptions = headerContent.pageDescriptions as Record<string, { en: string; ar: string }>;
+      return descriptions[tab] ? t(descriptions[tab]) : t(descriptions.dashboard);
+    } catch (error) {
+      console.warn('Error getting page description:', error);
+      return 'Manage your real estate business';
+    }
+  };
+
+  const handleToggleLanguage = () => {
+    try {
+      toggleLanguage();
+    } catch (error) {
+      console.warn('Error toggling language:', error);
+    }
+  };
+
+  const handleTabChange = (tab: string) => {
+    try {
+      onTabChange?.(tab);
+    } catch (error) {
+      console.warn('Error changing tab:', error);
+    }
   };
 
   return (

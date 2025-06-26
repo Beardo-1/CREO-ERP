@@ -37,7 +37,7 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
     if (content === null || content === undefined) {
       // Only log in development and limit repeated warnings
       if (import.meta.env.DEV) {
-        console.warn('Translation content is null or undefined:', content);
+      console.warn('Translation content is null or undefined:', content);
       }
       return '';
     }
@@ -52,14 +52,14 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
       // Ensure content has the required language properties
       if (!content.en && !content.ar) {
         if (import.meta.env.DEV) {
-          console.warn('Translation content missing language properties:', content);
+        console.warn('Translation content missing language properties:', content);
         }
         return '';
       }
       
       try {
-        const translatedText = content[currentLanguage] || content.en || '';
-        return String(translatedText);
+      const translatedText = content[currentLanguage] || content.en || '';
+      return String(translatedText);
       } catch (error) {
         if (import.meta.env.DEV) {
           console.error('Error accessing translation content:', error, content);
@@ -70,10 +70,10 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
     
     // Fallback for any other type
     if (import.meta.env.DEV) {
-      console.warn('Translation content has unexpected type:', typeof content, content);
+    console.warn('Translation content has unexpected type:', typeof content, content);
     }
     try {
-      return String(content);
+    return String(content);
     } catch (error) {
       if (import.meta.env.DEV) {
         console.error('Failed to convert content to string:', error, content);
